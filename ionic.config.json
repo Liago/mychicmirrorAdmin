@@ -1,5 +1,7 @@
 {
   "name": "mychicmirror-admin",
-  "integrations": {},
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "react"
 }
