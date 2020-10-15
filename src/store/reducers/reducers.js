@@ -7,12 +7,12 @@ const initialState = {
 	error: null,
 	message: null,
 	notificationMessage: null,
-	user: {
-		loaded:false,
-		deleted: false,
-		created: false,
-		notified: false,
-	},
+	
+	loaded:false,
+	deleted: false,
+	created: false,
+	notified: false,
+	
 };
 
 const darkModeNormal = (state, action) => {

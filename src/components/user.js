@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { IonAlert, IonButton, IonButtons, IonContent, IonGrid, IonHeader, IonIcon, IonRow, IonToast, IonToolbar } from "@ionic/react";
 import { closeOutline } from "ionicons/icons";
 import { connect } from "react-redux";
@@ -18,7 +18,6 @@ const User = (props) => {
 		};
 		props.onSendNotification(message);
 	};
-
 	return (
 		<>
 			<IonHeader>
@@ -48,14 +47,16 @@ const User = (props) => {
 										</Card.Description>
 									</Card.Content>
 									<Card.Content extra>
-											<Button
-												className={`ui tiny blue compact button ${props.isSending ? "loading disabled" : ""} ${!props.user.playerID ? "hidden" : ""}`}
-												labelPosition="right"
-												icon="send"
-												content="Send Notification"
-												onClick={() => prepareNotification(props.user.playerID)}
-											/>
-										<Button className="ui tiny red compact button" content="Delete User" onClick={() => setShowAlert(true)}/>
+										<Button
+											className={`ui tiny blue compact button ${props.isSending ? "loading disabled" : ""} ${
+												!props.user.playerID ? "hidden" : ""
+											}`}
+											labelPosition="right"
+											icon="send"
+											content="Send Notification"
+											onClick={() => prepareNotification(props.user.playerID)}
+										/>
+										<Button className="ui tiny red compact button" content="Delete User" onClick={() => setShowAlert(true)} />
 									</Card.Content>
 								</Card>
 							)}
@@ -63,9 +64,9 @@ const User = (props) => {
 					</IonRow>
 				</IonGrid>
 				<IonToast
-					isOpen={props.isUserNotified}
+					isOpen={props.isUserNotified || props.isUserDeleted}
 					onDidDismiss={() => setShowToast(false)}
-					message="Notification have been sent"
+					message={`${props.isUserNotified ? "Notification has been sent" : "User has been deleted"}`}
 					duration={500}
 				/>
 			</IonContent>
@@ -79,7 +80,8 @@ const User = (props) => {
 					{
 						text: "Ok",
 						handler: () => {
-							props.onDeleteUser({"id":props.user.id})
+							props.onDeleteUser({ id: props.user.id });
+							props.closeModal(false);
 						},
 					},
 				]}
@@ -90,12 +92,12 @@ const User = (props) => {
 };
 
 const mapStateToProps = (state) => {
-	console.log('state', state)
+	console.log("state", state);
 	return {
 		isError: state.error,
 		isSending: state.loading,
-		isUserDeleted: state.user.deleted,
-		isUserNotified: state.user.notified,
+		isUserDeleted: state.deleted,
+		isUserNotified: state.notified,
 		notificationResponse: state.notificationMessage,
 	};
 };
@@ -103,7 +105,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
 	return {
 		onSendNotification: (params) => dispatch(sendNotification(params)),
-		onDeleteUser: (params) => dispatch(userDelete(params))
+		onDeleteUser: (params) => dispatch(userDelete(params)),
 	};
 };
 
