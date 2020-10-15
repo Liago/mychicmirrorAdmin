@@ -1,6 +1,8 @@
 import React from "react";
-import { IonItem, IonLabel, IonList, IonNote } from "@ionic/react";
+import { IonIcon, IonList } from "@ionic/react";
 import { connect } from "react-redux";
+import { Card } from "semantic-ui-react";
+import { codeWorkingOutline, unlinkOutline } from "ionicons/icons";
 
 const list = (props) => {
 	return (
@@ -8,15 +10,23 @@ const list = (props) => {
 			{props.users.map((user, index) => {
 				return (
 					<div className="list-component" key={index}>
-						<IonItem onClick={() => props.onSelectUser(user)} className="ui card">
-							<IonNote slot="start">{index + 1}</IonNote>
-							<IonLabel>
-								<h2>{user.username}</h2>
-								<p>{user.email}</p>
-								<p>{user.playerID}</p>
-							</IonLabel>
-							<IonNote slot="end">{user.id}</IonNote>
-						</IonItem>
+						<Card onClick={() => props.onSelectUser(user)}>
+							<Card.Content>
+								<Card.Header>{user.username}</Card.Header>
+								<Card.Meta>{user.email}</Card.Meta>
+								<Card.Description>{user.playerID}</Card.Description>
+							</Card.Content>
+							<div className="extra content">
+								<span className="left floated red like">
+									<IonIcon ios={codeWorkingOutline} md={codeWorkingOutline} />
+									{index + 1}
+								</span>
+								<span className="right floated star">
+									<IonIcon ios={unlinkOutline} md={unlinkOutline} />
+									{user.id}
+								</span>
+							</div>
+						</Card>
 					</div>
 				);
 			})}

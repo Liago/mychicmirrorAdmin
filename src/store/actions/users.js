@@ -67,6 +67,7 @@ export const userDeleteSuccess = (response) => {
 	return {
 		type: actionTypes.USER_DELETE_SUCCESS,
 		message: response,
+		deleted:true
 	};
 };
 export const userDelete = (params) => {

@@ -16,7 +16,6 @@ import {
 	IonToast,
 	IonToolbar,
 } from "@ionic/react";
-import { RefresherEventDetail } from "@ionic/core";
 import { loadUsers, userRegistration } from "../store/actions";
 import List from "../components/list";
 import User from "../components/user";
@@ -32,7 +31,7 @@ const Users = (props) => {
 
 	useEffect(() => {
 		props.onLoadUserSubscribed();
-	}, [isRefreshing, showToast]);
+	}, [isRefreshing]);
 
 	const handleSelection = (user) => {
 		selectUser(user);
@@ -69,7 +68,7 @@ const Users = (props) => {
 				<IonRefresher slot="fixed" onIonRefresh={refresh}>
 					<IonRefresherContent
 						pullingIcon={refreshOutline}
-						pull-factor="10"
+						pull-factor="200"
 						pullingText="Pull to refresh"
 						refreshingSpinner="crescent"
 						refreshingText="Refreshing..."
@@ -143,6 +142,7 @@ const mapStateToProps = (state) => {
 	return {
 		users: state.userList,
 		userRegistered: state.message,
+		isUserDeleted: state.delete
 	};
 };
 const mapDispatchToProps = (dispatch) => {
