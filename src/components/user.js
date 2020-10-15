@@ -60,18 +60,6 @@ const User = (props) => {
 												</Message>
 											</Card.Description>
 										</Card.Content>
-										<Card.Content extra>
-											<Button.Group widths="5">
-												<Button
-													className={`huge blue compact ${props.isSending ? "loading disabled" : ""} ${
-														!props.user.playerID ? "disabled" : ""
-													}`}
-													content="Send Notification"
-													onClick={() => prepareNotification(props.user.playerID)}
-												/>
-												<Button className="huge red compact" content="Delete User" onClick={() => setShowAlert(true)} />
-											</Button.Group>
-										</Card.Content>
 									</Card>
 								)}
 							</div>
