@@ -21,7 +21,9 @@ export const userRegistration = (params) => {
 export const userDelete = (params) => {
 	return instance.post("/deleteUser.php", params);
 };
-
+export const getUserComments = (params) => {
+	return instance.post("/getTotalCommentsByUser.php", params);
+};
 export const sendNotification = (params) => {
 	return instance.post("/sendAppNotification.php", params);
 };

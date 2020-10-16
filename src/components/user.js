@@ -13,10 +13,12 @@ import {
 	IonToast,
 	IonToolbar,
 } from "@ionic/react";
-import { closeOutline, personCircle, search } from "ionicons/icons";
+import { closeOutline } from "ionicons/icons";
 import { connect } from "react-redux";
-import { Button, Card, Image, Message } from "semantic-ui-react";
-import { sendNotification, userDelete } from "../store/actions/";
+import { Button, Card, Divider, Image, Message } from "semantic-ui-react";
+import { sendNotification, userDelete, loadUserComments } from "../store/actions/";
+import Placeholder from "../components/UI/skeleton_list";
+import CommentsList from "../components/comments";
 
 const User = (props) => {
 	const [showAlert, setShowAlert] = useState(false);
@@ -31,6 +33,11 @@ const User = (props) => {
 		};
 		props.onSendNotification(message);
 	};
+
+	useEffect(() => {
+		props.onLoadComments({ user: props.user.email });
+	}, []);
+
 	return (
 		<>
 			<IonPage id="user">
@@ -49,16 +56,25 @@ const User = (props) => {
 							<div className="user-component">
 								{props.user.username && (
 									<Card className="fluid">
-										<Image src="images/default_avatar.jpg" wrapped ui={false} />
 										<Card.Content>
+											<Image className="right floated circular mini" src="images/default_avatar.jpg" />
 											<Card.Header>{props.user.username}</Card.Header>
 											<Card.Meta>{props.user.email}</Card.Meta>
+										</Card.Content>
+										<Card.Content>
 											<Card.Description>
 												<Message className={`${props.user.playerID ? "positive" : "negative"}`}>
 													<Message.Header>OneSignal ID</Message.Header>
 													<Message.Content>{props.user.playerID || "Not yet registered"}</Message.Content>
 												</Message>
 											</Card.Description>
+										</Card.Content>
+										<Card.Content>
+											<Card.Header>Comments</Card.Header>
+											<Divider />
+											{!props.comments.success 
+											? <Placeholder rows={5} /> 
+											: <CommentsList list={props.comments.comments} avatar={"images/default_avatar.jpg"} />}
 										</Card.Content>
 									</Card>
 								)}
@@ -116,6 +132,7 @@ const mapStateToProps = (state) => {
 		isUserDeleted: state.deleted,
 		isUserNotified: state.notified,
 		notificationResponse: state.notificationMessage,
+		comments: state.commentsList,
 	};
 };
 
@@ -123,6 +140,7 @@ const mapDispatchToProps = (dispatch) => {
 	return {
 		onSendNotification: (params) => dispatch(sendNotification(params)),
 		onDeleteUser: (params) => dispatch(userDelete(params)),
+		onLoadComments: (params) => dispatch(loadUserComments(params)),
 	};
 };
 

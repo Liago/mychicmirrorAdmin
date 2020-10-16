@@ -8,6 +8,7 @@ const initialState = {
 	message: null,
 	notificationMessage: null,
 	
+	commentsList:[],
 	loaded:false,
 	deleted: false,
 	created: false,
@@ -48,6 +49,28 @@ const sendNotificationSuccess = (state, action) => {
 		loading: false,
 		notified: true,
 		notificationMessage: action.message,
+	};
+};
+const loadUserCommentStart = (state, action) => {
+	return {
+		...state,
+		loading: true,
+		commentsList: [],
+	};
+};
+const loadUserCommentFail = (state, action) => {
+	return {
+		...state,
+		loading: false,
+		error: action.error,
+		commentsList: [],
+	};
+};
+const loadUserCommentSuccess = (state, action) => {
+	return {
+		...state,
+		loading: false,
+		commentsList: action.commentsList,
 	};
 };
 
@@ -136,6 +159,9 @@ const reducer = (state = initialState, action) => {
 		case actionTypes.USER_DELETE_FAIL: return userDeleteFail(state, action);
 		case actionTypes.USER_DELETE_SUCCESS: return userDeleteSuccess(state, action);
 		case actionTypes.USER_DELETE_START: return userDeleteStart(state, action);
+		case actionTypes.LOAD_COMMENTS_FAIL: return loadUserCommentFail(state, action);
+		case actionTypes.LOAD_COMMENTS_SUCCESS: return loadUserCommentSuccess(state, action);
+		case actionTypes.LOAD_COMMENTS_START: return loadUserCommentStart(state, action);
 		default: return state;
 	}
 };

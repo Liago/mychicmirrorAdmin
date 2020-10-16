@@ -18,6 +18,23 @@ export const loadUserFail = (error) => {
 		error: error,
 	};
 };
+export const loadUserCommentsStart = () => {
+	return {
+		type: actionTypes.LOAD_COMMENTS_START,
+	};
+};
+export const loadUserCommentsSuccess = (response) => {
+	return {
+		type: actionTypes.LOAD_COMMENTS_SUCCESS,
+		commentsList: response,
+	};
+};
+export const loadUserCommentsFail = (error) => {
+	return {
+		type: actionTypes.LOAD_COMMENTS_FAIL,
+		error: error,
+	};
+};
 export const sendNotificationStart = () => {
 	return {
 		type: actionTypes.SEND_NOTIFICATION_START,
@@ -68,6 +85,18 @@ export const userDeleteSuccess = (response) => {
 		type: actionTypes.USER_DELETE_SUCCESS,
 		message: response,
 		deleted:true
+	};
+};
+export const loadUserComments = (params) => {
+	return (dispatch) => {
+		dispatch(loadUserCommentsStart());
+		rest.getUserComments(params)
+			.then((response) => {
+				dispatch(loadUserCommentsSuccess(response.data))
+			})
+			.catch((error) => {
+				dispatch(loadUserCommentsFail(error));
+			});
 	};
 };
 export const userDelete = (params) => {

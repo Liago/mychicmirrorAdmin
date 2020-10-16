@@ -1,2 +1,2 @@
 export { setDarkMode } from "./main";
-export { loadUsers, sendNotification, userRegistration, userDelete } from "./users";
+export { loadUsers, sendNotification, userRegistration, userDelete, loadUserComments } from "./users";

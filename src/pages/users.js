@@ -19,6 +19,8 @@ import {
 import { loadUsers, userRegistration } from "../store/actions";
 import List from "../components/list";
 import User from "../components/user";
+import Placeholder from "../components/UI/skeleton";
+
 import { personAddOutline, refreshOutline } from "ionicons/icons";
 
 const Users = (props) => {
@@ -28,10 +30,9 @@ const Users = (props) => {
 	const [showToast, setShowToast] = useState(false);
 	const [isRefreshing, doRefresh] = useState(false);
 
-
 	useEffect(() => {
 		props.onLoadUserSubscribed();
-	}, [isRefreshing]);
+	}, [isRefreshing, props.isUserCreated]);
 
 	const handleSelection = (user) => {
 		selectUser(user);
@@ -47,7 +48,7 @@ const Users = (props) => {
 			doRefresh(false);
 			event.detail.complete();
 		}, 2000);
-	}
+	};
 
 	return (
 		<IonPage id="page-users">
@@ -74,7 +75,7 @@ const Users = (props) => {
 						refreshingText="Refreshing..."
 					></IonRefresherContent>
 				</IonRefresher>
-				<List users={props.users} onSelectUser={(user) => handleSelection(user)} />
+				{props.isLoading ? <Placeholder rows={10} /> : <List users={props.users} onSelectUser={(user) => handleSelection(user)} />}
 			</IonContent>
 			<IonModal
 				isOpen={isModalVisibile}
@@ -142,7 +143,9 @@ const mapStateToProps = (state) => {
 	return {
 		users: state.userList,
 		userRegistered: state.message,
-		isUserDeleted: state.delete
+		isUserDeleted: state.delete,
+		isUserCreated: state.created,
+		isLoading: state.loading,
 	};
 };
 const mapDispatchToProps = (dispatch) => {
