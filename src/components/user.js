@@ -1,3 +1,4 @@
+import { isNil, size } from "lodash";
 import React, { useState, useEffect } from "react";
 import {
 	IonAlert,
@@ -8,6 +9,7 @@ import {
 	IonGrid,
 	IonHeader,
 	IonIcon,
+	IonLabel,
 	IonPage,
 	IonRow,
 	IonToast,
@@ -15,10 +17,11 @@ import {
 } from "@ionic/react";
 import { closeOutline } from "ionicons/icons";
 import { connect } from "react-redux";
-import { Button, Card, Divider, Image, Message } from "semantic-ui-react";
+import { Button, Card, Divider, Image, Label, Message } from "semantic-ui-react";
 import { sendNotification, userDelete, loadUserComments } from "../store/actions/";
 import Placeholder from "../components/UI/skeleton_list";
 import CommentsList from "../components/comments";
+import { getUserComments } from "../helpers/rest";
 
 const User = (props) => {
 	const [showAlert, setShowAlert] = useState(false);
@@ -38,9 +41,14 @@ const User = (props) => {
 		props.onLoadComments({ user: props.user.email });
 	}, []);
 
+	const getComments = () => {
+		if (isNil(props.comments.comments) || props.comments.result == 0) return <IonLabel color="dark">No comments so far</IonLabel>;
+		return <CommentsList list={props.comments.comments} avatar={"images/default_avatar.jpg"} />;
+	};
+
 	return (
 		<>
-			<IonPage id="user">
+			<IonPage id="user-card-detail">
 				<IonHeader>
 					<IonToolbar>
 						<IonButtons slot="primary">
@@ -55,7 +63,7 @@ const User = (props) => {
 						<IonRow>
 							<div className="user-component">
 								{props.user.username && (
-									<Card className="fluid">
+									<Card className="fluid raised">
 										<Card.Content>
 											<Image className="right floated circular mini" src="images/default_avatar.jpg" />
 											<Card.Header>{props.user.username}</Card.Header>
@@ -69,12 +77,15 @@ const User = (props) => {
 												</Message>
 											</Card.Description>
 										</Card.Content>
-										<Card.Content>
-											<Card.Header>Comments</Card.Header>
+										<Card.Content extra>
+											<Card.Header>
+												<Label>
+													Comments
+													<Label.Detail>{size(props.comments.comments)}</Label.Detail>
+												</Label>
+											</Card.Header>
 											<Divider />
-											{!props.comments.success 
-											? <Placeholder rows={5} /> 
-											: <CommentsList list={props.comments.comments} avatar={"images/default_avatar.jpg"} />}
+											{!props.comments.success ? <Placeholder rows={5} /> : getComments()}
 										</Card.Content>
 									</Card>
 								)}

@@ -1,3 +1,4 @@
+import { isNil } from "lodash";
 import * as rest from "../../helpers/rest";
 import * as actionTypes from "./actionTypes";
 
@@ -92,7 +93,7 @@ export const loadUserComments = (params) => {
 		dispatch(loadUserCommentsStart());
 		rest.getUserComments(params)
 			.then((response) => {
-				dispatch(loadUserCommentsSuccess(response.data))
+				isNil(response.data.result) ? dispatch(loadUserCommentsSuccess({"success":true,"result":0,"comments":0})) : dispatch(loadUserCommentsSuccess(response.data))
 			})
 			.catch((error) => {
 				dispatch(loadUserCommentsFail(error));
