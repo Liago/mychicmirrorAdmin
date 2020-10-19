@@ -1,7 +1,22 @@
 import { isNil, size } from "lodash";
 import React, { useState, useEffect } from "react";
-import { IonAlert, IonButton, IonCol, IonContent, IonFooter, IonGrid, IonIcon, IonLabel, IonPage, IonRow, IonToast, IonToolbar } from "@ionic/react";
-import { closeCircleOutline, notificationsCircle, trashBinOutline } from "ionicons/icons";
+import {
+	IonAlert,
+	IonButton,
+	IonCol,
+	IonContent,
+	IonFooter,
+	IonGrid,
+	IonIcon,
+	IonLabel,
+	IonPage,
+	IonRefresher,
+	IonRefresherContent,
+	IonRow,
+	IonToast,
+	IonToolbar,
+} from "@ionic/react";
+import { closeCircleOutline, notificationsCircle, refresh, refreshOutline, trashBinOutline } from "ionicons/icons";
 import { connect } from "react-redux";
 import { Card, Divider, Image, Label, Message } from "semantic-ui-react";
 import { sendNotification, userDelete, loadUserComments } from "../store/actions/";
@@ -11,6 +26,7 @@ import CommentsList from "../components/comments";
 const User = (props) => {
 	const [showAlert, setShowAlert] = useState(false);
 	const [notifySuccess, setShowToast] = useState(false);
+	const [isRefreshing, doRefresh] = useState(false);
 
 	const prepareNotification = (PID) => {
 		let message = {
@@ -26,6 +42,14 @@ const User = (props) => {
 	useEffect(() => {
 		props.onLoadComments({ user: props.user.email });
 	}, []);
+
+	const refresh = (event) => {
+		doRefresh(true);
+		setTimeout(() => {
+			doRefresh(false);
+			event.detail.complete();
+		}, 2000);
+	};
 
 	const getComments = () => {
 		if (isNil(props.comments.comments) || props.comments.result == 0) return <IonLabel color="dark">No comments so far</IonLabel>;
@@ -62,7 +86,17 @@ const User = (props) => {
 												</Label>
 											</Card.Header>
 											<Divider />
-											{!props.comments.success ? <Placeholder rows={5} /> : getComments()}
+
+											<IonRefresher slot="fixed" onIonRefresh={refresh}>
+												<IonRefresherContent
+													pullingIcon={refreshOutline}
+													pull-factor="200"
+													pullingText="Pull to refresh"
+													refreshingSpinner="crescent"
+													refreshingText="Refreshing..."
+												></IonRefresherContent>
+											</IonRefresher>
+											{!props.comments.success || isRefreshing ? <Placeholder rows={5} /> : getComments()}
 										</Card.Content>
 									</Card>
 								)}
