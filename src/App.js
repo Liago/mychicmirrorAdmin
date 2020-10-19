@@ -29,7 +29,7 @@ import Home from "./pages/home";
 import Notifications from "./pages/notifications";
 import Users from "./pages/users";
 
-import "./sass/main.scss";
+import "./sass/main.css";
 
 class App extends Component {
 	render() {

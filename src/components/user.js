@@ -1,27 +1,12 @@
 import { isNil, size } from "lodash";
 import React, { useState, useEffect } from "react";
-import {
-	IonAlert,
-	IonButton,
-	IonButtons,
-	IonContent,
-	IonFooter,
-	IonGrid,
-	IonHeader,
-	IonIcon,
-	IonLabel,
-	IonPage,
-	IonRow,
-	IonToast,
-	IonToolbar,
-} from "@ionic/react";
-import { closeOutline } from "ionicons/icons";
+import { IonAlert, IonButton, IonCol, IonContent, IonFooter, IonGrid, IonIcon, IonLabel, IonPage, IonRow, IonToast, IonToolbar } from "@ionic/react";
+import { closeCircleOutline, notificationsCircle, trashBinOutline } from "ionicons/icons";
 import { connect } from "react-redux";
-import { Button, Card, Divider, Image, Label, Message } from "semantic-ui-react";
+import { Card, Divider, Image, Label, Message } from "semantic-ui-react";
 import { sendNotification, userDelete, loadUserComments } from "../store/actions/";
 import Placeholder from "../components/UI/skeleton_list";
 import CommentsList from "../components/comments";
-import { getUserComments } from "../helpers/rest";
 
 const User = (props) => {
 	const [showAlert, setShowAlert] = useState(false);
@@ -34,6 +19,7 @@ const User = (props) => {
 			headings: { en: "Notification from app" },
 			include_player_ids: [PID],
 		};
+		console.log("message", message);
 		props.onSendNotification(message);
 	};
 
@@ -49,15 +35,6 @@ const User = (props) => {
 	return (
 		<>
 			<IonPage id="user-card-detail">
-				<IonHeader>
-					<IonToolbar>
-						<IonButtons slot="primary">
-							<IonButton onClick={() => props.closeModal(false)}>
-								<IonIcon slot="icon-only" icon={closeOutline} />
-							</IonButton>
-						</IonButtons>
-					</IonToolbar>
-				</IonHeader>
 				<IonContent>
 					<IonGrid>
 						<IonRow>
@@ -117,17 +94,39 @@ const User = (props) => {
 					onDidDismiss={() => setShowAlert(false)}
 				/>
 				<IonFooter>
-					<IonToolbar>
-						<Button.Group widths="3">
-							<Button
-								className={`huge blue compact ${props.isSending ? "loading disabled" : ""} ${!props.user.playerID ? "disabled" : ""}`}
-								content="Send Notification"
-								onClick={() => prepareNotification(props.user.playerID)}
-							>
-								Send Notification
-							</Button>
-							<Button className="huge red compact" content="Delete User" onClick={() => setShowAlert(true)} />
-						</Button.Group>
+					<IonToolbar className="action-toolbar">
+						<IonGrid>
+							<IonRow>
+								<IonCol>
+									<IonButton
+										fill="clear"
+										onClick={() => prepareNotification(props.user.playerID)}
+										className={`${props.isSending ? "ui loading disabled" : ""} ${!props.user.playerID ? "ui disabled" : ""}`}
+									>
+										<IonIcon slot="icon-only" icon={notificationsCircle} />
+									</IonButton>
+								</IonCol>
+								<IonCol>
+									<IonButton color="danger" onClick={() => setShowAlert(true)} fill="clear">
+										<IonIcon slot="icon-only" icon={trashBinOutline} />
+									</IonButton>
+								</IonCol>
+								<IonCol>
+									<IonButton onClick={() => props.closeModal(false)} color="dark" fill="clear">
+										<IonIcon slot="icon-only" icon={closeCircleOutline} />
+									</IonButton>
+								</IonCol>
+							</IonRow>
+						</IonGrid>
+
+						{/* <Button
+							className={`blue ${props.isSending ? "loading disabled" : ""} ${!props.user.playerID ? "disabled" : ""}`}
+							content="Send Notification"
+							onClick={() => prepareNotification(props.user.playerID)}
+						>
+							Send Notification
+						</Button>
+						<Button className="red" content="Delete User" onClick={() => setShowAlert(true)} /> */}
 					</IonToolbar>
 				</IonFooter>
 			</IonPage>

@@ -1,0 +1,15 @@
+.ui.comments .comment .text {
+	font-size: 0.9em;
+}
+
+.user-component .ui.card > .extra {
+	overflow: auto;
+	height: calc(100vh - 20px);
+}
+
+.user-component .ui.raised.card {
+	height: calc(90vh - 20px);
+}
+.action-toolbar {
+	text-align: center;
+}
