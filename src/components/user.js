@@ -173,12 +173,12 @@ const User = (props) => {
 const mapStateToProps = (state) => {
 	console.log("state", state);
 	return {
-		isError: state.error,
-		isSending: state.loading,
-		isUserDeleted: state.deleted,
-		isUserNotified: state.notified,
-		notificationResponse: state.notificationMessage,
-		comments: state.commentsList,
+		isError: state.app.error,
+		isSending: state.app.loading,
+		isUserDeleted: state.user.deleted,
+		isUserNotified: state.user.notified,
+		notificationResponse: state.app.notificationMessage,
+		comments: state.user.commentsList,
 	};
 };
 
