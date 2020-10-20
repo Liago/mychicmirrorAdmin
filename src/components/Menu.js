@@ -113,7 +113,7 @@ const Menu = (props) => {
 
 const mapStateToProps = (state) => {
 	return {
-		darkMode: state.darkMode,
+		darkMode: state.app.darkMode,
 	};
 };
 const mapDispatchToProps = (dispatch) => {

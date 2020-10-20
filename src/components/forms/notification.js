@@ -27,7 +27,7 @@ const NotificationForm = (props) => {
 					)}
 				</Form.Field>
 				<Divider />
-				<Button type="submit" className="ui primary button" positive disabled={pristine || submitting}>
+				<Button type="submit" className="ui primary button" positive disabled={pristine || submitting} >
 					Invia
 				</Button>
 				<Button type="button" disabled={pristine || submitting} onClick={() => props.onClearForm()}>

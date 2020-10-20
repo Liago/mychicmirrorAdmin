@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import {
 	IonAlert,
 	IonButton,
-	IonButtons,
 	IonCol,
 	IonContent,
 	IonFooter,
@@ -11,12 +10,10 @@ import {
 	IonHeader,
 	IonIcon,
 	IonLabel,
-	IonModal,
 	IonPage,
 	IonRefresher,
 	IonRefresherContent,
 	IonRow,
-	IonTitle,
 	IonToast,
 	IonToolbar,
 } from "@ionic/react";
@@ -28,7 +25,6 @@ import { sendNotification, userDelete, loadUserComments, sendCommentReply } from
 import Placeholder from "../components/UI/skeleton_list";
 import CommentsList from "../components/comments";
 import Modal from "../components/UI/modal";
-import NotificationForm from "../components/forms/notification";
 
 const User = (props) => {
 	const [showAlert, setShowAlert] = useState(false);
@@ -41,16 +37,20 @@ const User = (props) => {
 			app_id: "e8d6a64e-936e-416d-8341-e3c60fb85a40",
 			contents: { en: params.titolo },
 			headings: { en: params.contenuto },
+			ios_badgeCount: 1,
+			ios_badgeType: "Increase",
 			include_player_ids: [props.user.playerID],
 		};
-		//toggleModal(true);
-
 		props.onSendNotification(message);
 	};
 
 	useEffect(() => {
 		props.onLoadComments({ user: props.user.email });
 	}, []);
+
+	useEffect(() => {
+		toggleModal(false);
+	}, [props.notificationResponse]);
 
 	const refresh = (event) => {
 		doRefresh(true);
@@ -71,8 +71,7 @@ const User = (props) => {
 	};
 
 	const handleSubmitNotification = (values) => {
-		console.log('Send notification handler',values);
-		prepareNotification(values)
+		prepareNotification(values);
 	};
 
 	console.log("props", props);
@@ -127,10 +126,10 @@ const User = (props) => {
 						</IonRow>
 					</IonGrid>
 					<IonToast
-						isOpen={props.isUserNotified || props.isUserDeleted}
+						isOpen={props.notificationResponse || props.isUserDeleted}
 						onDidDismiss={() => setShowToast(false)}
-						message={`${props.isUserNotified ? "Notification has been sent" : "User has been deleted"}`}
-						duration={500}
+						message={`${props.notificationResponse ? "Notification has been sent" : "User has been deleted"}`}
+						duration={1500}
 					/>
 				</IonContent>
 				<IonAlert
@@ -181,10 +180,12 @@ const User = (props) => {
 						</IonGrid>
 					</IonToolbar>
 				</IonFooter>
-				<Modal open={isModalOpen} submitNotification={handleSubmitNotification} modalToggler={toggleModal} type={{ title: true, content: "notification" }} />
-				{/* <NotificationForm onSubmit={handleSubmit} type={{ title: true, content: "notification" }} /> */}
-				{/* <IonModal isOpen={isModalOpen} showBackdrop={false} swipeToClose={true} cssClass="modalParse" onDidDismiss={() => toggleModal(false)}> */}
-				{/* </IonModal> */}
+				<Modal
+					open={isModalOpen}
+					submitNotification={handleSubmitNotification}
+					modalToggler={toggleModal}
+					type={{ title: true, title_content: "Notifica personale", content: "notification" }}
+				/>
 			</IonPage>
 		</>
 	);
@@ -196,7 +197,6 @@ const mapStateToProps = (state) => {
 		isError: state.app.error,
 		isSending: state.app.loading,
 		isUserDeleted: state.user.deleted,
-		isUserNotified: state.user.notified,
 		notificationResponse: state.app.notificationMessage,
 		comments: state.user.commentsList,
 	};

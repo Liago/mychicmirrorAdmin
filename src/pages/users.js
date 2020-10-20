@@ -32,6 +32,9 @@ const Users = (props) => {
 	const [isRefreshing, doRefresh] = useState(false);
 
 	useEffect(() => {
+		props.onLoadAllComments()
+	}, [])
+	useEffect(() => {
 		props.onLoadUserSubscribed();
 	}, [isRefreshing, props.isUserCreated]);
 

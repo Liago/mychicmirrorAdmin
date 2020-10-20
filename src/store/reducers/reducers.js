@@ -6,6 +6,7 @@ const initialState = {
 		loading: false,
 		error: null,
 		notificationMessage: null,
+		allComments: [],
 	},
 	user: {
 		message: null,
@@ -47,8 +48,24 @@ const app = (state = initialState.app, action) => {
 			return {
 				...state,
 				loading: false,
-				notified: true,
 				notificationMessage: action.message,
+			};
+		case actionTypes.ALL_COMMENTS_START:
+			return {
+				...state,
+				loading: true,
+			};
+		case actionTypes.ALL_COMMENTS_FAIL:
+			return {
+				...state,
+				loading: false,
+				error: action.error,
+			};
+		case actionTypes.ALL_COMMENTS_SUCCESS:
+			return {
+				...state,
+				loading: false,
+				allComments: action.payload,
 			};
 		default:
 			return state;

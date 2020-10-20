@@ -53,7 +53,7 @@ class App extends Component {
 
 const mapStateToProps = (state) => {
 	return {
-		darkMode: state.darkMode,
+		darkMode: state.app.darkMode,
 	};
 };
 
