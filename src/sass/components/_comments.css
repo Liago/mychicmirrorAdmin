@@ -13,3 +13,7 @@
 .action-toolbar {
 	text-align: center;
 }
+
+.ui.basic.button, .ui.basic.button:hover {
+	box-shadow: none;
+}

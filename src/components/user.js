@@ -7,6 +7,7 @@ import {
 	IonContent,
 	IonFooter,
 	IonGrid,
+	IonHeader,
 	IonIcon,
 	IonLabel,
 	IonPage,
@@ -16,17 +17,20 @@ import {
 	IonToast,
 	IonToolbar,
 } from "@ionic/react";
-import { closeCircleOutline, notificationsCircle, refresh, refreshOutline, trashBinOutline } from "ionicons/icons";
+import { closeCircleOutline, notificationsCircle, refreshOutline, trashOutline } from "ionicons/icons";
 import { connect } from "react-redux";
 import { Card, Divider, Image, Label, Message } from "semantic-ui-react";
 import { sendNotification, userDelete, loadUserComments } from "../store/actions/";
+
 import Placeholder from "../components/UI/skeleton_list";
 import CommentsList from "../components/comments";
+import Modal from "../components/UI/modal";
 
 const User = (props) => {
 	const [showAlert, setShowAlert] = useState(false);
 	const [notifySuccess, setShowToast] = useState(false);
 	const [isRefreshing, doRefresh] = useState(false);
+	const [isModalOpen, toggleModal] = useState(false)
 
 	const prepareNotification = (PID) => {
 		let message = {
@@ -35,8 +39,8 @@ const User = (props) => {
 			headings: { en: "Notification from app" },
 			include_player_ids: [PID],
 		};
-		console.log("message", message);
-		props.onSendNotification(message);
+		toggleModal(true);
+		// props.onSendNotification(message);
 	};
 
 	useEffect(() => {
@@ -55,10 +59,13 @@ const User = (props) => {
 		if (isNil(props.comments.comments) || props.comments.result == 0) return <IonLabel color="dark">No comments so far</IonLabel>;
 		return <CommentsList list={props.comments.comments} avatar={"images/default_avatar.jpg"} />;
 	};
-
+	console.log("props", props);
 	return (
 		<>
 			<IonPage id="user-card-detail">
+				<IonHeader>
+					<IonToolbar></IonToolbar>
+				</IonHeader>
 				<IonContent>
 					<IonGrid>
 						<IonRow>
@@ -133,16 +140,19 @@ const User = (props) => {
 							<IonRow>
 								<IonCol>
 									<IonButton
+										size="large"
 										fill="clear"
 										onClick={() => prepareNotification(props.user.playerID)}
-										className={`${props.isSending ? "ui loading disabled" : ""} ${!props.user.playerID ? "ui disabled" : ""}`}
+										className={`ui basic ${props.isSending ? "ui basic loading disabled" : ""} ${
+											!props.user.playerID ? "ui basic disabled" : ""
+										}`}
 									>
 										<IonIcon slot="icon-only" icon={notificationsCircle} />
 									</IonButton>
 								</IonCol>
 								<IonCol>
 									<IonButton color="danger" onClick={() => setShowAlert(true)} fill="clear">
-										<IonIcon slot="icon-only" icon={trashBinOutline} />
+										<IonIcon slot="icon-only" icon={trashOutline} />
 									</IonButton>
 								</IonCol>
 								<IonCol>
@@ -152,17 +162,9 @@ const User = (props) => {
 								</IonCol>
 							</IonRow>
 						</IonGrid>
-
-						{/* <Button
-							className={`blue ${props.isSending ? "loading disabled" : ""} ${!props.user.playerID ? "disabled" : ""}`}
-							content="Send Notification"
-							onClick={() => prepareNotification(props.user.playerID)}
-						>
-							Send Notification
-						</Button>
-						<Button className="red" content="Delete User" onClick={() => setShowAlert(true)} /> */}
 					</IonToolbar>
 				</IonFooter>
+				<Modal open={isModalOpen} modalToggler={toggleModal} title={"Contenuto Notifica"}/>
 			</IonPage>
 		</>
 	);
