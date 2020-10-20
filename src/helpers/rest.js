@@ -27,6 +27,9 @@ export const getUserComments = (params) => {
 export const sendNotification = (params) => {
 	return instance.post("/sendAppNotification.php", params);
 };
+export const sendCommentReply = (params) => {
+	return instance.post("/newCommentReply.php", params);
+};
 
 export const _sendNotification = (params) => {
 	console.log("params", params);
