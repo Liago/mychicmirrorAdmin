@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import {
 	IonAlert,
 	IonButton,
+	IonButtons,
 	IonCol,
 	IonContent,
 	IonFooter,
@@ -10,37 +11,41 @@ import {
 	IonHeader,
 	IonIcon,
 	IonLabel,
+	IonModal,
 	IonPage,
 	IonRefresher,
 	IonRefresherContent,
 	IonRow,
+	IonTitle,
 	IonToast,
 	IonToolbar,
 } from "@ionic/react";
 import { closeCircleOutline, notificationsCircle, refreshOutline, trashOutline } from "ionicons/icons";
 import { connect } from "react-redux";
 import { Card, Divider, Image, Label, Message } from "semantic-ui-react";
-import { sendNotification, userDelete, loadUserComments } from "../store/actions/";
+import { sendNotification, userDelete, loadUserComments, sendCommentReply } from "../store/actions/";
 
 import Placeholder from "../components/UI/skeleton_list";
 import CommentsList from "../components/comments";
 import Modal from "../components/UI/modal";
+import NotificationForm from "../components/forms/notification";
 
 const User = (props) => {
 	const [showAlert, setShowAlert] = useState(false);
 	const [notifySuccess, setShowToast] = useState(false);
 	const [isRefreshing, doRefresh] = useState(false);
-	const [isModalOpen, toggleModal] = useState(false)
+	const [isModalOpen, toggleModal] = useState(false);
 
-	const prepareNotification = (PID) => {
+	const prepareNotification = (params) => {
 		let message = {
 			app_id: "e8d6a64e-936e-416d-8341-e3c60fb85a40",
-			contents: { en: "If you can read it, I did it!" },
-			headings: { en: "Notification from app" },
-			include_player_ids: [PID],
+			contents: { en: params.titolo },
+			headings: { en: params.contenuto },
+			include_player_ids: [props.user.playerID],
 		};
-		toggleModal(true);
-		// props.onSendNotification(message);
+		//toggleModal(true);
+
+		props.onSendNotification(message);
 	};
 
 	useEffect(() => {
@@ -57,8 +62,19 @@ const User = (props) => {
 
 	const getComments = () => {
 		if (isNil(props.comments.comments) || props.comments.result == 0) return <IonLabel color="dark">No comments so far</IonLabel>;
-		return <CommentsList list={props.comments.comments} avatar={"images/default_avatar.jpg"} />;
+		return <CommentsList list={props.comments.comments} avatar={"images/default_avatar.jpg"} onReplySubmitted={commentReplyHandler} />;
 	};
+
+	const commentReplyHandler = (values) => {
+		console.log("commentReplyHandler", values);
+		props.onCommentSubmitted(values);
+	};
+
+	const handleSubmitNotification = (values) => {
+		console.log('Send notification handler',values);
+		prepareNotification(values)
+	};
+
 	console.log("props", props);
 	return (
 		<>
@@ -142,7 +158,8 @@ const User = (props) => {
 									<IonButton
 										size="large"
 										fill="clear"
-										onClick={() => prepareNotification(props.user.playerID)}
+										// onClick={() => prepareNotification(props.user.playerID)}
+										onClick={() => toggleModal(true)}
 										className={`ui basic ${props.isSending ? "ui basic loading disabled" : ""} ${
 											!props.user.playerID ? "ui basic disabled" : ""
 										}`}
@@ -164,7 +181,10 @@ const User = (props) => {
 						</IonGrid>
 					</IonToolbar>
 				</IonFooter>
-				<Modal open={isModalOpen} modalToggler={toggleModal} title={"Contenuto Notifica"}/>
+				<Modal open={isModalOpen} submitNotification={handleSubmitNotification} modalToggler={toggleModal} type={{ title: true, content: "notification" }} />
+				{/* <NotificationForm onSubmit={handleSubmit} type={{ title: true, content: "notification" }} /> */}
+				{/* <IonModal isOpen={isModalOpen} showBackdrop={false} swipeToClose={true} cssClass="modalParse" onDidDismiss={() => toggleModal(false)}> */}
+				{/* </IonModal> */}
 			</IonPage>
 		</>
 	);
@@ -173,12 +193,12 @@ const User = (props) => {
 const mapStateToProps = (state) => {
 	console.log("state", state);
 	return {
-		isError: state.error,
-		isSending: state.loading,
-		isUserDeleted: state.deleted,
-		isUserNotified: state.notified,
-		notificationResponse: state.notificationMessage,
-		comments: state.commentsList,
+		isError: state.app.error,
+		isSending: state.app.loading,
+		isUserDeleted: state.user.deleted,
+		isUserNotified: state.user.notified,
+		notificationResponse: state.app.notificationMessage,
+		comments: state.user.commentsList,
 	};
 };
 
@@ -187,6 +207,7 @@ const mapDispatchToProps = (dispatch) => {
 		onSendNotification: (params) => dispatch(sendNotification(params)),
 		onDeleteUser: (params) => dispatch(userDelete(params)),
 		onLoadComments: (params) => dispatch(loadUserComments(params)),
+		onCommentSubmitted: (params) => dispatch(sendCommentReply(params)),
 	};
 };
 

@@ -144,11 +144,11 @@ const Users = (props) => {
 
 const mapStateToProps = (state) => {
 	return {
-		users: state.userList,
-		userRegistered: state.message,
-		isUserDeleted: state.delete,
-		isUserCreated: state.created,
-		isLoading: state.loading,
+		users: state.user.userList,
+		userRegistered: state.user.message,
+		isUserDeleted: state.user.delete,
+		isUserCreated: state.user.created,
+		isLoading: state.app.loading,
 	};
 };
 const mapDispatchToProps = (dispatch) => {

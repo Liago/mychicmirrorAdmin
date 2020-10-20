@@ -8,7 +8,7 @@
 }
 
 .user-component .ui.raised.card {
-	height: calc(90vh - 20px);
+	height: calc(85vh - 20px);
 }
 .action-toolbar {
 	text-align: center;
