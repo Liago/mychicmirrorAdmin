@@ -1,35 +1,34 @@
 import React from "react";
 import { IonIcon, IonList } from "@ionic/react";
 import { connect } from "react-redux";
-import { Card } from "semantic-ui-react";
-import { codeWorkingOutline, unlinkOutline } from "ionicons/icons";
+import { Card, Icon, Label, Segment } from "semantic-ui-react";
+import { notificationsOutline, } from "ionicons/icons";
 
 const list = (props) => {
 	return (
 		<IonList inset={true}>
-			{props.users.map((user, index) => {
-				return (
-					<div className="list-component" key={index}>
-						<Card onClick={() => props.onSelectUser(user)}>
-							<Card.Content>
-								<Card.Header>{user.username}</Card.Header>
-								<Card.Meta>{user.email}</Card.Meta>
-								<Card.Description>{user.playerID}</Card.Description>
-							</Card.Content>
-							<div className="extra content">
-								<span className="left floated red like">
-									<IonIcon ios={codeWorkingOutline} md={codeWorkingOutline} />
-									{index + 1}
-								</span>
-								<span className="right floated star">
-									<IonIcon ios={unlinkOutline} md={unlinkOutline} />
-									{user.id}
-								</span>
-							</div>
-						</Card>
-					</div>
-				);
-			})}
+			<div className="list-component">
+				{props.users.map((user, index) => {
+					return (
+						<Segment raised className="p-0">
+							<Card onClick={() => props.onSelectUser(user)} className="w-100">
+								<Card.Content>
+									<Card.Header>{user.username}</Card.Header>
+									<Card.Meta>{user.email}</Card.Meta>
+								</Card.Content>
+								<Card.Content extra>
+									<Card.Description>
+										<Label color={`${user.playerID ? "green" : "default"}`}>
+											<Icon className="icons" name="bell" /> 
+											{user.playerID || "no playerID retrieved"}
+										</Label>
+									</Card.Description>
+								</Card.Content>
+							</Card>
+						</Segment>
+					);
+				})}
+			</div>
 		</IonList>
 	);
 };

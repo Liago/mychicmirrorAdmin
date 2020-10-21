@@ -1,4 +1,46 @@
-html, body {
+* {
 	font-family: "Ubuntu", sans-serif !important;
 	scroll-behavior: smooth;
+}
+
+[class^="icons"], [class*="icons"] {
+	/* use !important to prevent issues with browser extensions that change fonts */
+	font-family: 'Icons' !important;
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+  
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+  }
+
+.p-0 {
+	padding: 0 !important;
+}
+.m-0 {
+	padding: 0 !important;
+}
+.py-0 {
+	padding-top: 0 !important;
+	padding-bottom: 0 !important;
+}
+.px-0 {
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+}
+.my-0 {
+	margin-top: 0 !important;
+	margin-bottom: 0 !important;
+}
+.mx-0 {
+	margin-left: 0 !important;
+	margin-right: 0 !important;
+}
+
+.w-100 {
+	width: 100% !important;
 }

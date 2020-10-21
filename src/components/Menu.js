@@ -4,37 +4,24 @@ import { setDarkMode } from "../store/actions/";
 import { IonContent, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu, IonMenuToggle, IonNote, IonToggle } from "@ionic/react";
 
 import { useLocation } from "react-router-dom";
-import {
-	archiveOutline,
-	archiveSharp,
-	bookmarkOutline,
-	heartOutline,
-	heartSharp,
-	mailOutline,
-	mailSharp,
-	paperPlaneOutline,
-	paperPlaneSharp,
-	trashOutline,
-	trashSharp,
-	warningOutline,
-	warningSharp,
-	moonOutline,
-	peopleOutline,
-	peopleSharp,
-	notifications,
-} from "ionicons/icons";
+import { bookmarkOutline, moonOutline, peopleSharp, notifications, chatbubblesOutline } from "ionicons/icons";
 import "./Menu.css";
 
 const appPages = [
 	{
+		title: "Comments",
+		url: "/home",
+		iosIcon: chatbubblesOutline,
+	},
+	{
 		title: "Users",
 		url: "/users",
-		iosIcon: peopleSharp
+		iosIcon: peopleSharp,
 	},
 	{
 		title: "Notifications",
 		url: "/notifications",
-		iosIcon: notifications
+		iosIcon: notifications,
 	},
 	// {
 	// 	title: "Favorites",
@@ -72,8 +59,8 @@ const Menu = (props) => {
 		<IonMenu contentId="main" type="overlay">
 			<IonContent>
 				<IonList id="inbox-list">
-					<IonListHeader>Inbox</IonListHeader>
-					<IonNote>hi@ionicframework.com</IonNote>
+					<IonListHeader>MyChicMirror Admin</IonListHeader>
+					<IonNote>info@mychicmirror.com</IonNote>
 					{appPages.map((appPage, index) => {
 						return (
 							<IonMenuToggle key={index} autoHide={false}>

@@ -22,7 +22,7 @@ import List from "../components/list";
 import User from "../components/user";
 import Placeholder from "../components/UI/skeleton";
 
-import { personAddOutline, refreshOutline } from "ionicons/icons";
+import { personAddOutline, refreshOutline, star } from "ionicons/icons";
 
 const Users = (props) => {
 	const [userSelected, selectUser] = useState(null);
@@ -31,9 +31,6 @@ const Users = (props) => {
 	const [showToast, setShowToast] = useState(false);
 	const [isRefreshing, doRefresh] = useState(false);
 
-	useEffect(() => {
-		props.onLoadAllComments()
-	}, [])
 	useEffect(() => {
 		props.onLoadUserSubscribed();
 	}, [isRefreshing, props.isUserCreated]);
@@ -60,7 +57,7 @@ const Users = (props) => {
 				<IonHeader>
 					<IonToolbar>
 						<IonButtons slot="start">
-							<IonBackButton />
+							<IonMenuButton />
 						</IonButtons>
 						<IonTitle>Users</IonTitle>
 						<IonButtons slot="end">
