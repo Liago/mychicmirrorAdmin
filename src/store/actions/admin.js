@@ -1,4 +1,3 @@
-import { isNil } from "lodash";
 import * as rest from "../../helpers/rest";
 import * as actionTypes from "./actionTypes";
 
@@ -21,7 +20,37 @@ export const replyCommentFail = (error) => {
 		payload: error
 	}
 }
-
+export const commentUpdateStart = () => {
+	return {
+		type: actionTypes.COMMENT_UPDATE_START,
+		loading: true,
+		payload: null
+	}
+}
+export const commentUpdateSuccess = (response) => {
+	return {
+		type: actionTypes.COMMENT_UPDATE_SUCCESS,
+		payload: response
+	}
+}
+export const commentUpdateFail = (error) => {
+	return {
+		type: actionTypes.COMMENT_UPDATE_FAIL,
+		payload: error
+	}
+}
+export const updateComment = (params) => {
+	return (dispatch) => {
+		dispatch(commentUpdateStart());
+		rest.updateComment(params)
+		.then((response) => {
+			response.data.success ? dispatch(commentUpdateSuccess(response.data.success)) : dispatch(commentUpdateFail(response.data))
+		})
+		.catch((error) => {
+			dispatch(commentUpdateFail(error))
+		})
+	}
+}
 export const sendCommentReply = (params) => {
 	return (dispatch) => { 
 		dispatch(replyCommentStart());

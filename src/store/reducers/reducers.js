@@ -67,6 +67,24 @@ const app = (state = initialState.app, action) => {
 				loading: false,
 				allComments: action.payload,
 			};
+		case actionTypes.COMMENT_UPDATE_START:
+			return {
+				...state,
+				loading: true,
+				error:action.payload
+			}		
+		case actionTypes.COMMENT_UPDATE_FAIL:
+			return {
+				...state,
+				loading: false,
+				error: action.payload
+			}		
+		case actionTypes.COMMENT_UPDATE_SUCCESS:
+			return {
+				...state,
+				loading: false,
+				notificationMessage: action.payload
+			}		
 		default:
 			return state;
 	}

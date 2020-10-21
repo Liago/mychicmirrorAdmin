@@ -54,6 +54,7 @@ const User = (props) => {
 
 	const refresh = (event) => {
 		doRefresh(true);
+		props.onLoadComments({ user: props.user.email });
 		setTimeout(() => {
 			doRefresh(false);
 			event.detail.complete();
