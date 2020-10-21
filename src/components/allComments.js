@@ -32,10 +32,9 @@ const Comments = (props) => {
 					spam: [
 						<Button size="mini" color="orange">
 							Non Spam
-						</Button>,
+						</Button>
 					],
 				};
-
 				const getButtonApprove = (status) => {
 					return mainButton[status] || [];
 				};
@@ -43,8 +42,8 @@ const Comments = (props) => {
 				// return comment.status === "1" ? <Button size="mini" color="red">Disapprova</Button> : <Button size="mini" color="green">Approva</Button>
 
 				return (
-					<Segment raised className="p-0">
-						<Card key={index} className="w-100">
+					<Segment raised className="p-0" key={index}>
+						<Card className={`w-100 ${comment.status === "0" ? "red" : ""}`}>
 							<Card.Content>
 								{markAsSpam()}
 								<Image floated="right" size="mini" src={avatar} />
@@ -57,9 +56,7 @@ const Comments = (props) => {
 								<Button size="mini" color="red">
 									Elimina
 								</Button>
-								<Button size="mini" color="blue">
-									Spam!
-								</Button>
+								{comment.status === "spam" ? null : <Button size="mini" color="blue">Spam!</Button>}
 							</Card.Content>
 						</Card>
 					</Segment>

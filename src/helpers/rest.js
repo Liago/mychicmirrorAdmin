@@ -36,7 +36,9 @@ export const sendCommentReply = (params) => {
 export const getAllComments = () => {
 	return instance.get("/getAllAdminComments.php");
 };
-
+export const updateComment = (params) => {
+	return instance.post("/commentManager.php");
+};
 export const _sendNotification = (params) => {
 	console.log("params", params);
 	const instance = axios.create({
