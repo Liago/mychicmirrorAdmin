@@ -5,7 +5,7 @@ import Modal from "../components/UI/modal";
 import moment from "moment";
 import { updateComment } from "../store/actions";
 import Toast from "../components/UI/toast";
-import { IonSegment, IonSegmentButton, IonToolbar } from "@ionic/react";
+import { IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonSegment, IonSegmentButton, IonToolbar } from "@ionic/react";
 
 const Comments = (props) => {
 	const { list, avatar, view } = props;
@@ -27,6 +27,9 @@ const Comments = (props) => {
 			...buttons,
 			[button.name]: true,
 		});
+	};
+	const handleSubmit = (values) => {
+		console.log("Comment values", values);
 	};
 	return (
 		<>
@@ -148,14 +151,13 @@ const Comments = (props) => {
 				})}
 				{showToast()}
 			</Segment>
+			<Modal
+				open={isModalOpen}
+				submitNotification={handleSubmit}
+				modalToggler={toggleModal}
+				type={{ title: false, title_content: "", content: "comment" }}
+			/>
 		</>
-		// 	<Modal
-		// 		open={isModalOpen}
-		// 		submitNotification={handleSubmit}
-		// 		modalToggler={toggleModal}
-		// 		type={{ title: false, title_content: "", content: "comment" }}
-		// 	/>
-		// </IonList>
 	);
 };
 const mapStateToProps = (state) => {
