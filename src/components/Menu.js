@@ -5,7 +5,6 @@ import { IonContent, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu
 
 import { useLocation } from "react-router-dom";
 import { bookmarkOutline, moonOutline, peopleSharp, notifications, chatbubblesOutline } from "ionicons/icons";
-import "./Menu.css";
 
 const appPages = [
 	{

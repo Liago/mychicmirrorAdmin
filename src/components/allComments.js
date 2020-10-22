@@ -45,51 +45,42 @@ const Comments = (props) => {
 					const mainButton = {
 						0: [
 							<Button
-								className={`${buttons.isApproving && props.isLoading ? "loading" : ""}`}
+								className={`icons ${buttons.isApproving && props.isLoading ? "loading" : ""}`}
 								size="mini"
 								color="green"
-								icon
-								labelPosition="left"
+								circular
+								icon="circular-icon thumbs up outline"
 								onClick={() => {
 									updateButtons({ name: "isApproving" });
 									props.onCommentUpdate({ id: comment.comment_ID, status: "1", operation: "update" });
 								}}
-							>
-								<Icon className="icons" name="thumbs up outline" />
-								Approva
-							</Button>,
+							/>,
 						],
 						1: [
 							<Button
 								className={`${buttons.isApproving && props.isLoading ? "loading" : ""}`}
 								size="mini"
 								color="yellow"
-								icon
-								labelPosition="left"
+								circular
+								icon="circular-icon thumbs down outline"
 								onClick={() => {
 									props.onCommentUpdate({ id: comment.comment_ID, status: "0", operation: "update" });
 									updateButtons({ name: "isApproving" });
 								}}
-							>
-								<Icon className="icons" name="thumbs down outline" />
-								Disapprova
-							</Button>,
+							/>,
 						],
 						spam: [
 							<Button
 								className={`${buttons.isSpamming && props.isLoading ? "loading" : ""}`}
 								size="mini"
 								color="orange"
-								icon
-								labelPosition="left"
+								circular
+								icon="circular-icon hide"
 								onClick={() => {
 									props.onCommentUpdate({ id: comment.comment_ID, status: "1", operation: "update" });
 									updateButtons({ name: "isSpamming" });
 								}}
-							>
-								<Icon className="icons" name="hide" />
-								Non Spam
-							</Button>,
+							/>,
 						],
 					};
 					const getButtonApprove = (status) => {
@@ -118,31 +109,39 @@ const Comments = (props) => {
 										className={`${buttons.isDeleting && props.isLoading ? "loading" : ""}`}
 										size="mini"
 										color="red"
-										icon
-										labelPosition="left"
+										circular
+										icon="circular-icon trash alternate outline"
 										onClick={() => {
 											props.onCommentUpdate({ id: comment.comment_ID, status: "", operation: "delete" });
 											updateButtons({ name: "isDeleting" });
 										}}
-									>
-										<Icon className="icons" name="trash alternate outline" />
-										Elimina
-									</Button>
+									/>
 									{comment.status === "spam" ? null : (
 										<Button
 											className={`${buttons.isSpamming && props.isLoading ? "loading" : ""}`}
 											size="mini"
 											color="blue"
-											icon
-											labelPosition="left"
+											circular
+											icon="circular-icon attention"
 											onClick={() => {
 												props.onCommentUpdate({ id: comment.comment_ID, status: "spam", operation: "update" });
 												updateButtons({ name: "isSpamming" });
 											}}
-										>
-											<Icon className="icons" name="attention" />
-											Spam
-										</Button>
+										/>
+									)}
+									{comment.status != "1" ? null : (
+										<div className="right floated">
+											<Button
+												className={`${props.isLoading ? "loading" : ""}`}
+												size="mini"
+												color="purple"
+												circular
+												icon="circular-icon reply"
+												onClick={() => {
+													toggleModal(true);
+												}}
+											/>
+										</div>
 									)}
 								</Card.Content>
 							</Card>
@@ -155,7 +154,7 @@ const Comments = (props) => {
 				open={isModalOpen}
 				submitNotification={handleSubmit}
 				modalToggler={toggleModal}
-				type={{ title: false, title_content: "", content: "comment" }}
+				type={{ title: false, title_content: "Nuova Risposta", content: "&nbsp;" }}
 			/>
 		</>
 	);

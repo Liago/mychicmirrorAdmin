@@ -3,7 +3,9 @@
 	scroll-behavior: smooth;
 }
 
-[class^="icons"], [class*="icons"] {
+[class^="icons"], [class*="icons"], [class*="circular-icon thumbs"], 
+[class*="circular-icon hide"], [class*="circular-icon attention"], 
+[class*="circular-icon trash alternate outline"], [class*="circular-icon reply"] {
 	/* use !important to prevent issues with browser extensions that change fonts */
 	font-family: 'Icons' !important;
 	speak: none;
