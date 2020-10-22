@@ -1,6 +1,6 @@
 {
-  "appId": "io.ionic.mychicmirror-admin",
-  "appName": "mychicmirror-admin",
+  "appId": "app.mychicmirror.admin",
+  "appName": "MyChicMirror Admin",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "build",

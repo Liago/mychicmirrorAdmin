@@ -158,7 +158,6 @@ const User = (props) => {
 									<IonButton
 										size="large"
 										fill="clear"
-										// onClick={() => prepareNotification(props.user.playerID)}
 										onClick={() => toggleModal(true)}
 										className={`ui basic ${props.isSending ? "ui basic loading disabled" : ""} ${
 											!props.user.playerID ? "ui basic disabled" : ""

@@ -8,9 +8,8 @@ import Toast from "../components/UI/toast";
 import { IonSegment, IonSegmentButton, IonToolbar } from "@ionic/react";
 
 const Comments = (props) => {
-	const { list, avatar } = props;
+	const { list, avatar, view } = props;
 	const [isModalOpen, toggleModal] = useState(false);
-	const [view, setView] = useState("all");
 	const [buttons, setButton] = useState({
 		isApproving: false,
 		isDeleting: false,
@@ -31,12 +30,6 @@ const Comments = (props) => {
 	};
 	return (
 		<>
-			<IonToolbar>
-				<IonSegment value={view} onIonChange={(e) => setView(e.detail.value)}>
-					<IonSegmentButton value="all">Comments</IonSegmentButton>
-					<IonSegmentButton value="spam">Spam</IonSegmentButton>
-				</IonSegment>
-			</IonToolbar>
 			<Segment className="allcomments-component">
 				{list.map((comment, index) => {
 					const markAsSpam = () => {

@@ -1,7 +1,19 @@
 import { size } from "lodash";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonRefresher, IonRefresherContent, IonSegment, IonSegmentButton, IonTitle, IonToolbar } from "@ionic/react";
+import {
+	IonButtons,
+	IonContent,
+	IonHeader,
+	IonMenuButton,
+	IonPage,
+	IonRefresher,
+	IonRefresherContent,
+	IonSegment,
+	IonSegmentButton,
+	IonTitle,
+	IonToolbar,
+} from "@ionic/react";
 
 import CommentsList from "../components/allComments";
 import { getAllComments } from "../store/actions";
@@ -11,6 +23,7 @@ import { refreshOutline } from "ionicons/icons";
 const HomePage = (props) => {
 	// console.log("HOMEPAGE props", props);
 	const [isRefreshing, doRefresh] = useState(false);
+	const [view, setView] = useState("all");
 	useEffect(() => {
 		props.onLoadAllComments();
 	}, []);
@@ -28,7 +41,7 @@ const HomePage = (props) => {
 		return size(props.allComments) == 0 ? (
 			<Placeholder rows={10} />
 		) : (
-			<CommentsList list={props.allComments.comments} avatar={"images/default_avatar.jpg"}/>
+			<CommentsList list={props.allComments.comments} view={view} avatar={"images/default_avatar.jpg"} />
 		);
 	};
 
@@ -40,6 +53,12 @@ const HomePage = (props) => {
 						<IonMenuButton />
 					</IonButtons>
 					<IonTitle>You have {size(props.allComments.comments)} comments</IonTitle>
+				</IonToolbar>
+				<IonToolbar>
+					<IonSegment value={view} onIonChange={(e) => setView(e.detail.value)}>
+						<IonSegmentButton value="all">Comments</IonSegmentButton>
+						<IonSegmentButton value="spam">Spam</IonSegmentButton>
+					</IonSegment>
 				</IonToolbar>
 			</IonHeader>
 			<IonContent fullscreen="true">
