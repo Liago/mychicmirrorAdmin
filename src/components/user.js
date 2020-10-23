@@ -2,6 +2,7 @@ import { isNil, size } from "lodash";
 import React, { useState, useEffect } from "react";
 import {
 	IonAlert,
+	IonBadge,
 	IonButton,
 	IonCol,
 	IonContent,
@@ -14,6 +15,8 @@ import {
 	IonRefresher,
 	IonRefresherContent,
 	IonRow,
+	IonSegment,
+	IonSegmentButton,
 	IonToolbar,
 } from "@ionic/react";
 import { closeCircleOutline, notificationsCircle, refreshOutline, trashOutline } from "ionicons/icons";
@@ -24,11 +27,13 @@ import { sendNotification, userDelete, loadUserComments, sendCommentReply } from
 import Placeholder from "../components/UI/skeleton_list";
 import CommentsList from "../components/comments";
 import Modal from "../components/UI/modal";
+import UserUtilities from "../components/user_utilities";
 
 const User = (props) => {
 	const [showAlert, setShowAlert] = useState(false);
 	const [isRefreshing, doRefresh] = useState(false);
 	const [isModalOpen, toggleModal] = useState(false);
+	const [view, setView] = useState("comments");
 
 	const prepareNotification = (params) => {
 		let message = {
@@ -99,15 +104,16 @@ const User = (props) => {
 												</Message>
 											</Card.Description>
 										</Card.Content>
-										<Card.Content extra>
-											<Card.Header>
-												<Label>
-													Comments
-													<Label.Detail>{size(props.comments.comments)}</Label.Detail>
-												</Label>
-											</Card.Header>
-											<Divider />
-
+										<IonToolbar>
+											<IonSegment value={view} onIonChange={(e) => setView(e.detail.value)}>
+												<IonSegmentButton value="comments">Comments</IonSegmentButton>
+												<IonSegmentButton value="utility">Utility</IonSegmentButton>
+											</IonSegment>
+										</IonToolbar>
+										<Card.Content extra className={`${view === "comments" ? "hidden" : ""}`}>
+											<UserUtilities />
+										</Card.Content>
+										<Card.Content extra className={`${view !== "comments" ? "hidden" : ""}`}>
 											<IonRefresher slot="fixed" onIonRefresh={refresh}>
 												<IonRefresherContent
 													pullingIcon={refreshOutline}
