@@ -14,7 +14,6 @@ import {
 	IonRefresher,
 	IonRefresherContent,
 	IonRow,
-	IonToast,
 	IonToolbar,
 } from "@ionic/react";
 import { closeCircleOutline, notificationsCircle, refreshOutline, trashOutline } from "ionicons/icons";
@@ -28,7 +27,6 @@ import Modal from "../components/UI/modal";
 
 const User = (props) => {
 	const [showAlert, setShowAlert] = useState(false);
-	const [notifySuccess, setShowToast] = useState(false);
 	const [isRefreshing, doRefresh] = useState(false);
 	const [isModalOpen, toggleModal] = useState(false);
 
@@ -126,12 +124,6 @@ const User = (props) => {
 							</div>
 						</IonRow>
 					</IonGrid>
-					<IonToast
-						isOpen={props.notificationResponse || props.isUserDeleted}
-						onDidDismiss={() => setShowToast(false)}
-						message={`${props.notificationResponse ? "Notification has been sent" : "User has been deleted"}`}
-						duration={1500}
-					/>
 				</IonContent>
 				<IonAlert
 					isOpen={showAlert}
@@ -196,7 +188,6 @@ const mapStateToProps = (state) => {
 	return {
 		isError: state.app.error,
 		isSending: state.app.loading,
-		isUserDeleted: state.user.deleted,
 		notificationResponse: state.app.notificationMessage,
 		comments: state.user.commentsList,
 	};

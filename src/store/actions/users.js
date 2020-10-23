@@ -1,6 +1,7 @@
 import { isNil } from "lodash";
 import * as rest from "../../helpers/rest";
 import * as actionTypes from "./actionTypes";
+import { toastSetValue } from "./toast";
 
 export const loadUserStart = () => {
 	return {
@@ -85,7 +86,7 @@ export const userDeleteSuccess = (response) => {
 	return {
 		type: actionTypes.USER_DELETE_SUCCESS,
 		message: response,
-		deleted:true
+		deleted: true,
 	};
 };
 export const loadUserComments = (params) => {
@@ -93,7 +94,9 @@ export const loadUserComments = (params) => {
 		dispatch(loadUserCommentsStart());
 		rest.getUserComments(params)
 			.then((response) => {
-				isNil(response.data.result) ? dispatch(loadUserCommentsSuccess({"success":true,"result":0,"comments":0})) : dispatch(loadUserCommentsSuccess(response.data))
+				isNil(response.data.result)
+					? dispatch(loadUserCommentsSuccess({ success: true, result: 0, comments: 0 }))
+					: dispatch(loadUserCommentsSuccess(response.data));
 			})
 			.catch((error) => {
 				dispatch(loadUserCommentsFail(error));
@@ -105,7 +108,13 @@ export const userDelete = (params) => {
 		dispatch(userDeleteStart());
 		rest.userDelete(params)
 			.then((response) => {
-				dispatch(userDeleteSuccess(response.data.data))
+				dispatch(toastSetValue({
+					isCompleted: true,
+					color: "success",
+					position: "bottom",
+					message: `User <strong>${params.name}</strong> has been deleted succesfully!`,
+				}))
+				dispatch(userDeleteSuccess(response.data.data));
 			})
 			.catch((error) => {
 				dispatch(userDeleteFail(error));
@@ -117,7 +126,13 @@ export const userRegistration = (params) => {
 		dispatch(userRegistrationStart());
 		rest.userRegistration(params)
 			.then((response) => {
-				dispatch(userRegistrationSuccess(response.data.data))
+				dispatch(toastSetValue({
+					isCompleted: true,
+					color: "success",
+					position: "bottom",
+					message: `User <strong>${params.name}</strong> has been inserted succesfully!`,
+				}))
+				dispatch(userRegistrationSuccess(response.data.data));
 			})
 			.catch((error) => {
 				dispatch(userRegistrationFail(error));
@@ -129,7 +144,15 @@ export const sendNotification = (params) => {
 		dispatch(sendNotificationStart());
 		rest.sendNotification(params)
 			.then((response) => {
-				dispatch(sendNotificationSuccess(response.data.success))
+				dispatch(sendNotificationSuccess(response.data.success));
+				dispatch(
+					toastSetValue({
+						isCompleted: true,
+						color: "success",
+						position: "bottom",
+						message: `Notification successfully sent`,
+					})
+				);
 			})
 			.catch((error) => {
 				dispatch(sendNotificationFail(error));

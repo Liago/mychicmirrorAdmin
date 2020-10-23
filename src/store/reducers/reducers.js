@@ -16,9 +16,20 @@ const initialState = {
 		notified: false,
 		userList: [],
 		commentsList: [],
+		replied: false
 	},
+	toast: null,
 };
-
+const toast = (state = initialState.toast, action) => {
+	switch (action.type) {
+		case actionTypes.TOAST_CLEAR:
+			return initialState.toast
+		case actionTypes.TOAST_SET_VALUE:
+			return { ...action.payload };
+		default:
+			return state;
+	}
+}
 const app = (state = initialState.app, action) => {
 	switch (action.type) {
 		case actionTypes.DARK_MODE_SET:
@@ -171,9 +182,28 @@ const user = (state = initialState.user, action) => {
 				loading: true,
 				commentsList: [],
 			};
+		case actionTypes.REPLY_COMMENTS_FAIL:
+			return {
+				...state,
+				loading: false,
+				error: action.error,
+				replied: false,
+			};
+		case actionTypes.REPLY_COMMENTS_SUCCESS:
+			return {
+				...state,
+				loading: false,
+				replied: action.payload,
+			};
+		case actionTypes.REPLY_COMMENTS_START:
+			return {
+				...state,
+				loading: true,
+				replied: false
+			};
 		default:
 			return state;
 	}
 };
 
-export default { app, user };
+export default { app, user, toast };

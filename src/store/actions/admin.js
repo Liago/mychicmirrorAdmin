@@ -57,7 +57,7 @@ export const sendCommentReply = (params) => {
 		rest.sendCommentReply(params)
 		.then((response) => {
 			console.log('comments response', response )
-			// dispatch(replyCommentSuccess(response.data))
+			dispatch(replyCommentSuccess(response.data))
 		})
 		.catch((error) => {
 			dispatch(replyCommentFail(error))

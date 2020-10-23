@@ -10,7 +10,7 @@ const list = (props) => {
 			<div className="list-component">
 				{props.users.map((user, index) => {
 					return (
-						<Segment raised className="p-0">
+						<Segment raised className="p-0" key={index}>
 							<Card onClick={() => props.onSelectUser(user)} className="w-100">
 								<Card.Content>
 									<Card.Header>{user.username}</Card.Header>

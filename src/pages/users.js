@@ -129,14 +129,6 @@ const Users = (props) => {
 						},
 					]}
 				/>
-				{props.userRegistered && (
-					<IonToast
-						isOpen={props.userRegistered || showToast ? true : false}
-						onDidDismiss={() => setShowToast(false)}
-						message={`User <strong>${props.userRegistered}</strong> has been inserted succesfully!`}
-						duration={1000}
-					/>
-				)}
 			</IonContent>
 		</IonPage>
 	);
@@ -146,8 +138,6 @@ const mapStateToProps = (state) => {
 	return {
 		users: state.user.userList,
 		userRegistered: state.user.message,
-		isUserDeleted: state.user.delete,
-		isUserCreated: state.user.created,
 		isLoading: state.app.loading,
 	};
 };

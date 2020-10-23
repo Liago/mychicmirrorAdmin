@@ -1,35 +1,38 @@
+import { isNil } from "lodash";
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { Button, Card, Icon, Image, Label, Segment } from "semantic-ui-react";
+import { Button, Card, Image, Label, Segment } from "semantic-ui-react";
 import Modal from "../components/UI/modal";
 import moment from "moment";
-import { updateComment } from "../store/actions";
-import Toast from "../components/UI/toast";
-import { IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonSegment, IonSegmentButton, IonToolbar } from "@ionic/react";
+import { updateComment, sendCommentReply } from "../store/actions";
 
 const Comments = (props) => {
 	const { list, avatar, view } = props;
 	const [isModalOpen, toggleModal] = useState(false);
-	const [buttons, setButton] = useState({
-		isApproving: false,
-		isDeleting: false,
-		isSpamming: false,
-	});
-	console.log("props", props);
-	// console.log("isLoading", [props.isLoading, buttons]);
 
-	const showToast = () => {
-		if (props.error !== "")
-			return <Toast position="middle" color="red" message={props.error} duration={2000} autoDismiss={!props.isLoading ? null : null} />;
-	};
+	const [replyparams, setreplyparams] = useState({ post_ID: null, comment_post: null, comment_parent: null, content_comment: null });
+	const [buttons, setButton] = useState({ isApproving: false, isDeleting: false, isSpamming: false });
+
 	const updateButtons = (button) => {
 		setButton({
 			...buttons,
 			[button.name]: true,
 		});
 	};
+	
+	useEffect(() => {
+		if (
+			isNil(replyparams.post_ID) &&
+			isNil(replyparams.comment_post) &&
+			isNil(replyparams.comment_parent) &&
+			isNil(replyparams.comment_content)
+		) {
+			props.onSendCommentReply(replyparams);
+		}
+	}, [replyparams]);
+
 	const handleSubmit = (values) => {
-		console.log("Comment values", values);
+		setreplyparams({ ...replyparams, comment_content: values.contenuto });
 	};
 	return (
 		<>
@@ -45,6 +48,7 @@ const Comments = (props) => {
 					const mainButton = {
 						0: [
 							<Button
+								key={index}
 								className={`icons ${buttons.isApproving && props.isLoading ? "loading" : ""}`}
 								size="mini"
 								color="green"
@@ -58,6 +62,7 @@ const Comments = (props) => {
 						],
 						1: [
 							<Button
+								key={index}
 								className={`${buttons.isApproving && props.isLoading ? "loading" : ""}`}
 								size="mini"
 								color="yellow"
@@ -71,6 +76,7 @@ const Comments = (props) => {
 						],
 						spam: [
 							<Button
+								key={index}
 								className={`${buttons.isSpamming && props.isLoading ? "loading" : ""}`}
 								size="mini"
 								color="orange"
@@ -95,7 +101,7 @@ const Comments = (props) => {
 								${comment.status !== "spam" && view !== "all" ? "hidden" : ""}`}
 							key={index}
 						>
-							<Card className={`w-100 ${comment.status === "0" ? "red" : ""}`}>
+							<Card className={`w-100 ${comment.status === "0" ? "red" : ""}`} key={index}>
 								<Card.Content>
 									{markAsSpam()}
 									<Image floated="right" size="mini" src={avatar} />
@@ -138,6 +144,12 @@ const Comments = (props) => {
 												circular
 												icon="circular-icon reply"
 												onClick={() => {
+													setreplyparams({
+														...replyparams,
+														post_ID: comment.comment_post,
+														comment_post: comment.comment_post,
+														comment_parent: comment.comment_ID,
+													});
 													toggleModal(true);
 												}}
 											/>
@@ -148,7 +160,6 @@ const Comments = (props) => {
 						</Segment>
 					);
 				})}
-				{showToast()}
 			</Segment>
 			<Modal
 				open={isModalOpen}
@@ -163,11 +174,13 @@ const mapStateToProps = (state) => {
 	return {
 		isLoading: state.app.loading,
 		error: state.app.error,
+		isReplySent: state.user.replied,
 	};
 };
 const mapDispatchToProps = (dispatch) => {
 	return {
 		onCommentUpdate: (params) => dispatch(updateComment(params)),
+		onSendCommentReply: (params) => dispatch(sendCommentReply(params)),
 	};
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Comments);

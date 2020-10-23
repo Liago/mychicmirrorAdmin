@@ -1,5 +1,7 @@
 export const DARK_MODE_SET = "DARK_MODE_SET";
 export const NORMAL_MODE_SET = "NORMAL_MODE_SET";
+export const TOAST_CLEAR = "TOAST_CLEAR";
+export const TOAST_SET_VALUE = "TOAST_SET_VALUE";
 
 export const LOAD_USER_START = "LOAD_USER_START";
 export const LOAD_USER_SUCCESS = "LOAD_USER_SUCCESS";

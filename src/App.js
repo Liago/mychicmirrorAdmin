@@ -28,6 +28,7 @@ import Menu from "./components/Menu";
 import Home from "./pages/home";
 import Notifications from "./pages/notifications";
 import Users from "./pages/users";
+import Toast from "./components/UI/toast";
 
 import "./sass/main.css";
 
@@ -38,6 +39,7 @@ class App extends Component {
 				<IonReactRouter>
 					<IonSplitPane contentId="main">
 						<Menu />
+						<Toast />
 						<IonRouterOutlet id="main">
 							<Route path="/home" component={Home} exact />
 							<Route path="/notifications" component={Notifications} exact />
