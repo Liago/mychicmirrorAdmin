@@ -26,7 +26,14 @@ const HomePage = (props) => {
 	const [view, setView] = useState("all");
 	useEffect(() => {
 		props.onLoadAllComments();
-	}, []);
+		if (props.isUpdated) {
+			doRefresh(true);
+			props.onLoadAllComments();
+			setTimeout(() => {
+				doRefresh(false);
+			}, 2000);
+		}
+	}, [props.isUpdated]);
 
 	const refresh = (event) => {
 		doRefresh(true);
@@ -38,10 +45,10 @@ const HomePage = (props) => {
 	};
 
 	const showComments = () => {
-		return size(props.allComments) == 0 ? (
+		return props.isLoading ? (
 			<Placeholder rows={10} />
 		) : (
-			<CommentsList list={props.allComments.comments} view={view} avatar={"images/default_avatar.jpg"} />
+			<CommentsList list={props.allComments.comments} view={view} doRefresh={refresh} avatar={"images/default_avatar.jpg"} />
 		);
 	};
 
@@ -81,6 +88,7 @@ const mapStateToProps = (state) => {
 	return {
 		isLoading: state.app.loading,
 		allComments: state.app.allComments,
+		isUpdated: state.app.notificationMessage,
 	};
 };
 const mapDispatchToProps = (dispatch) => {

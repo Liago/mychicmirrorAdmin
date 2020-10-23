@@ -13,7 +13,7 @@ const NotificationForm = (props) => {
 					{type.title ? (
 						<Field name="titolo" type="text" component={renderInputField} label="Titolo" placeholder="..." required={false} />
 					) : null}
-					{type.content == "comment" ? (
+					{type.content === "comment" ? (
 						<Field
 							name="commento"
 							type="text"

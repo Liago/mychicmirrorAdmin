@@ -1,6 +1,6 @@
 import * as rest from "../../helpers/rest";
 import * as actionTypes from "./actionTypes";
-
+import { toastSetValue } from "./toast";
 
 export const replyCommentStart = () => {
 	return {
@@ -30,6 +30,7 @@ export const commentUpdateStart = () => {
 export const commentUpdateSuccess = (response) => {
 	return {
 		type: actionTypes.COMMENT_UPDATE_SUCCESS,
+		loading:false,
 		payload: response
 	}
 }
@@ -56,7 +57,12 @@ export const sendCommentReply = (params) => {
 		dispatch(replyCommentStart());
 		rest.sendCommentReply(params)
 		.then((response) => {
-			console.log('comments response', response )
+			dispatch(toastSetValue({
+				isCompleted: true,
+				color: "success",
+				position: "bottom",
+				message: `Comment sent!`,
+			}))
 			dispatch(replyCommentSuccess(response.data))
 		})
 		.catch((error) => {

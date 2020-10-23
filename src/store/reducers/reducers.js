@@ -82,7 +82,7 @@ const app = (state = initialState.app, action) => {
 			return {
 				...state,
 				loading: true,
-				error:action.payload
+				error:false
 			}		
 		case actionTypes.COMMENT_UPDATE_FAIL:
 			return {
