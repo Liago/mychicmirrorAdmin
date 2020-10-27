@@ -148,9 +148,10 @@ export const sendNotification = (params) => {
 				dispatch(
 					toastSetValue({
 						isCompleted: true,
-						color: "success",
-						position: "bottom",
+						color: "warning",
+						position: "top",
 						message: `Notification successfully sent`,
+						duration: 1000
 					})
 				);
 			})

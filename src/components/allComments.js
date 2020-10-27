@@ -3,19 +3,12 @@ import { connect } from "react-redux";
 import { Button, Card, Image, Label, Segment } from "semantic-ui-react";
 import Modal from "../components/UI/modal";
 import moment from "moment";
-import { updateComment, sendCommentReply, sendNotification } from "../store/actions";
+import { updateComment, sendCommentReply } from "../store/actions";
 
 const Comments = (props) => {
 	const { list, avatar, view } = props;
 	const [isModalOpen, toggleModal] = useState(false);
-
-	const [replyparams, setreplyparams] = useState({
-		post_ID: "",
-		comment_post: "",
-		comment_post_title: "",
-		comment_parent: "",
-		comment_content: "",
-	});
+	const [replyparams, setreplyparams] = useState({ post_ID: "", comment_post: "", comment_post_title: "", comment_parent: "", comment_content: "" });
 	const [buttons, setButton] = useState({ isApproving: false, isDeleting: false, isSpamming: false });
 
 	const updateButtons = (button) => {
@@ -33,12 +26,12 @@ const Comments = (props) => {
 			replyparams.comment_parent !== "" &&
 			replyparams.comment_content !== ""
 		) {
-			props.onSendCommentReply(replyparams);
+			let notificationparams = prepareNotification();
+			props.onSendCommentReply(replyparams, notificationparams);
 		}
-	}, [replyparams, props.isUpdated]);
+	}, [replyparams]);
 
 	const handleSubmit = (values) => {
-		prepareNotification();
 		setreplyparams({ ...replyparams, comment_content: values.contenuto });
 	};
 
@@ -51,9 +44,10 @@ const Comments = (props) => {
 			headings: { en: title_en, it: title_it },
 			ios_badgeCount: 1,
 			ios_badgeType: "Increase",
+			data: {post: replyparams.comment_post},
 			included_segments: ["TEST USERS"],
 		};
-		props.onSendNotification(message);
+		return message;
 	};
 
 	return (
@@ -204,8 +198,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
 	return {
 		onCommentUpdate: (params) => dispatch(updateComment(params)),
-		onSendCommentReply: (params) => dispatch(sendCommentReply(params)),
-		onSendNotification: (params) => dispatch(sendNotification(params)),
+		onSendCommentReply: (replyparams, notificationparams) => dispatch(sendCommentReply(replyparams, notificationparams)),
 	};
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Comments);

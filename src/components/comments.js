@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonList } from "@ionic/react";
 import { Comment } from "semantic-ui-react";
 import Modal from "../components/UI/modal";
-import { sendCommentReply, sendNotification } from "../store/actions";
+import { sendCommentReply } from "../store/actions";
 import moment from "moment";
 
 const Comments = (props) => {
@@ -19,7 +19,8 @@ const Comments = (props) => {
 			replyparams.comment_parent !== "" &&
 			replyparams.comment_content !== ""
 		) {
-			props.onSendCommentReply(replyparams);
+			let notificationparams = prepareNotification();
+			props.onSendCommentReply(replyparams, notificationparams);
 		}
 	}, [replyparams]);
 	const prepareNotification = () => {
@@ -31,9 +32,10 @@ const Comments = (props) => {
 			headings: { en: title_en, it: title_it },
 			ios_badgeCount: 1,
 			ios_badgeType: "Increase",
+			data: {post: replyparams.comment_post},
 			included_segments: ["TEST USERS"],
 		};
-		props.onSendNotification(message);
+		return message;
 	};
 
 	const handleSubmit = (values) => {
@@ -99,8 +101,7 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = (dispatch) => {
 	return {
-		onSendCommentReply: (params) => dispatch(sendCommentReply(params)),
-		onSendNotification: (params) => dispatch(sendNotification(params)),
+		onSendCommentReply: (replyparams, notificationparams) => dispatch(sendCommentReply(replyparams, notificationparams)),
 	};
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Comments);

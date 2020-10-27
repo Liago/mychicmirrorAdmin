@@ -1,6 +1,8 @@
+import notification from "../../components/forms/notification";
 import * as rest from "../../helpers/rest";
 import * as actionTypes from "./actionTypes";
 import { toastSetValue } from "./toast";
+import {sendNotification } from "./users";
 
 export const replyCommentStart = () => {
 	return {
@@ -52,7 +54,8 @@ export const updateComment = (params) => {
 		})
 	}
 }
-export const sendCommentReply = (params) => {
+export const sendCommentReply = (params, notificationParams) => {
+	console.log('[Action sendCommentReply] notificationparams', notificationParams)
 	return (dispatch) => { 
 		dispatch(replyCommentStart());
 		rest.sendCommentReply(params)
@@ -62,8 +65,10 @@ export const sendCommentReply = (params) => {
 				color: "success",
 				position: "bottom",
 				message: `Comment sent!`,
+				duration: 1000
 			}))
 			dispatch(replyCommentSuccess(response.data))
+			dispatch(sendNotification(notificationParams))
 		})
 		.catch((error) => {
 			dispatch(replyCommentFail(error))
