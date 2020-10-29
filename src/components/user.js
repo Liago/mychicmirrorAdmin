@@ -49,11 +49,7 @@ const User = (props) => {
 
 	useEffect(() => {
 		props.onLoadComments({ user: props.user.email });
-	}, []);
-
-	useEffect(() => {
-		toggleModal(false);
-	}, [props.notificationResponse]);
+	}, [props.isReplySent]);
 
 	const refresh = (event) => {
 		doRefresh(true);
@@ -196,6 +192,7 @@ const mapStateToProps = (state) => {
 		isSending: state.app.loading,
 		notificationResponse: state.app.notificationMessage,
 		comments: state.user.commentsList,
+		isReplySent: state.toast?.isCompleted
 	};
 };
 

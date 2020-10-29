@@ -1,4 +1,3 @@
-import notification from "../../components/forms/notification";
 import * as rest from "../../helpers/rest";
 import * as actionTypes from "./actionTypes";
 import { toastSetValue } from "./toast";
@@ -55,7 +54,6 @@ export const updateComment = (params) => {
 	}
 }
 export const sendCommentReply = (params, notificationParams) => {
-	console.log('[Action sendCommentReply] notificationparams', notificationParams)
 	return (dispatch) => { 
 		dispatch(replyCommentStart());
 		rest.sendCommentReply(params)
@@ -71,7 +69,8 @@ export const sendCommentReply = (params, notificationParams) => {
 			dispatch(sendNotification(notificationParams))
 		})
 		.catch((error) => {
-			dispatch(replyCommentFail(error))
+			alert(error.message)
+			dispatch(replyCommentFail("Identificato un commento duplicato; sembra che tu abbia già scritto questo commento"))
 		})
 	}
 }

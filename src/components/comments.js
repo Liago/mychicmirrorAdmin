@@ -9,7 +9,7 @@ import moment from "moment";
 const Comments = (props) => {
 	const { onReplySubmitted, avatar, list } = props;
 	const [isModalOpen, toggleModal] = useState(false);
-	const [replyparams, setreplyparams] = useState({ post_ID: "", comment_post: "", comment_post_title: "", comment_parent: "", comment_content: "" });
+	const [replyparams, setreplyparams] = useState({post_ID: "",comment_post: "",comment_post_title: "",comment_parent: "",comment_content: ""});
 
 	useEffect(() => {
 		if (
@@ -32,7 +32,9 @@ const Comments = (props) => {
 			headings: { en: title_en, it: title_it },
 			ios_badgeCount: 1,
 			ios_badgeType: "Increase",
-			data: {post: replyparams.comment_post},
+			ios_sound: "nil",
+			android_sound: "nil",
+			data: { post: replyparams.comment_post },
 			included_segments: ["TEST USERS"],
 		};
 		return message;
@@ -83,7 +85,7 @@ const Comments = (props) => {
 			})}
 
 			<Modal
-				open={isModalOpen && !props.isReplySent}
+				open={isModalOpen}
 				submitNotification={handleSubmit}
 				modalToggler={toggleModal}
 				type={{ title: false, title_content: "Nuova Risposta", content: "comment" }}

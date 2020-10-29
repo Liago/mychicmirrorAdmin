@@ -186,7 +186,7 @@ const user = (state = initialState.user, action) => {
 			return {
 				...state,
 				loading: false,
-				error: action.error,
+				error: action.payload,
 				replied: false,
 			};
 		case actionTypes.REPLY_COMMENTS_SUCCESS:

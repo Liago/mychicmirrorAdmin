@@ -26,14 +26,9 @@ const HomePage = (props) => {
 	const [view, setView] = useState("all");
 	useEffect(() => {
 		props.onLoadAllComments();
-		if (props.isUpdated) {
-			doRefresh(true);
-			props.onLoadAllComments();
-			setTimeout(() => {
-				doRefresh(false);
-			}, 2000);
-		}
-	}, [props.isUpdated]);
+	}, [])
+
+	
 
 	const refresh = (event) => {
 		doRefresh(true);

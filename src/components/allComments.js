@@ -4,11 +4,12 @@ import { Button, Card, Image, Label, Segment } from "semantic-ui-react";
 import Modal from "../components/UI/modal";
 import moment from "moment";
 import { updateComment, sendCommentReply } from "../store/actions";
+import { ONESIGNAL_APP_ID } from "../helpers/config";
 
 const Comments = (props) => {
 	const { list, avatar, view } = props;
 	const [isModalOpen, toggleModal] = useState(false);
-	const [replyparams, setreplyparams] = useState({ post_ID: "", comment_post: "", comment_post_title: "", comment_parent: "", comment_content: "" });
+	const [replyparams, setreplyparams] = useState({post_ID: "",comment_post: "",comment_post_title: "",comment_parent: "",comment_content: "",});
 	const [buttons, setButton] = useState({ isApproving: false, isDeleting: false, isSpamming: false });
 
 	const updateButtons = (button) => {
@@ -39,12 +40,14 @@ const Comments = (props) => {
 		let title_it = replyparams.comment_post_title.split("/")[0];
 		let title_en = replyparams.comment_post_title.split("/")[1];
 		let message = {
-			app_id: "e8d6a64e-936e-416d-8341-e3c60fb85a40",
+			app_id: ONESIGNAL_APP_ID,
 			contents: { en: "Someone posted a new comment!", it: "Qualcuno ha scritto un nuovo commento!" },
 			headings: { en: title_en, it: title_it },
 			ios_badgeCount: 1,
 			ios_badgeType: "Increase",
-			data: {post: replyparams.comment_post},
+			ios_sound: "nil",
+			android_sound: "nil",
+			data: { post: replyparams.comment_post },
 			included_segments: ["TEST USERS"],
 		};
 		return message;
@@ -65,7 +68,9 @@ const Comments = (props) => {
 						0: [
 							<Button
 								key={index}
-								className={`icons ${buttons.isApproving && props.isLoading ? "loading" : ""}`}
+								className={`icons ${buttons.isApproving && props.isLoading ? "loading" : ""} ${
+									comment.author === "mychicmirror" ? "hidden" : ""
+								}`}
 								size="mini"
 								color="green"
 								circular
@@ -79,7 +84,9 @@ const Comments = (props) => {
 						1: [
 							<Button
 								key={index}
-								className={`${buttons.isApproving && props.isLoading ? "loading" : ""}`}
+								className={`${buttons.isApproving && props.isLoading ? "loading" : ""} ${
+									comment.author === "mychicmirror" ? "hidden" : ""
+								}`}
 								size="mini"
 								color="yellow"
 								circular
@@ -141,7 +148,9 @@ const Comments = (props) => {
 									/>
 									{comment.status === "spam" ? null : (
 										<Button
-											className={`${buttons.isSpamming && props.isLoading ? "loading" : ""}`}
+											className={`${buttons.isSpamming && props.isLoading ? "loading" : ""} ${
+												comment.author === "mychicmirror" ? "hidden" : ""
+											}`}
 											size="mini"
 											color="blue"
 											circular
@@ -152,7 +161,7 @@ const Comments = (props) => {
 											}}
 										/>
 									)}
-									{comment.status != "1" ? null : (
+									{comment.status != "1" || comment.author === "mychicmirror" ? null : (
 										<div className="right floated">
 											<Button
 												className={`${props.isLoading ? "loading" : ""}`}
@@ -180,7 +189,7 @@ const Comments = (props) => {
 				})}
 			</Segment>
 			<Modal
-				open={isModalOpen && !props.isReplySent}
+				open={isModalOpen}
 				submitNotification={handleSubmit}
 				modalToggler={toggleModal}
 				type={{ title: false, title_content: "Nuova Risposta", content: "comment" }}
