@@ -27,19 +27,25 @@ export const allCommentsFail = (error) => {
 export const allCommentsSuccess = (response) => {
 	return {
 		type: actionTypes.ALL_COMMENTS_SUCCESS,
-		payload: response,
 	};
 };
 
 export const getAllComments = () => {
-	return (dispatch) => {
+	return async (dispatch) => {
 		dispatch(allCommentsStart());
-		rest.getAllComments()
-			.then((response) => {
-				dispatch(allCommentsSuccess(response.data));
-			})
-			.catch((error) => {
-				dispatch(allCommentsFail(error));
-			});
+		try {
+			const response = await rest.getAllComments();
+			if (response.status === 200) {
+				dispatch(allCommentsSuccess());
+				return { allComments: response.data, loading: false };
+			} else {
+				dispatch(allCommentsFail({error: "qualcosa è andato storto"}));
+				return { allComments: null, loading: false };
+			}
+		} catch (error) {
+			dispatch(allCommentsFail(error));
+			console.log("getAllComments error", error);
+			return { allComments: null, loading: false };
+		}
 	};
 };

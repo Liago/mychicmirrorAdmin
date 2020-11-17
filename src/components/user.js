@@ -1,8 +1,7 @@
-import { isNil, size } from "lodash";
-import React, { useState, useEffect } from "react";
+import { isNil } from "lodash";
+import React, { useState } from "react";
 import {
 	IonAlert,
-	IonBadge,
 	IonButton,
 	IonCol,
 	IonContent,
@@ -18,26 +17,31 @@ import {
 	IonSegment,
 	IonSegmentButton,
 	IonToolbar,
+	useIonViewWillEnter,
 } from "@ionic/react";
 import { closeCircleOutline, notificationsCircle, refreshOutline, trashOutline } from "ionicons/icons";
 import { connect } from "react-redux";
-import { Card, Divider, Image, Label, Message } from "semantic-ui-react";
+import { Card, Image, Message } from "semantic-ui-react";
 import { sendNotification, userDelete, loadUserComments, sendCommentReply } from "../store/actions/";
 
 import Placeholder from "../components/UI/skeleton_list";
 import CommentsList from "../components/comments";
 import Modal from "../components/UI/modal";
 import UserUtilities from "../components/user_utilities";
+import { ONESIGNAL_APP_ID } from "../helpers/config";
 
 const User = (props) => {
 	const [showAlert, setShowAlert] = useState(false);
 	const [isRefreshing, doRefresh] = useState(false);
 	const [isModalOpen, toggleModal] = useState(false);
 	const [view, setView] = useState("comments");
+	const [allComments, setAllComments] = useState(null);
+	const [commentsCount, setCommentsCount] = useState(0);
+	const [loading, setLoading] = useState(false);
 
 	const prepareNotification = (params) => {
 		let message = {
-			app_id: "e8d6a64e-936e-416d-8341-e3c60fb85a40",
+			app_id: ONESIGNAL_APP_ID,
 			contents: { en: params.titolo },
 			headings: { en: params.contenuto },
 			ios_badgeCount: 1,
@@ -47,13 +51,27 @@ const User = (props) => {
 		props.onSendNotification(message);
 	};
 
-	useEffect(() => {
-		props.onLoadComments({ user: props.user.email });
-	}, [props.isReplySent]);
+	useIonViewWillEnter(() => {
+		readComments();
+	});
+
+	const readComments = () => {
+		setLoading(true);
+		(async () => {
+			try {
+				const { comments, loading, count } = await props.onLoadComments({ user: props.user.email });
+				setAllComments(comments);
+				setLoading(loading);
+				setCommentsCount(count);
+			} catch (e) {
+				console.log(e);
+			}
+		})();
+	};
 
 	const refresh = (event) => {
 		doRefresh(true);
-		props.onLoadComments({ user: props.user.email });
+		readComments();
 		setTimeout(() => {
 			doRefresh(false);
 			event.detail.complete();
@@ -61,8 +79,9 @@ const User = (props) => {
 	};
 
 	const getComments = () => {
-		if (isNil(props.comments.comments) || props.comments.result == 0) return <IonLabel color="dark">No comments so far</IonLabel>;
-		return <CommentsList list={props.comments.comments} avatar={"images/default_avatar.jpg"} onReplySubmitted={commentReplyHandler} />;
+		if (isNil(allComments) || loading) return <Placeholder rows={5} />;
+		if (isNil(allComments) && commentsCount === 0) return <IonLabel color="dark">No comments so far</IonLabel>;
+		return <CommentsList list={allComments} avatar={"images/default_avatar.jpg"} onReplySubmitted={commentReplyHandler} />;
 	};
 
 	const commentReplyHandler = (values) => {
@@ -74,7 +93,6 @@ const User = (props) => {
 		prepareNotification(values);
 	};
 
-	console.log("props", props);
 	return (
 		<>
 			<IonPage id="user-card-detail">
@@ -119,7 +137,7 @@ const User = (props) => {
 													refreshingText="Refreshing..."
 												></IonRefresherContent>
 											</IonRefresher>
-											{!props.comments.success || isRefreshing ? <Placeholder rows={5} /> : getComments()}
+											{getComments()}
 										</Card.Content>
 									</Card>
 								)}
@@ -186,13 +204,13 @@ const User = (props) => {
 };
 
 const mapStateToProps = (state) => {
-	console.log("state", state);
+	console.log("[USERJS] state", state);
 	return {
 		isError: state.app.error,
 		isSending: state.app.loading,
 		notificationResponse: state.app.notificationMessage,
 		comments: state.user.commentsList,
-		isReplySent: state.toast?.isCompleted
+		isReplySent: state.toast?.isCompleted,
 	};
 };
 

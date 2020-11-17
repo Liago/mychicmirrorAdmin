@@ -28,10 +28,11 @@ export const commentUpdateStart = () => {
 		payload: null
 	}
 }
-export const commentUpdateSuccess = (response) => {
+export const commentUpdateSuccess = (response, isDelete) => {
 	return {
 		type: actionTypes.COMMENT_UPDATE_SUCCESS,
 		loading:false,
+		isMessageDelete:isDelete,
 		payload: response
 	}
 }
@@ -42,11 +43,13 @@ export const commentUpdateFail = (error) => {
 	}
 }
 export const updateComment = (params) => {
+	let isDelete = false;
 	return (dispatch) => {
 		dispatch(commentUpdateStart());
 		rest.updateComment(params)
 		.then((response) => {
-			response.data.success ? dispatch(commentUpdateSuccess(response.data.success)) : dispatch(commentUpdateFail(response.data))
+			if (params.operation === 'delete') isDelete = true;  
+			response.data.success ? dispatch(commentUpdateSuccess(response.data.success, isDelete)) : dispatch(commentUpdateFail(response.data))
 		})
 		.catch((error) => {
 			dispatch(commentUpdateFail(error))

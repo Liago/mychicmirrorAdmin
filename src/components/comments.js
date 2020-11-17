@@ -4,6 +4,7 @@ import { IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonList } from 
 import { Comment } from "semantic-ui-react";
 import Modal from "../components/UI/modal";
 import { sendCommentReply } from "../store/actions";
+import { ONESIGNAL_APP_ID } from "../helpers/config";
 import moment from "moment";
 
 const Comments = (props) => {
@@ -23,11 +24,12 @@ const Comments = (props) => {
 			props.onSendCommentReply(replyparams, notificationparams);
 		}
 	}, [replyparams]);
+	
 	const prepareNotification = () => {
 		let title_it = replyparams.comment_post_title.split("/")[0];
 		let title_en = replyparams.comment_post_title.split("/")[1];
 		let message = {
-			app_id: "e8d6a64e-936e-416d-8341-e3c60fb85a40",
+			app_id: ONESIGNAL_APP_ID,
 			contents: { en: "Someone posted a new comment!", it: "Qualcuno ha scritto un nuovo commento!" },
 			headings: { en: title_en, it: title_it },
 			ios_badgeCount: 1,

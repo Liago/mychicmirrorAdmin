@@ -1,4 +1,4 @@
-import { size } from "lodash";
+import { size, isNil } from "lodash";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import {
@@ -13,6 +13,7 @@ import {
 	IonSegmentButton,
 	IonTitle,
 	IonToolbar,
+	useIonViewWillEnter,
 } from "@ionic/react";
 
 import CommentsList from "../components/allComments";
@@ -24,26 +25,43 @@ const HomePage = (props) => {
 	// console.log("HOMEPAGE props", props);
 	const [isRefreshing, doRefresh] = useState(false);
 	const [view, setView] = useState("all");
-	useEffect(() => {
-		props.onLoadAllComments();
-	}, [])
+	const [loading, setLoading] = useState(false);
+	const [allComments, setAllComments] = useState(null);
 
-	
+
+	useIonViewWillEnter(() => {
+		console.log("WILLENTER props", props);
+		readComments();
+	});
+
+	const readComments = () => {
+		setLoading(true);
+		(async () => {
+			try {
+				const response = await props.onLoadAllComments();
+				console.log("response.allComments.comments", response);
+				setAllComments(response.allComments.comments);
+				setLoading(response.loading);
+			} catch (e) {
+				console.log(e);
+			}
+		})();
+	};
 
 	const refresh = (event) => {
 		doRefresh(true);
-		props.onLoadAllComments();
+		readComments();
 		setTimeout(() => {
 			doRefresh(false);
 			event.detail.complete();
 		}, 2000);
 	};
-
+	
 	const showComments = () => {
-		return props.isLoading ? (
+		return loading || isNil(allComments) ? (
 			<Placeholder rows={10} />
 		) : (
-			<CommentsList list={props.allComments.comments} view={view} doRefresh={refresh} avatar={"images/default_avatar.jpg"} />
+			<CommentsList list={allComments} view={view} doRefresh={refresh} avatar={"images/default_avatar.jpg"} />
 		);
 	};
 
@@ -54,7 +72,7 @@ const HomePage = (props) => {
 					<IonButtons slot="start">
 						<IonMenuButton />
 					</IonButtons>
-					<IonTitle>You have {size(props.allComments.comments)} comments</IonTitle>
+					<IonTitle>You have {size(allComments)} comments</IonTitle>
 				</IonToolbar>
 				<IonToolbar>
 					<IonSegment value={view} onIonChange={(e) => setView(e.detail.value)}>
@@ -73,7 +91,7 @@ const HomePage = (props) => {
 						refreshingText="Refreshing..."
 					></IonRefresherContent>
 				</IonRefresher>
-				{!props.allComments.success || isRefreshing ? <Placeholder rows={5} /> : showComments()}
+				{showComments()}
 			</IonContent>
 		</IonPage>
 	);
@@ -82,8 +100,8 @@ const HomePage = (props) => {
 const mapStateToProps = (state) => {
 	return {
 		isLoading: state.app.loading,
-		allComments: state.app.allComments,
 		isUpdated: state.app.notificationMessage,
+		isCommentDeleted: state.app.isMessageDelete,
 	};
 };
 const mapDispatchToProps = (dispatch) => {

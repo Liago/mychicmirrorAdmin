@@ -5,8 +5,8 @@ const initialState = {
 		darkMode: false,
 		loading: false,
 		error: null,
+		isMessageDelete:false,
 		notificationMessage: null,
-		allComments: [],
 	},
 	user: {
 		message: null,
@@ -15,7 +15,6 @@ const initialState = {
 		created: false,
 		notified: false,
 		userList: [],
-		commentsList: [],
 		replied: false
 	},
 	toast: null,
@@ -94,6 +93,7 @@ const app = (state = initialState.app, action) => {
 			return {
 				...state,
 				loading: false,
+				isMessageDelete:action.isMessageDelete,
 				notificationMessage: action.payload
 			}		
 		default:

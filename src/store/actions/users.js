@@ -90,17 +90,26 @@ export const userDeleteSuccess = (response) => {
 	};
 };
 export const loadUserComments = (params) => {
-	return (dispatch) => {
+	return async (dispatch) => {
 		dispatch(loadUserCommentsStart());
-		rest.getUserComments(params)
-			.then((response) => {
-				isNil(response.data.result)
-					? dispatch(loadUserCommentsSuccess({ success: true, result: 0, comments: 0 }))
-					: dispatch(loadUserCommentsSuccess(response.data));
-			})
-			.catch((error) => {
-				dispatch(loadUserCommentsFail(error));
-			});
+		try {
+			const response = await rest.getUserComments(params);
+			// console.log("[loadUserComments]", response);
+			if (response.status === 200 && isNil(response.data.count)) {
+				dispatch(loadUserCommentsSuccess());
+				return { commentscount: 0, comments: null, loading: false };
+			} else if (response.status === 200 && !isNil(response.data.count)) {
+				dispatch(loadUserCommentsSuccess());
+				return { commentscount: response.data.count, comments: response.data.comments, loading: false };
+			} else {
+				dispatch(loadUserCommentsFail({ error: "qualcosa è andato storto" }));
+				return { comments: null, loading: false };
+			}
+		} catch (error) {
+			dispatch(loadUserCommentsFail(error));
+			console.log("getAllComments error", error);
+			return { comments: null, loading: false };
+		}
 	};
 };
 export const userDelete = (params) => {
@@ -108,12 +117,14 @@ export const userDelete = (params) => {
 		dispatch(userDeleteStart());
 		rest.userDelete(params)
 			.then((response) => {
-				dispatch(toastSetValue({
-					isCompleted: true,
-					color: "success",
-					position: "bottom",
-					message: `User <strong>${params.name}</strong> has been deleted succesfully!`,
-				}))
+				dispatch(
+					toastSetValue({
+						isCompleted: true,
+						color: "success",
+						position: "bottom",
+						message: `User <strong>${params.name}</strong> has been deleted succesfully!`,
+					})
+				);
 				dispatch(userDeleteSuccess(response.data.data));
 			})
 			.catch((error) => {
@@ -126,12 +137,14 @@ export const userRegistration = (params) => {
 		dispatch(userRegistrationStart());
 		rest.userRegistration(params)
 			.then((response) => {
-				dispatch(toastSetValue({
-					isCompleted: true,
-					color: "success",
-					position: "bottom",
-					message: `User <strong>${params.name}</strong> has been inserted succesfully!`,
-				}))
+				dispatch(
+					toastSetValue({
+						isCompleted: true,
+						color: "success",
+						position: "bottom",
+						message: `User <strong>${params.name}</strong> has been inserted succesfully!`,
+					})
+				);
 				dispatch(userRegistrationSuccess(response.data.data));
 			})
 			.catch((error) => {
@@ -151,7 +164,7 @@ export const sendNotification = (params) => {
 						color: "warning",
 						position: "top",
 						message: `Notification successfully sent`,
-						duration: 1000
+						duration: 1000,
 					})
 				);
 			})
