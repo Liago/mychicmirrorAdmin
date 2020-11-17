@@ -1,0 +1,10 @@
+@media only screen and (max-width: 767px) {
+	.ui.small.modal {
+		width: 75%;
+		margin: 0;
+	}
+}
+.dimmed.dimmable>.ui.animating.dimmer, 
+.dimmed.dimmable>.ui.visible.dimmer, .ui.active.dimmer {
+    background-color: rgba(255,255,255,.85);
+}

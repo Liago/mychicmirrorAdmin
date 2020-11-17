@@ -1,16 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { Button, Card, Image, Label, Segment } from "semantic-ui-react";
+import { Button, Card, Icon, Image, Label, Segment } from "semantic-ui-react";
 import Modal from "../components/UI/modal";
 import moment from "moment";
 import { updateComment, sendCommentReply } from "../store/actions";
 import { ONESIGNAL_APP_ID } from "../helpers/config";
+import { IonActionSheet } from "@ionic/react";
+import { caretForwardCircle, close, heart, share, trash } from "ionicons/icons";
 
 const Comments = (props) => {
 	const { list, avatar, view } = props;
 	const [isModalOpen, toggleModal] = useState(false);
-	const [replyparams, setreplyparams] = useState({post_ID: "",comment_post: "",comment_post_title: "",comment_parent: "",comment_content: "",});
+	const [replyparams, setreplyparams] = useState({
+		post_ID: "",
+		comment_post: "",
+		comment_post_title: "",
+		comment_parent: "",
+		comment_content: "",
+	});
 	const [buttons, setButton] = useState({ isApproving: false, isDeleting: false, isSpamming: false });
+	const [showActionSheet, setShowActionSheet] = useState(false);
 
 	const updateButtons = (button) => {
 		setButton({
@@ -78,6 +87,7 @@ const Comments = (props) => {
 								onClick={() => {
 									updateButtons({ name: "isApproving" });
 									props.onCommentUpdate({ id: comment.comment_ID, status: "1", operation: "update" });
+									props.doRefresh();
 								}}
 							/>,
 						],
@@ -134,8 +144,9 @@ const Comments = (props) => {
 									<Card.Description>{comment.content}</Card.Description>
 								</Card.Content>
 								<Card.Content extra>
-									{getButtonApprove(comment.status)}
-									<Button
+									{/* {getButtonApprove(comment.status)} */}
+									<Button size="medium" content="Azioni" onClick={() => setShowActionSheet(true)} />
+									{/* <Button
 										className={`${buttons.isDeleting && props.isLoading ? "loading" : ""}`}
 										size="mini"
 										color="red"
@@ -161,13 +172,15 @@ const Comments = (props) => {
 											}}
 										/>
 									)}
-									{comment.status != "1" || comment.author === "mychicmirror" ? null : (
+									*/}
+									{comment.status !== "1" || comment.author === "mychicmirror" ? null : (
 										<div className="right floated">
 											<Button
 												className={`${props.isLoading ? "loading" : ""}`}
-												size="mini"
-												color="purple"
-												circular
+												size="medium"
+												color="green"
+												content="Rispondi"
+												labelPosition="right"
 												icon="circular-icon reply"
 												onClick={() => {
 													setreplyparams({
@@ -181,7 +194,7 @@ const Comments = (props) => {
 												}}
 											/>
 										</div>
-									)}
+									)} 
 								</Card.Content>
 							</Card>
 						</Segment>
@@ -194,6 +207,46 @@ const Comments = (props) => {
 				modalToggler={toggleModal}
 				type={{ title: false, title_content: "Nuova Risposta", content: "comment" }}
 			/>
+			<IonActionSheet
+				isOpen={showActionSheet}
+				onDidDismiss={() => setShowActionSheet(false)}
+				cssClass="my-custom-class"
+				buttons={[
+					{
+						text: "Approva",
+						handler: () => {
+							console.log("Delete clicked");
+						},
+					},
+					{
+						text: "Disapprova",
+						handler: () => {
+							console.log("Share clicked");
+						},
+					},
+					{
+						text: "Sposta in spam",
+						handler: () => {
+							console.log("Play clicked");
+						},
+					},
+					{
+						text: "Elimina",
+						role: "destructive",
+						handler: () => {
+							console.log("Favorite clicked");
+						},
+					},
+					{
+						text: "Cancel",
+						icon: close,
+						role: "cancel",
+						handler: () => {
+							console.log("Cancel clicked");
+						},
+					},
+				]}
+			></IonActionSheet>
 		</>
 	);
 };

@@ -30,7 +30,6 @@ const HomePage = (props) => {
 
 
 	useIonViewWillEnter(() => {
-		console.log("WILLENTER props", props);
 		readComments();
 	});
 
@@ -61,7 +60,12 @@ const HomePage = (props) => {
 		return loading || isNil(allComments) ? (
 			<Placeholder rows={10} />
 		) : (
-			<CommentsList list={allComments} view={view} doRefresh={refresh} avatar={"images/default_avatar.jpg"} />
+			<CommentsList 
+				list={allComments} 
+				view={view} 
+				doRefresh={() => refresh()} 
+				avatar={"images/default_avatar.jpg"} 
+			/>
 		);
 	};
 
