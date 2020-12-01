@@ -1,0 +1,40 @@
+.ui.fluid.card.toolbar-card {
+	padding-top: 25px;
+}
+ion-toolbar {
+	margin-top: -0.21425em;
+	line-height: 1.28571429em;
+	display: block;
+}
+.title {
+	padding-left: 1em !important;
+	text-align: left;
+}
+.subtitle {
+	padding-left: 1em !important;
+	text-align: left;
+	font-size: 1em;
+	color: rgba(0, 0, 0, 0.4);
+	font-weight: 400;
+}
+.ui.comments .comment .text {
+	font-size: 0.9em;
+}
+.user-component {
+	min-width: 100%;
+}
+
+.user-component .ui.card > .extra {
+	overflow: auto;
+	height: calc(100vh - 20px);
+}
+
+.user-component .ui.raised.card {
+	height: calc(69vh - 20px);
+}
+.action-toolbar {
+	text-align: center;
+}
+.ui.card > .extra a:not(.ui) {
+	color: rgba(0, 0, 0, 0.6);
+}

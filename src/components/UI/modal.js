@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Dimmer, Loader, Modal } from "semantic-ui-react";
+import { Card, Dimmer, Loader, Modal } from "semantic-ui-react";
 
 import NotificationForm from "../forms/notification";
 
@@ -18,9 +18,18 @@ const ModalNotification = (props) => {
 			<Dimmer inverted className={dimmerState ? "active" : ""}>
 				<Loader inverted>Sending...</Loader>
 			</Dimmer>
-			<Modal.Header>{props.type.title_content}</Modal.Header>
+			{/* <Modal.Header>{props.type.title_content}</Modal.Header> */}
 			<Modal.Content>
-				<NotificationForm onSubmit={handleSubmit} type={props.type} />
+				<Card>
+					<Card.Content>
+						<Card.Header>
+							{props.type.title_content}
+						</Card.Header>
+					</Card.Content>
+					<Card.Content>
+						<NotificationForm onSubmit={handleSubmit} type={props.type} />
+					</Card.Content>
+				</Card>
 			</Modal.Content>
 		</Modal>
 	);

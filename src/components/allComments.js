@@ -5,8 +5,10 @@ import Modal from "../components/UI/modal";
 import moment from "moment";
 import { updateComment, sendCommentReply } from "../store/actions";
 import { ONESIGNAL_APP_ID } from "../helpers/config";
-import { IonActionSheet } from "@ionic/react";
+// import { IonActionSheet } from "@ionic/react";
 import { caretForwardCircle, close, heart, share, trash } from "ionicons/icons";
+
+import ActionSheet from "./UI/actionSheet";
 
 const Comments = (props) => {
 	const { list, avatar, view } = props;
@@ -20,6 +22,7 @@ const Comments = (props) => {
 	});
 	const [buttons, setButton] = useState({ isApproving: false, isDeleting: false, isSpamming: false });
 	const [showActionSheet, setShowActionSheet] = useState(false);
+	const [commentSelected, setcommentSelected] = useState(null);
 
 	const updateButtons = (button) => {
 		setButton({
@@ -57,7 +60,8 @@ const Comments = (props) => {
 			ios_sound: "nil",
 			android_sound: "nil",
 			data: { post: replyparams.comment_post },
-			included_segments: ["TEST USERS"],
+			included_segments: ["Subscribed Users"],
+			// included_segments: ["TEST USERS"],
 		};
 		return message;
 	};
@@ -73,59 +77,6 @@ const Comments = (props) => {
 							</Label>
 						) : null;
 					};
-					const mainButton = {
-						0: [
-							<Button
-								key={index}
-								className={`icons ${buttons.isApproving && props.isLoading ? "loading" : ""} ${
-									comment.author === "mychicmirror" ? "hidden" : ""
-								}`}
-								size="mini"
-								color="green"
-								circular
-								icon="circular-icon thumbs up outline"
-								onClick={() => {
-									updateButtons({ name: "isApproving" });
-									props.onCommentUpdate({ id: comment.comment_ID, status: "1", operation: "update" });
-									props.doRefresh();
-								}}
-							/>,
-						],
-						1: [
-							<Button
-								key={index}
-								className={`${buttons.isApproving && props.isLoading ? "loading" : ""} ${
-									comment.author === "mychicmirror" ? "hidden" : ""
-								}`}
-								size="mini"
-								color="yellow"
-								circular
-								icon="circular-icon thumbs down outline"
-								onClick={() => {
-									props.onCommentUpdate({ id: comment.comment_ID, status: "0", operation: "update" });
-									updateButtons({ name: "isApproving" });
-								}}
-							/>,
-						],
-						spam: [
-							<Button
-								key={index}
-								className={`${buttons.isSpamming && props.isLoading ? "loading" : ""}`}
-								size="mini"
-								color="orange"
-								circular
-								icon="circular-icon hide"
-								onClick={() => {
-									props.onCommentUpdate({ id: comment.comment_ID, status: "1", operation: "update" });
-									updateButtons({ name: "isSpamming" });
-								}}
-							/>,
-						],
-					};
-					const getButtonApprove = (status) => {
-						return mainButton[status] || [];
-					};
-
 					return (
 						<Segment
 							raised
@@ -144,35 +95,7 @@ const Comments = (props) => {
 									<Card.Description>{comment.content}</Card.Description>
 								</Card.Content>
 								<Card.Content extra>
-									{/* {getButtonApprove(comment.status)} */}
-									<Button size="medium" content="Azioni" onClick={() => setShowActionSheet(true)} />
-									{/* <Button
-										className={`${buttons.isDeleting && props.isLoading ? "loading" : ""}`}
-										size="mini"
-										color="red"
-										circular
-										icon="circular-icon trash alternate outline"
-										onClick={() => {
-											props.onCommentUpdate({ id: comment.comment_ID, status: "", operation: "delete" });
-											updateButtons({ name: "isDeleting" });
-										}}
-									/>
-									{comment.status === "spam" ? null : (
-										<Button
-											className={`${buttons.isSpamming && props.isLoading ? "loading" : ""} ${
-												comment.author === "mychicmirror" ? "hidden" : ""
-											}`}
-											size="mini"
-											color="blue"
-											circular
-											icon="circular-icon attention"
-											onClick={() => {
-												props.onCommentUpdate({ id: comment.comment_ID, status: "spam", operation: "update" });
-												updateButtons({ name: "isSpamming" });
-											}}
-										/>
-									)}
-									*/}
+									<Button size="medium" color="blue" content="Azioni" onClick={() => { setShowActionSheet(true); setcommentSelected(comment) }} />
 									{comment.status !== "1" || comment.author === "mychicmirror" ? null : (
 										<div className="right floated">
 											<Button
@@ -194,7 +117,7 @@ const Comments = (props) => {
 												}}
 											/>
 										</div>
-									)} 
+									)}
 								</Card.Content>
 							</Card>
 						</Segment>
@@ -207,46 +130,13 @@ const Comments = (props) => {
 				modalToggler={toggleModal}
 				type={{ title: false, title_content: "Nuova Risposta", content: "comment" }}
 			/>
-			<IonActionSheet
-				isOpen={showActionSheet}
-				onDidDismiss={() => setShowActionSheet(false)}
-				cssClass="my-custom-class"
-				buttons={[
-					{
-						text: "Approva",
-						handler: () => {
-							console.log("Delete clicked");
-						},
-					},
-					{
-						text: "Disapprova",
-						handler: () => {
-							console.log("Share clicked");
-						},
-					},
-					{
-						text: "Sposta in spam",
-						handler: () => {
-							console.log("Play clicked");
-						},
-					},
-					{
-						text: "Elimina",
-						role: "destructive",
-						handler: () => {
-							console.log("Favorite clicked");
-						},
-					},
-					{
-						text: "Cancel",
-						icon: close,
-						role: "cancel",
-						handler: () => {
-							console.log("Cancel clicked");
-						},
-					},
-				]}
-			></IonActionSheet>
+			<ActionSheet 
+				showActionSheet={showActionSheet} 
+				comment={commentSelected} 
+				onCommentUpdate={props.onCommentUpdate}
+				doRefresh={props.doRefresh} 
+				setShowActionSheet={setShowActionSheet}
+			/>
 		</>
 	);
 };

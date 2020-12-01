@@ -16,6 +16,7 @@ import {
 	IonRow,
 	IonSegment,
 	IonSegmentButton,
+	IonTitle,
 	IonToolbar,
 	useIonViewWillEnter,
 } from "@ionic/react";
@@ -29,6 +30,7 @@ import CommentsList from "../components/comments";
 import Modal from "../components/UI/modal";
 import UserUtilities from "../components/user_utilities";
 import { ONESIGNAL_APP_ID } from "../helpers/config";
+import { isPrefixUnaryExpression } from "typescript";
 
 const User = (props) => {
 	const [showAlert, setShowAlert] = useState(false);
@@ -96,8 +98,22 @@ const User = (props) => {
 	return (
 		<>
 			<IonPage id="user-card-detail">
-				<IonHeader>
-					<IonToolbar></IonToolbar>
+				<IonHeader collapse="condense" className="ion-no-border">
+					<IonToolbar>
+						<Card className="fluid raised toolbar-card">
+							<Card.Content>
+								<Image className="right floated circular mini" src="images/default_avatar.jpg" />
+								<Card.Header>{props.user.username}</Card.Header>
+								<Card.Meta>{props.user.email}</Card.Meta>
+							</Card.Content>
+							<Card.Content>
+								<IonSegment value={view} onIonChange={(e) => setView(e.detail.value)}>
+									<IonSegmentButton value="comments">Comments</IonSegmentButton>
+									<IonSegmentButton value="utility">Utility</IonSegmentButton>
+								</IonSegment>
+							</Card.Content>
+						</Card>
+					</IonToolbar>
 				</IonHeader>
 				<IonContent>
 					<IonGrid>
@@ -105,27 +121,8 @@ const User = (props) => {
 							<div className="user-component">
 								{props.user.username && (
 									<Card className="fluid raised">
-										<Card.Content>
-											<Image className="right floated circular mini" src="images/default_avatar.jpg" />
-											<Card.Header>{props.user.username}</Card.Header>
-											<Card.Meta>{props.user.email}</Card.Meta>
-										</Card.Content>
-										<Card.Content>
-											<Card.Description>
-												<Message className={`${props.user.playerID ? "positive" : "negative"}`}>
-													<Message.Header>OneSignal ID</Message.Header>
-													<Message.Content>{props.user.playerID || "Not yet registered"}</Message.Content>
-												</Message>
-											</Card.Description>
-										</Card.Content>
-										<IonToolbar>
-											<IonSegment value={view} onIonChange={(e) => setView(e.detail.value)}>
-												<IonSegmentButton value="comments">Comments</IonSegmentButton>
-												<IonSegmentButton value="utility">Utility</IonSegmentButton>
-											</IonSegment>
-										</IonToolbar>
 										<Card.Content extra className={`${view === "comments" ? "hidden" : ""}`}>
-											<UserUtilities />
+											<UserUtilities {...props} />
 										</Card.Content>
 										<Card.Content extra className={`${view !== "comments" ? "hidden" : ""}`}>
 											<IonRefresher slot="fixed" onIonRefresh={refresh}>
@@ -171,9 +168,8 @@ const User = (props) => {
 										size="large"
 										fill="clear"
 										onClick={() => toggleModal(true)}
-										className={`ui basic ${props.isSending ? "ui basic loading disabled" : ""} ${
-											!props.user.playerID ? "ui basic disabled" : ""
-										}`}
+										className={`ui basic ${props.isSending ? "ui basic loading disabled" : ""} ${!props.user.playerID ? "ui basic disabled" : ""
+											}`}
 									>
 										<IonIcon slot="icon-only" icon={notificationsCircle} />
 									</IonButton>

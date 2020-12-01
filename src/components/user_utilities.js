@@ -13,9 +13,9 @@ import {
 	IonToggle,
 } from "@ionic/react";
 import { logInOutline } from "ionicons/icons";
-import { Segment } from "semantic-ui-react";
+import { Message, Segment } from "semantic-ui-react";
 
-const UserUtilities = () => {
+const UserUtilities = ({user}) => {
 	const [login, setLogin] = useState("not tested");
 	const [checked, setChecked] = useState(false);
 	return (
@@ -23,6 +23,10 @@ const UserUtilities = () => {
 			<IonCard>
 				<IonCardHeader>Settings</IonCardHeader>
 				<IonCardContent>
+					<Message className={`${user.playerID ? "positive" : "negative"}`}>
+						<Message.Header>OneSignal ID</Message.Header>
+						<Message.Content>{user.playerID || "Not yet registered"}</Message.Content>
+					</Message>
 					<IonList>
 						<IonItem onClick={() => console.log("click")}>
 							<IonIcon icon={logInOutline} slot="start"></IonIcon>

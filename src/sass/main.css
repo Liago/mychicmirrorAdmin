@@ -1,6 +1,7 @@
 
 @import "./components/_users.css"; 
 @import "./components/_menu.css"; 
+@import "./components/_user.css"; 
 @import "./components/_userlist.css"; 
 @import "./components/_comments.css"; 
 @import "./components/_allComments.css"; 

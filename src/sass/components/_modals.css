@@ -8,3 +8,8 @@
 .dimmed.dimmable>.ui.visible.dimmer, .ui.active.dimmer {
     background-color: rgba(255,255,255,.85);
 }
+
+.ui.modal {
+	background: none !important;
+    box-shadow: none !important;
+}
