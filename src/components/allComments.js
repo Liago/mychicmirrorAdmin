@@ -65,7 +65,8 @@ const Comments = (props) => {
 			ios_sound: "nil",
 			android_sound: "nil",
 			data: { post: replyparams.comment_post },
-			included_segments: ["Subscribed Users"],
+			included_segments: [props.notificationSegment],
+			// included_segments: ["Subscribed Users"],
 			// included_segments: ["TEST USERS"],
 		};
 		return message;
@@ -152,7 +153,8 @@ const mapStateToProps = (state) => {
 		isLoading: state.app.loading,
 		error: state.app.error,
 		isReplySent: state.user.replied.success,
-		isSent: state?.toast?.isCompleted || null
+		isSent: state?.toast?.isCompleted || null,
+		notificationSegment: state.app.notificationSegment
 	};
 };
 const mapDispatchToProps = (dispatch) => {

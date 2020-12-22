@@ -12,6 +12,17 @@ export const setDarkMode = (dark) => {
 		};
 	}
 };
+export const setDevMode = (dark) => {
+	if (dark) {
+		return {
+			type: actionTypes.DEV_MODE_SET,
+		};
+	} else {
+		return {
+			type: actionTypes.PROD_MODE_SET,
+		};
+	}
+};
 
 export const allCommentsStart = () => {
 	return {

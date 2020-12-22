@@ -3,6 +3,8 @@ import * as actionTypes from "../actions/actionTypes";
 const initialState = {
 	app: {
 		darkMode: false,
+		devMode:false,
+		notificationSegment: "Subscribed Users",
 		loading: false,
 		error: null,
 		isMessageDelete:false,
@@ -31,6 +33,19 @@ const toast = (state = initialState.toast, action) => {
 }
 const app = (state = initialState.app, action) => {
 	switch (action.type) {
+		
+		case actionTypes.DEV_MODE_SET:
+			return {
+				...state,
+				devMode: true,
+				notificationSegment: "TEST USERS"
+			};
+		case actionTypes.PROD_MODE_SET:
+			return {
+				...state,
+				devMode: false,
+				notificationSegment: "Subscribed Users"
+			};
 		case actionTypes.DARK_MODE_SET:
 			return {
 				...state,
