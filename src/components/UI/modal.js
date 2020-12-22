@@ -14,11 +14,14 @@ const ModalNotification = (props) => {
 	};
 
 	return (
-		<Modal size="small" open={props.open} onClose={() => props.modalToggler(false)}>
-			<Dimmer inverted className={dimmerState ? "active" : ""}>
+		<Modal 
+			size="small" 
+			dimmer="inverted"
+			open={props.open} 
+			onClose={() => props.modalToggler(false)}>
+			<Dimmer className={dimmerState ? "active" : ""}>
 				<Loader inverted>Sending...</Loader>
 			</Dimmer>
-			{/* <Modal.Header>{props.type.title_content}</Modal.Header> */}
 			<Modal.Content>
 				<Card>
 					<Card.Content>

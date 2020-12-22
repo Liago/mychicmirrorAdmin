@@ -16,13 +16,12 @@ import {
 	IonRow,
 	IonSegment,
 	IonSegmentButton,
-	IonTitle,
 	IonToolbar,
 	useIonViewWillEnter,
 } from "@ionic/react";
 import { closeCircleOutline, notificationsCircle, refreshOutline, trashOutline } from "ionicons/icons";
 import { connect } from "react-redux";
-import { Card, Image, Message } from "semantic-ui-react";
+import { Card, Icon, Image } from "semantic-ui-react";
 import { sendNotification, userDelete, loadUserComments, sendCommentReply } from "../store/actions/";
 
 import Placeholder from "../components/UI/skeleton_list";
@@ -30,7 +29,6 @@ import CommentsList from "../components/comments";
 import Modal from "../components/UI/modal";
 import UserUtilities from "../components/user_utilities";
 import { ONESIGNAL_APP_ID } from "../helpers/config";
-import { isPrefixUnaryExpression } from "typescript";
 
 const User = (props) => {
 	const [showAlert, setShowAlert] = useState(false);
@@ -38,7 +36,7 @@ const User = (props) => {
 	const [isModalOpen, toggleModal] = useState(false);
 	const [view, setView] = useState("comments");
 	const [allComments, setAllComments] = useState(null);
-	const [commentsCount, setCommentsCount] = useState(0);
+	const [commentsCount, setCommentsCount] = useState(null);
 	const [loading, setLoading] = useState(false);
 
 	const prepareNotification = (params) => {
@@ -65,6 +63,7 @@ const User = (props) => {
 				setAllComments(comments);
 				setLoading(loading);
 				setCommentsCount(count);
+				console.log('comments, loading, count', comments, loading, count)
 			} catch (e) {
 				console.log(e);
 			}
@@ -81,9 +80,10 @@ const User = (props) => {
 	};
 
 	const getComments = () => {
-		if (isNil(allComments) || loading) return <Placeholder rows={5} />;
-		if (isNil(allComments) && commentsCount === 0) return <IonLabel color="dark">No comments so far</IonLabel>;
+		if (isNil(commentsCount)) return <Placeholder rows={5} lines={2} image />;
+		if (commentsCount === 0) return <IonLabel color="dark">No comments so far</IonLabel>
 		return <CommentsList list={allComments} avatar={"images/default_avatar.jpg"} onReplySubmitted={commentReplyHandler} />;
+
 	};
 
 	const commentReplyHandler = (values) => {
@@ -107,10 +107,12 @@ const User = (props) => {
 								<Card.Meta>{props.user.email}</Card.Meta>
 							</Card.Content>
 							<Card.Content>
-								<IonSegment value={view} onIonChange={(e) => setView(e.detail.value)}>
-									<IonSegmentButton value="comments">Comments</IonSegmentButton>
-									<IonSegmentButton value="utility">Utility</IonSegmentButton>
-								</IonSegment>
+								{isNil(commentsCount) ? <Placeholder row={1} lines={1} /> : (
+									<IonSegment value={view} onIonChange={(e) => setView(e.detail.value)}>
+										<IonSegmentButton value="comments">{isNil(commentsCount) || loading ? <Icon className="icons asterisk loading inverted grey" /> : "Comments: " + commentsCount}</IonSegmentButton>
+										<IonSegmentButton value="utility">Utility</IonSegmentButton>
+									</IonSegment>
+								)}
 							</Card.Content>
 						</Card>
 					</IonToolbar>
@@ -161,9 +163,9 @@ const User = (props) => {
 				/>
 				<IonFooter>
 					<IonToolbar className="action-toolbar">
-						<IonGrid>
+						<IonGrid className="py-0">
 							<IonRow>
-								<IonCol>
+								<IonCol className="py-0">
 									<IonButton
 										size="large"
 										fill="clear"
@@ -174,13 +176,13 @@ const User = (props) => {
 										<IonIcon slot="icon-only" icon={notificationsCircle} />
 									</IonButton>
 								</IonCol>
-								<IonCol>
-									<IonButton color="danger" onClick={() => setShowAlert(true)} fill="clear">
+								<IonCol className="py-0">
+									<IonButton className="py-0" color="danger" onClick={() => setShowAlert(true)} fill="clear">
 										<IonIcon slot="icon-only" icon={trashOutline} />
 									</IonButton>
 								</IonCol>
-								<IonCol>
-									<IonButton onClick={() => props.closeModal(false)} color="dark" fill="clear">
+								<IonCol className="py-0">
+									<IonButton className="py-0" onClick={() => props.closeModal(false)} color="dark" fill="clear">
 										<IonIcon slot="icon-only" icon={closeCircleOutline} />
 									</IonButton>
 								</IonCol>

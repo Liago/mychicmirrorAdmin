@@ -3,6 +3,9 @@
 		width: 75%;
 		margin: 0;
 	}
+	.ui.modal>.content {
+		padding:0 !important;
+	}
 }
 .dimmed.dimmable>.ui.animating.dimmer, 
 .dimmed.dimmable>.ui.visible.dimmer, .ui.active.dimmer {
@@ -12,4 +15,8 @@
 .ui.modal {
 	background: none !important;
     box-shadow: none !important;
+}
+
+.ui.inverted.modals.dimmer {
+	background-color:rgba(0,0,0,.85) !important;
 }

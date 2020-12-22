@@ -7,9 +7,8 @@ const listPlaceholder = (props) => {
 			{[...Array(props.rows)].map((o, i) => {
 				return (
 					<Placeholder key={i}>
-						<Placeholder.Header image>
-							<Placeholder.Line />
-							<Placeholder.Line />
+						<Placeholder.Header image={props.image}>
+							{[...Array(props.lines)].map((o, i) => { return <Placeholder.Line key={i} /> })}
 						</Placeholder.Header>
 					</Placeholder>
 				);

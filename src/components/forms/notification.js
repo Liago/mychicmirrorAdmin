@@ -19,7 +19,7 @@ const NotificationForm = (props) => {
 							type="text"
 							component={renderTextArea}
 							label="Commento"
-							placeholder="Write down your comment"
+							placeholder="Scrivi il commento"
 							required={false}
 						/>
 					) : (

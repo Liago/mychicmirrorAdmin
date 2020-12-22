@@ -34,7 +34,7 @@ const ActionSheet = ({ showActionSheet, comment, onCommentUpdate, doRefresh, set
 			},
 		},
 		{
-			text: "Cancel",
+			text: "Annulla",
 			icon: close,
 			role: "cancel",
 		},

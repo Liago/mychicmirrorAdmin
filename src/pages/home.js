@@ -20,6 +20,7 @@ import CommentsList from "../components/allComments";
 import { getAllComments } from "../store/actions";
 import Placeholder from "../components/UI/skeleton";
 import { refreshOutline } from "ionicons/icons";
+import { Icon } from "semantic-ui-react";
 
 const HomePage = (props) => {
 	// console.log("HOMEPAGE props", props);
@@ -27,7 +28,7 @@ const HomePage = (props) => {
 	const [view, setView] = useState("all");
 	const [loading, setLoading] = useState(false);
 	const [allComments, setAllComments] = useState(null);
-
+	const [spam, setspam] = useState(null)
 
 	useIonViewWillEnter(() => {
 		readComments();
@@ -40,6 +41,7 @@ const HomePage = (props) => {
 				const response = await props.onLoadAllComments();
 				console.log("response.allComments.comments", response);
 				setAllComments(response.allComments.comments);
+				setspam(response.allComments.total_spam);
 				setLoading(response.loading);
 			} catch (e) {
 				console.log(e);
@@ -55,18 +57,18 @@ const HomePage = (props) => {
 			// event.detail.complete();
 		}, 2000);
 	};
-	
+
 	const showComments = () => {
 		return loading || isNil(allComments) ? (
 			<Placeholder rows={10} />
 		) : (
-			<CommentsList 
-				list={allComments} 
-				view={view} 
-				doRefresh={() => refresh()} 
-				avatar={"images/default_avatar.jpg"} 
-			/>
-		);
+				<CommentsList
+					list={allComments}
+					view={view}
+					doRefresh={() => refresh()}
+					avatar={"images/default_avatar.jpg"}
+				/>
+			);
 	};
 
 	return (
@@ -76,12 +78,20 @@ const HomePage = (props) => {
 					<IonButtons slot="start">
 						<IonMenuButton />
 					</IonButtons>
-					<IonTitle>You have {size(allComments)} comments</IonTitle>
+					<IonTitle>Last {size(allComments)} comments</IonTitle>
 				</IonToolbar>
 				<IonToolbar>
 					<IonSegment value={view} onIonChange={(e) => setView(e.detail.value)}>
-						<IonSegmentButton value="all">Comments</IonSegmentButton>
-						<IonSegmentButton value="spam">Spam</IonSegmentButton>
+						<IonSegmentButton value="all">
+							{isNil(allComments) || loading
+								? <Icon className="icons asterisk loading inverted grey" />
+								: `Comments ${size(allComments) - parseInt(spam)}`}
+						</IonSegmentButton>
+						<IonSegmentButton value="spam" color="red">
+							{isNil(spam) || loading
+								? <Icon className="icons asterisk loading inverted grey" />
+								: `Spam ${spam}`}
+						</IonSegmentButton>
 					</IonSegment>
 				</IonToolbar>
 			</IonHeader>

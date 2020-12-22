@@ -17,7 +17,9 @@ const notifications = (props) => {
 				<Segment raised>
 					Notifications
 				</Segment>
-				<IonSegment></IonSegment>
+				<IonSegment>
+					
+				</IonSegment>
 			</IonContent>
 		</IonPage>
 	);

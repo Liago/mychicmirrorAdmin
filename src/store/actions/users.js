@@ -94,13 +94,13 @@ export const loadUserComments = (params) => {
 		dispatch(loadUserCommentsStart());
 		try {
 			const response = await rest.getUserComments(params);
-			// console.log("[loadUserComments]", response);
+			console.log("[loadUserComments]", response);
 			if (response.status === 200 && isNil(response.data.count)) {
 				dispatch(loadUserCommentsSuccess());
-				return { commentscount: 0, comments: null, loading: false };
+				return { count: 0, comments: null, loading: false };
 			} else if (response.status === 200 && !isNil(response.data.count)) {
 				dispatch(loadUserCommentsSuccess());
-				return { commentscount: response.data.count, comments: response.data.comments, loading: false };
+				return { count: response.data.count, comments: response.data.comments, loading: false };
 			} else {
 				dispatch(loadUserCommentsFail({ error: "qualcosa è andato storto" }));
 				return { comments: null, loading: false };

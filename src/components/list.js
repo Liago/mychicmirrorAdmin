@@ -1,8 +1,7 @@
 import React from "react";
-import { IonIcon, IonList } from "@ionic/react";
+import { IonList } from "@ionic/react";
 import { connect } from "react-redux";
 import { Card, Icon, Label, Segment } from "semantic-ui-react";
-import { notificationsOutline, } from "ionicons/icons";
 
 const list = (props) => {
 	return (
@@ -18,10 +17,10 @@ const list = (props) => {
 								</Card.Content>
 								<Card.Content extra>
 									<Card.Description>
-										<Label color={`${user.playerID ? "green" : "default"}`}>
-											<Icon className="icons" name="bell" /> 
-											{user.playerID || "no playerID retrieved"}
-										</Label>
+										<Icon 
+											className={`icons ${user.playerID ? "inverted green":"inverted grey"}`} 
+											name={`${user.playerID ? "bell" : "bell slash outline"}`} 
+										/>
 									</Card.Description>
 								</Card.Content>
 							</Card>

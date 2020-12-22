@@ -1,0 +1,7 @@
+.action-sheet-group .action-sheet-button {
+	font-size: 1rem;
+	color: var(--ion-color-dark);
+}
+.action-sheet-group .action-sheet-button.action-sheet-destructive {
+	color: var(--ion-color-danger);
+}

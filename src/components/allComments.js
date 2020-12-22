@@ -44,6 +44,11 @@ const Comments = (props) => {
 		}
 	}, [replyparams]);
 
+	useEffect(() => {
+		if (props.isSent) 
+			toggleModal(false)
+	}, [props.isSent])
+
 	const handleSubmit = (values) => {
 		setreplyparams({ ...replyparams, comment_content: values.contenuto });
 	};
@@ -85,7 +90,7 @@ const Comments = (props) => {
 								${comment.status !== "spam" && view !== "all" ? "hidden" : ""}`}
 							key={index}
 						>
-							<Card className={`w-100 ${comment.status === "0" ? "red" : ""}`} key={index}>
+							<Card className="w-100" key={index}>
 								<Card.Content>
 									{markAsSpam()}
 									<Image floated="right" size="mini" src={avatar} />
@@ -118,6 +123,8 @@ const Comments = (props) => {
 											/>
 										</div>
 									)}
+									<div className={`${comment.status === "0" ? "ui bottom right attached red label" : "hidden"}`}>Pending</div>
+									
 								</Card.Content>
 							</Card>
 						</Segment>
@@ -145,6 +152,7 @@ const mapStateToProps = (state) => {
 		isLoading: state.app.loading,
 		error: state.app.error,
 		isReplySent: state.user.replied.success,
+		isSent: state?.toast?.isCompleted || null
 	};
 };
 const mapDispatchToProps = (dispatch) => {

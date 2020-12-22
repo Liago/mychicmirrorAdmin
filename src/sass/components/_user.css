@@ -1,5 +1,6 @@
 .ui.fluid.card.toolbar-card {
 	padding-top: 25px;
+	box-shadow: none;
 }
 ion-toolbar {
 	margin-top: -0.21425em;
@@ -37,4 +38,7 @@ ion-toolbar {
 }
 .ui.card > .extra a:not(.ui) {
 	color: rgba(0, 0, 0, 0.6);
+}
+ion-footer {
+	height: 60px;
 }

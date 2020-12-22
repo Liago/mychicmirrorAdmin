@@ -1,7 +1,7 @@
 import * as rest from "../../helpers/rest";
 import * as actionTypes from "./actionTypes";
 import { toastSetValue } from "./toast";
-import {sendNotification } from "./users";
+import { sendNotification } from "./users";
 
 export const replyCommentStart = () => {
 	return {
@@ -12,12 +12,14 @@ export const replyCommentStart = () => {
 export const replyCommentSuccess = (response) => {
 	return {
 		type: actionTypes.REPLY_COMMENTS_SUCCESS,
+		loading:false,
 		payload: response
 	}
 }
 export const replyCommentFail = (error) => {
 	return {
 		type: actionTypes.REPLY_COMMENTS_FAIL,
+		loading:false,
 		payload: error
 	}
 }

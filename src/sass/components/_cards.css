@@ -1,0 +1,4 @@
+#user-card-detail .ui.raised.card {
+	width: calc(100vw - 10%);
+	margin: 0 auto;
+}
