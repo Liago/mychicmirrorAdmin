@@ -1,5 +1,7 @@
 export const DARK_MODE_SET = "DARK_MODE_SET";
 export const NORMAL_MODE_SET = "NORMAL_MODE_SET";
+export const DEV_MODE_SET = "DEV_MODE_SET";
+export const PROD_MODE_SET = "PROD_MODE_SET";
 export const TOAST_CLEAR = "TOAST_CLEAR";
 export const TOAST_SET_VALUE = "TOAST_SET_VALUE";
 

@@ -23,16 +23,18 @@ const NotificationForm = (props) => {
 							required={false}
 						/>
 					) : (
-						<Field name="contenuto" type="text" component={renderInputField} label="Contenuto" placeholder="..." required={false} />
-					)}
+							<Field name="contenuto" type="text" component={renderInputField} label="Contenuto" placeholder="..." required={false} />
+						)}
 				</Form.Field>
 				<Divider />
-				<Button type="submit" className="ui primary button" positive disabled={pristine || submitting} >
-					Invia
+				<div className="text-end">
+					<Button type="submit" className="ui primary button" positive disabled={pristine || submitting} >
+						Invia
 				</Button>
-				<Button type="button" disabled={pristine || submitting} onClick={() => props.onClearForm()}>
-					Clear
+					<Button type="button" disabled={pristine || submitting} onClick={() => props.onClearForm()}>
+						Clear
 				</Button>
+				</div>
 			</Form>
 		</>
 	);

@@ -1,10 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
-import { setDarkMode } from "../store/actions/";
+import { setDarkMode, setDevMode } from "../store/actions/";
 import { IonContent, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu, IonMenuToggle, IonNote, IonToggle } from "@ionic/react";
 
 import { useLocation } from "react-router-dom";
-import { bookmarkOutline, moonOutline, peopleSharp, notifications, chatbubblesOutline } from "ionicons/icons";
+import { bookmarkOutline, moonOutline, peopleSharp, notifications, chatbubblesOutline, cogOutline } from "ionicons/icons";
 
 const appPages = [
 	{
@@ -85,6 +85,11 @@ const Menu = (props) => {
 						<IonLabel>Dark Mode</IonLabel>
 						<IonToggle checked={props.darkMode} onClick={() => props.setDarkMode(!props.darkMode)} />
 					</IonItem>
+					<IonItem>
+						<IonIcon slot="start" icon={cogOutline}></IonIcon>
+						<IonLabel>Dev Mode</IonLabel>
+						<IonToggle checked={props.devMode} onClick={() => props.setDevMode(!props.devMode)} />
+					</IonItem>
 					{labels.map((label, index) => (
 						<IonItem lines="none" key={index}>
 							<IonIcon slot="start" icon={bookmarkOutline} />
@@ -100,11 +105,13 @@ const Menu = (props) => {
 const mapStateToProps = (state) => {
 	return {
 		darkMode: state.app.darkMode,
+		devMode: state.app.devMode,
 	};
 };
 const mapDispatchToProps = (dispatch) => {
 	return {
 		setDarkMode: (dark) => dispatch(setDarkMode(dark)),
+		setDevMode: (mode) => dispatch(setDevMode(mode)),
 	};
 };
 

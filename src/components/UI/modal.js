@@ -1,3 +1,4 @@
+import { IonModal } from "@ionic/react";
 import React, { useState, useEffect } from "react";
 import { Card, Dimmer, Loader, Modal } from "semantic-ui-react";
 
@@ -14,27 +15,27 @@ const ModalNotification = (props) => {
 	};
 
 	return (
-		<Modal 
-			size="small" 
-			dimmer="inverted"
-			open={props.open} 
-			onClose={() => props.modalToggler(false)}>
-			<Dimmer className={dimmerState ? "active" : ""}>
-				<Loader inverted>Sending...</Loader>
-			</Dimmer>
-			<Modal.Content>
-				<Card>
-					<Card.Content>
-						<Card.Header>
-							{props.type.title_content}
-						</Card.Header>
-					</Card.Content>
-					<Card.Content>
-						<NotificationForm onSubmit={handleSubmit} type={props.type} />
-					</Card.Content>
-				</Card>
-			</Modal.Content>
-		</Modal>
+
+		<IonModal
+			isOpen={props.open}
+			cssClass='comment-modal-class'
+			swipeToClose={true}
+			presentingElement={undefined}
+			onDidDismiss={() => props.modalToggler(false)}>
+			<Card fluid classname="animate__fadeInUp animate__delay-2s">
+				<Card.Content>
+					<Dimmer className={dimmerState ? "active" : ""}>
+						<Loader inverted>Sending...</Loader>
+					</Dimmer>
+					<Card.Header>
+						{props.type.title_content}
+					</Card.Header>
+				</Card.Content>
+				<Card.Content>
+					<NotificationForm onSubmit={handleSubmit} type={props.type} />
+				</Card.Content>
+			</Card>
+		</IonModal>
 	);
 };
 
