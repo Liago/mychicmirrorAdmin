@@ -3,22 +3,26 @@
 	scroll-behavior: smooth;
 }
 
-[class^="icons"], [class*="icons"], [class*="circular-icon thumbs"], 
-[class*="circular-icon hide"], [class*="circular-icon attention"], 
-[class*="circular-icon trash alternate outline"], [class*="circular-icon reply"] {
+[class^="icons"],
+[class*="icons"],
+[class*="circular-icon thumbs"],
+[class*="circular-icon hide"],
+[class*="circular-icon attention"],
+[class*="circular-icon trash alternate outline"],
+[class*="circular-icon reply"] {
 	/* use !important to prevent issues with browser extensions that change fonts */
-	font-family: 'Icons' !important;
+	font-family: "Icons" !important;
 	speak: none;
 	font-style: normal;
 	font-weight: normal;
 	font-variant: normal;
 	text-transform: none;
 	line-height: 1;
-  
+
 	/* Better Font Rendering =========== */
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-  }
+}
 
 .p-0 {
 	padding: 0 !important;
@@ -50,4 +54,13 @@
 /*Every toolbar title*/
 .title-default {
 	text-align: left;
+}
+.text-start {
+	text-align: left !important;
+}
+.text-center {
+	text-align: center !important;
+}
+.text-end {
+	text-align: right !important;
 }

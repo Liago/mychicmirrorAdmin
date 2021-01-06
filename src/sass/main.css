@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap');
+@import "/node_modules/animate.css/animate.min.css";
 
 @import "./components/_users.css"; 
 @import "./components/_menu.css"; 
@@ -9,5 +11,3 @@
 @import "./components/_modals.css"; 
 @import "./components/_cards.css"; 
 @import "./components/_style.css"; 
-
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap');

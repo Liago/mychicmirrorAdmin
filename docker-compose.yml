@@ -1,0 +1,9 @@
+version: '3'
+services:
+  web:
+    image: img-static-site-example
+    build: .
+    container_name: mychicmirror-admin
+    restart: always
+    ports:
+      - "8060:80"

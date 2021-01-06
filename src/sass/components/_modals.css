@@ -20,3 +20,12 @@
 .ui.inverted.modals.dimmer {
 	background-color:rgba(0,0,0,.85) !important;
 }
+
+
+.comment-modal-class {
+	--background:rgba(0,0,0,.50);
+}
+.comment-modal-class .ui.fluid.card {
+	position: absolute;
+	bottom:0;
+}
