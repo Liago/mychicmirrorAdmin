@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import {
 	IonAlert,
-	IonBackButton,
 	IonButton,
 	IonButtons,
 	IonContent,
@@ -14,7 +13,6 @@ import {
 	IonRefresher,
 	IonRefresherContent,
 	IonTitle,
-	IonToast,
 	IonToolbar,
 } from "@ionic/react";
 import { loadUsers, userRegistration } from "../store/actions";
@@ -22,13 +20,12 @@ import List from "../components/list";
 import User from "../components/user";
 import Placeholder from "../components/UI/skeleton";
 
-import { personAddOutline, refreshOutline, star } from "ionicons/icons";
+import { personAddOutline, refreshOutline } from "ionicons/icons";
 
 const Users = (props) => {
 	const [userSelected, selectUser] = useState(null);
 	const [isModalVisibile, setModalState] = useState(false);
 	const [userAlert, setUserAlert] = useState(false);
-	const [showToast, setShowToast] = useState(false);
 	const [isRefreshing, doRefresh] = useState(false);
 
 	useEffect(() => {
@@ -52,7 +49,7 @@ const Users = (props) => {
 	};
 
 	return (
-		<IonPage id="page-users">
+		<IonPage id="page-users" className="bg-gray-900">
 			<IonContent>
 				<IonHeader>
 					<IonToolbar>
@@ -67,7 +64,7 @@ const Users = (props) => {
 						</IonButtons>
 					</IonToolbar>
 				</IonHeader>
-				<IonContent fullscreen="true">
+				<IonContent fullscreen="true" className="container mx-auto bg-gray-100">
 					<IonRefresher slot="fixed" onIonRefresh={refresh}>
 						<IonRefresherContent
 							pullingIcon={refreshOutline}
