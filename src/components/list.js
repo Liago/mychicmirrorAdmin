@@ -9,62 +9,37 @@ const list = (props) => {
 			<div className="list-component">
 				{props.users.map((user, index) => {
 					return (
-						<div key={index} onClick={() => props.onSelectUser(user)}>
-							<div className="shadow-md group block rounded-lg p-4 border border-gray-200 my-3">
-								<dl className="grid sm:block lg:grid xl:block grid-cols-2 grid-rows-2 items-center">
-									<div>
-										<dd className="leading-6 font-medium text-blue-500">
-											{user.username}
-										</dd>
+						<div className="flex bg-white shadow-lg rounded-lg mx-4 mx-auto my-5 border" key={index} onClick={() => props.onSelectUser(user)}>
+							<div className="w-full flex items-start px-4 py-6">
+								<img className="w-12 h-12 rounded-full object-cover mr-4 shadow" src="../images/default_avatar.jpg" alt="avatar" />
+								<div className="w-full">
+									<div className="flex items-center justify-between">
+										<h2 className="text-lg font-semibold text-blue-500 mt-1">{user.username} </h2>
 									</div>
-									<div>
-										<dd className="block mt-1 text-xs leading-tight font-normal text-gray-500">
-											{user.email}
-										</dd>
+									<p className="text-gray-700 text-sm">{user.email}</p>
+									{/* <p className="mt-3 text-gray-700 text-sm">01/01/2020</p> */}
+									<div className="mt-4 flex justify-end">
+										<div className="flex mr-2 text-gray-700 text-sm mr-3">
+											<svg fill={`${user.playerID ? "green" : "grey"}`} viewBox="0 0 24 24" className="w-4 h-4 mr-1" stroke={`${user.playerID ? "green" : "grey"}`}>
+												<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+											</svg>
+										</div>
+										{/* <div className="flex mr-2 text-gray-700 text-sm mr-8">
+											<svg fill="none" viewBox="0 0 24 24" className="w-4 h-4 mr-1" stroke="currentColor">
+												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+											</svg>
+											<span>8</span>
+										</div> */}
+										{/* <div className="flex mr-2 text-gray-700 text-sm mr-4">
+											<svg fill="none" viewBox="0 0 24 24" className="w-4 h-4 mr-1" stroke="currentColor">
+												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+											</svg>
+											<span>share</span>
+										</div> */}
 									</div>
-									<div className="col-start-2 row-start-1 row-end-3">
-										<dd className="flex justify-end sm:justify-start lg:justify-end xl:justify-start -space-x-2">
-											<img src="../images/default_avatar.jpg" alt="" width="48" height="48" className="w-7 h-7 rounded-full bg-gray-100 border-2 border-white" />
-										</dd>
-									</div>
-								</dl>
+								</div>
 							</div>
 						</div>
-
-						// <div className="max-w-md bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl m-2 from-green-800 via-pink-500 to-green-100"
-						// 	key={index}
-						// 	onClick={() => props.onSelectUser(user)}
-						// >
-						// 	<div className="md:flex">
-						// 		<div className="p-8">
-						// 			<div className="tracking-wide text-sm text-blue-600 font-bold">{user.username}</div>
-						// 			<div className="block mt-1 text-xs leading-tight font-normal text-gray-500 hover:underline">{user.email}</div>
-						// 			<p className="mt-2 text-gray-500">
-										// <Icon
-										// 	className={`absolute top-0 right-0 icons ${user.playerID ? "inverted green" : "inverted grey"}`}
-										// 	name={`${user.playerID ? "bell" : "bell slash outline"}`}
-										// />
-						// 			</p>
-						// 		</div>
-						// 	</div>
-						// </div>
-
-						// <Segment raised className="p-0" key={index}>
-						// 	<Card onClick={() => props.onSelectUser(user)} className="w-100">
-						// 		<Card.Content>
-						// 			<Card.Header>{user.username}</Card.Header>
-						// 			<Card.Meta>{user.email}</Card.Meta>
-						// 		</Card.Content>
-						// 		<Card.Content extra>
-						// 			<Card.Description>
-						// 				<Icon 
-						// 					className={`icons ${user.playerID ? "inverted green":"inverted grey"}`} 
-						// 					name={`${user.playerID ? "bell" : "bell slash outline"}`} 
-						// 				/>
-						// 			</Card.Description>
-						// 		</Card.Content>
-						// 	</Card>
-						// </Segment>
 					);
 				})}
 			</div>
