@@ -97,9 +97,25 @@ const User = (props) => {
 
 	return (
 		<>
-			<IonPage id="user-card-detail">
+			<IonPage id="user-card-detail" className="bg-grey-100">
 				<IonHeader collapse="condense" className="ion-no-border">
 					<IonToolbar>
+						<div className="bg-white relative shadow-xl w-11/12 mx-auto mt-20 shadow-xl">
+							<div className="flex justify-center">
+								<img src="../images/default_avatar.jpg" alt="" className="rounded-full mx-auto absolute -top-20 w-32 h-32 shadow-2xl border-4 border-white" />
+							</div>
+
+							<div className="mt-16">
+								<h1 className="font-bold text-center text-3xl text-gray-900">{props.user.username}</h1>
+								<p className="text-center text-base text-gray-400 font-medium">{props.user.email}</p>
+								<p>
+									<span>
+
+									</span>
+								</p>
+							</div>
+						</div>
+						{/* 						
 						<Card className="fluid raised toolbar-card">
 							<Card.Content>
 								<Image className="right floated circular mini" src="images/default_avatar.jpg" />
@@ -114,7 +130,7 @@ const User = (props) => {
 									</IonSegment>
 								)}
 							</Card.Content>
-						</Card>
+						</Card> */}
 					</IonToolbar>
 				</IonHeader>
 				<IonContent>
@@ -163,31 +179,26 @@ const User = (props) => {
 				/>
 				<IonFooter>
 					<IonToolbar className="action-toolbar">
-						<IonGrid className="py-0">
-							<IonRow>
-								<IonCol className="py-0">
-									<IonButton
-										size="large"
-										fill="clear"
-										onClick={() => toggleModal(true)}
-										className={`ui basic ${props.isSending ? "ui basic loading disabled" : ""} ${!props.user.playerID ? "ui basic disabled" : ""
-											}`}
-									>
-										<IonIcon slot="icon-only" icon={notificationsCircle} />
-									</IonButton>
-								</IonCol>
-								<IonCol className="py-0">
-									<IonButton className="py-0" color="danger" onClick={() => setShowAlert(true)} fill="clear">
-										<IonIcon slot="icon-only" icon={trashOutline} />
-									</IonButton>
-								</IonCol>
-								<IonCol className="py-0">
-									<IonButton className="py-0" onClick={() => props.closeModal(false)} color="dark" fill="clear">
-										<IonIcon slot="icon-only" icon={closeCircleOutline} />
-									</IonButton>
-								</IonCol>
-							</IonRow>
-						</IonGrid>
+						<div className="flex w-full justify-center">
+							<div className="flex-grow w-16 h-16">
+								<button
+									className="px-8 py-2 bg-blue-600 text-blue-50 max-w-max shadow-sm"
+									onClick={() => toggleModal(true)}
+								>Notifica</button>
+							</div>
+							<div className="flex-grow w-16 h-16">
+								<button
+									className="px-8 py-2 bg-red-600 text-blue-50 max-w-max shadow-sm"
+									onClick={() => setShowAlert(true)}
+								>Elimina</button>
+							</div>
+							<div className="flex-grow w-16 h-16">
+								<button
+									className="px-8 py-2 bg-gray-600 text-blue-50 max-w-max shadow-sm"
+									onClick={() => props.closeModal(false)}
+								>Chiudi</button>
+							</div>
+						</div>
 					</IonToolbar>
 				</IonFooter>
 				<Modal

@@ -10,7 +10,7 @@ import moment from "moment";
 const Comments = (props) => {
 	const { onReplySubmitted, avatar, list } = props;
 	const [isModalOpen, toggleModal] = useState(false);
-	const [replyparams, setreplyparams] = useState({post_ID: "",comment_post: "",comment_post_title: "",comment_parent: "",comment_content: ""});
+	const [replyparams, setreplyparams] = useState({ post_ID: "", comment_post: "", comment_post_title: "", comment_parent: "", comment_content: "" });
 
 	useEffect(() => {
 		if (
@@ -24,7 +24,7 @@ const Comments = (props) => {
 			props.onSendCommentReply(replyparams, notificationparams);
 		}
 	}, [replyparams]);
-	
+
 	const prepareNotification = () => {
 		let title_it = replyparams.comment_post_title.split("/")[0];
 		let title_en = replyparams.comment_post_title.split("/")[1];
@@ -53,6 +53,30 @@ const Comments = (props) => {
 				return (
 					<IonItemSliding className="comments-component" key={index}>
 						<IonItem>
+
+							<div className="w-full bg-white rounded-lg shadow-md border p-1 my-5">
+								<div className="flex justify-between items-center">
+									<span className="font-light text-gray-600 text-sm px-2">{moment(comment.date).fromNow()}</span>
+									{/* <a href="#" className="px-2 py-1 bg-gray-600 text-gray-100 font-bold rounded hover:bg-gray-500">Laravel</a> */}
+								</div>
+								<div className="mt-2">
+									{/* <div className="text-xl text-red-700 font-bold px-2">{comment.post_title}></div> */}
+									<div className="text-xl text-red-700 font-bold px-2" dangerouslySetInnerHTML={{ __html: comment.post_title }}></div>
+									<p className="mt-2 text-gray-600 text-sm px-2 text-justify pt-3 border-t border-gray-100">{comment.content}</p>
+								</div>
+								{/* <div className="flex justify-between items-center mt-4">
+									<a href="#" className="text-blue-500 hover:underline">Read more</a>
+									<div>
+										<a href="#" className="flex items-center">
+											<img src={avatar} alt="avatar" className="mx-4 w-10 h-10 object-cover rounded-full hidden sm:block" />
+											<h1 className="text-gray-700 font-bold hover:underline">Alex John</h1>
+										</a>
+									</div>
+								</div> */}
+							</div>
+
+
+							{/* 							
 							<Comment.Group>
 								<Comment>
 									<Comment.Avatar className="circular" as="a" src={avatar} />
@@ -64,7 +88,7 @@ const Comments = (props) => {
 										<Comment.Text>{comment.content}</Comment.Text>
 									</Comment.Content>
 								</Comment>
-							</Comment.Group>
+							</Comment.Group> */}
 						</IonItem>
 						<IonItemOptions side="end">
 							<IonItemOption
@@ -92,7 +116,7 @@ const Comments = (props) => {
 				modalToggler={toggleModal}
 				type={{ title: false, title_content: "Nuova Risposta", content: "comment" }}
 			/>
-		</IonList>
+		</IonList >
 	);
 };
 

@@ -33,6 +33,7 @@ import Toast from "./components/UI/toast";
 // import "./sass/main.css";
 import "./sass/index.css";
 
+
 class App extends Component {
 	render() {
 		return (
