@@ -24,11 +24,13 @@ import { connect } from "react-redux";
 import { Card, Icon, Image } from "semantic-ui-react";
 import { sendNotification, userDelete, loadUserComments, sendCommentReply } from "../store/actions/";
 
-import Placeholder from "../components/UI/skeleton_list";
+import Placeholder from "../components/UI/placeholder";
 import CommentsList from "../components/comments";
 import Modal from "../components/UI/modal";
 import UserUtilities from "../components/user_utilities";
 import { ONESIGNAL_APP_ID } from "../helpers/config";
+
+import Message from "../components/UI/messages";
 
 const User = (props) => {
 	const [showAlert, setShowAlert] = useState(false);
@@ -80,10 +82,9 @@ const User = (props) => {
 	};
 
 	const getComments = () => {
-		if (isNil(commentsCount)) return <Placeholder rows={5} lines={2} image />;
-		if (commentsCount === 0) return <IonLabel color="dark">No comments so far</IonLabel>
+		if (isNil(commentsCount)) return <Placeholder cards={5}/>;
+		if (commentsCount === 0) return <Message color={"bg-green-600"} label={"OK"} content={"No comments so far"}/>
 		return <CommentsList list={allComments} avatar={"images/default_avatar.jpg"} onReplySubmitted={commentReplyHandler} />;
-
 	};
 
 	const commentReplyHandler = (values) => {
@@ -182,19 +183,19 @@ const User = (props) => {
 						<div className="flex w-full justify-center">
 							<div className="flex-grow w-16 h-16">
 								<button
-									className="px-8 py-2 bg-blue-600 text-blue-50 max-w-max shadow-sm"
+									className="px-8 py-2 bg-blue-600 text-blue-50 max-w-max shadow-sm rounded"
 									onClick={() => toggleModal(true)}
 								>Notifica</button>
 							</div>
 							<div className="flex-grow w-16 h-16">
 								<button
-									className="px-8 py-2 bg-red-600 text-blue-50 max-w-max shadow-sm"
+									className="px-8 py-2 bg-red-600 text-blue-50 max-w-max shadow-sm rounded"
 									onClick={() => setShowAlert(true)}
 								>Elimina</button>
 							</div>
 							<div className="flex-grow w-16 h-16">
 								<button
-									className="px-8 py-2 bg-gray-600 text-blue-50 max-w-max shadow-sm"
+									className="px-8 py-2 bg-gray-600 text-blue-50 max-w-max shadow-sm rounded"
 									onClick={() => props.closeModal(false)}
 								>Chiudi</button>
 							</div>
