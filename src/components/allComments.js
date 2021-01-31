@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Button, Card, Icon, Image, Label, Segment } from "semantic-ui-react";
 import Modal from "../components/UI/modal";
 import moment from "moment";
-import { updateComment, sendCommentReply } from "../store/actions";
+import { UpdateComment, SendCommentReply } from "../store/rest";
 import { ONESIGNAL_APP_ID } from "../helpers/config";
 // import { IonActionSheet } from "@ionic/react";
 import { caretForwardCircle, close, heart, share, trash } from "ionicons/icons";
@@ -11,6 +11,13 @@ import { caretForwardCircle, close, heart, share, trash } from "ionicons/icons";
 import ActionSheet from "./UI/actionSheet";
 
 const Comments = (props) => {
+	console.log('props', props)
+	const dispatch = useDispatch();
+
+	const { loading, notificationSegment, error } = useSelector(state => state.app)
+	const { success } = useSelector(state => state.user.replied)
+	// const { isCompleted } = useSelector(state => state.toast)
+
 	const { list, avatar, view } = props;
 	const [isModalOpen, toggleModal] = useState(false);
 	const [replyparams, setreplyparams] = useState({
@@ -40,12 +47,12 @@ const Comments = (props) => {
 			replyparams.comment_content !== ""
 		) {
 			let notificationparams = prepareNotification();
-			props.onSendCommentReply(replyparams, notificationparams);
+			dispatch(SendCommentReply(replyparams, notificationparams));
 		}
 	}, [replyparams]);
 
 	useEffect(() => {
-		if (props.isSent) 
+		if (props.isSent)
 			toggleModal(false)
 	}, [props.isSent])
 
@@ -75,7 +82,7 @@ const Comments = (props) => {
 	return (
 		<>
 			<Segment className="allcomments-component">
-				{list.map((comment, index) => {
+				{list.comments.map((comment, index) => {
 					const markAsSpam = () => {
 						return comment.status === "spam" ? (
 							<Label as="a" color="orange" ribbon="left">
@@ -125,7 +132,7 @@ const Comments = (props) => {
 										</div>
 									)}
 									<div className={`${comment.status === "0" ? "ui bottom right attached red label" : "hidden"}`}>Pending</div>
-									
+
 								</Card.Content>
 							</Card>
 						</Segment>
@@ -138,29 +145,14 @@ const Comments = (props) => {
 				modalToggler={toggleModal}
 				type={{ title: false, title_content: "Nuova Risposta", content: "comment" }}
 			/>
-			<ActionSheet 
-				showActionSheet={showActionSheet} 
-				comment={commentSelected} 
-				onCommentUpdate={props.onCommentUpdate}
-				doRefresh={props.doRefresh} 
+			<ActionSheet
+				showActionSheet={showActionSheet}
+				comment={commentSelected}
+				onCommentUpdate={() => dispatch(UpdateComment())} //params??
+				doRefresh={props.doRefresh}
 				setShowActionSheet={setShowActionSheet}
 			/>
 		</>
 	);
 };
-const mapStateToProps = (state) => {
-	return {
-		isLoading: state.app.loading,
-		error: state.app.error,
-		isReplySent: state.user.replied.success,
-		isSent: state?.toast?.isCompleted || null,
-		notificationSegment: state.app.notificationSegment
-	};
-};
-const mapDispatchToProps = (dispatch) => {
-	return {
-		onCommentUpdate: (params) => dispatch(updateComment(params)),
-		onSendCommentReply: (replyparams, notificationparams) => dispatch(sendCommentReply(replyparams, notificationparams)),
-	};
-};
-export default connect(mapStateToProps, mapDispatchToProps)(Comments);
+export default Comments;

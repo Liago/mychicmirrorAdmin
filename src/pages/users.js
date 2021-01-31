@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { connect } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {
 	IonAlert,
 	IonButton,
@@ -15,29 +15,34 @@ import {
 	IonTitle,
 	IonToolbar,
 } from "@ionic/react";
-import { loadUsers, userRegistration } from "../store/actions";
+import { GetUserList, UserRegistration } from "../store/rest";
 import List from "../components/list";
 import User from "../components/user";
-import Placeholder from "../components/UI/skeleton";
+import Placeholder from "../components/UI/placeholder";
 
 import { personAddOutline, refreshOutline } from "ionicons/icons";
 
 const Users = (props) => {
+	const dispatch = useDispatch();
 	const [userSelected, selectUser] = useState(null);
 	const [isModalVisibile, setModalState] = useState(false);
 	const [userAlert, setUserAlert] = useState(false);
 	const [isRefreshing, doRefresh] = useState(false);
+	const { data, loading, error } = GetUserList();
 
-	useEffect(() => {
-		props.onLoadUserSubscribed();
-	}, [isRefreshing, props.isUserCreated]);
+	const {userlist, isloading, message} = useSelector(state => state.user);
+
+	// useEffect(() => {
+	// 	props.onLoadUserSubscribed();
+	// }, [isRefreshing, props.isUserCreated]);
+
 
 	const handleSelection = (user) => {
 		selectUser(user);
 		setModalState(true);
 	};
 	const addUser = (params) => {
-		props.onUserRegistration(params);
+		dispatch(UserRegistration(params))
 	};
 
 	const refresh = (event) => {
@@ -74,7 +79,10 @@ const Users = (props) => {
 							refreshingText="Refreshing..."
 						></IonRefresherContent>
 					</IonRefresher>
-					{props.isLoading ? <Placeholder rows={10} /> : <List users={props.users} onSelectUser={(user) => handleSelection(user)} />}
+					{/* {props.isLoading */}
+					{data
+						? <Placeholder cards={10} />
+						: <List users={props.users} onSelectUser={(user) => handleSelection(user)} />}
 				</IonContent>
 				<IonModal
 					isOpen={isModalVisibile}
@@ -131,18 +139,4 @@ const Users = (props) => {
 	);
 };
 
-const mapStateToProps = (state) => {
-	return {
-		users: state.user.userList,
-		userRegistered: state.user.message,
-		isLoading: state.app.loading,
-	};
-};
-const mapDispatchToProps = (dispatch) => {
-	return {
-		onLoadUserSubscribed: () => dispatch(loadUsers()),
-		onUserRegistration: (params) => dispatch(userRegistration(params)),
-	};
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Users);
+export default Users;

@@ -6,7 +6,7 @@ const Placeholder = (props) => {
 		<>
 			{[...Array(props.cards)].map((o, i) => {
 				return (
-					<div className="bg-white relative shadow-xl w-11/12 mx-auto mt-5 shadow-xl rounded border">
+					<div className="bg-white relative shadow-xl w-11/12 mx-auto mt-5 shadow-xl rounded border" key={i}>
 						<ContentLoader
 							speed={2}
 							width={350}

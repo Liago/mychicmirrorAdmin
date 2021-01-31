@@ -1,28 +1,23 @@
 import { isNil } from "lodash";
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
 	IonAlert,
-	IonButton,
-	IonCol,
 	IonContent,
 	IonFooter,
 	IonGrid,
 	IonHeader,
-	IonIcon,
-	IonLabel,
 	IonPage,
 	IonRefresher,
 	IonRefresherContent,
 	IonRow,
-	IonSegment,
-	IonSegmentButton,
 	IonToolbar,
 	useIonViewWillEnter,
 } from "@ionic/react";
-import { closeCircleOutline, notificationsCircle, refreshOutline, trashOutline } from "ionicons/icons";
+import { refreshOutline } from "ionicons/icons";
 import { connect } from "react-redux";
-import { Card, Icon, Image } from "semantic-ui-react";
-import { sendNotification, userDelete, loadUserComments, sendCommentReply } from "../store/actions/";
+import { Card } from "semantic-ui-react";
+import { GetUserComments, SendCommentReply, SendNotification, UserDelete } from "../store/rest";
 
 import Placeholder from "../components/UI/placeholder";
 import CommentsList from "../components/comments";
@@ -33,6 +28,7 @@ import { ONESIGNAL_APP_ID } from "../helpers/config";
 import Message from "../components/UI/messages";
 
 const User = (props) => {
+	const dispatch = useDispatch();
 	const [showAlert, setShowAlert] = useState(false);
 	const [isRefreshing, doRefresh] = useState(false);
 	const [isModalOpen, toggleModal] = useState(false);
@@ -40,6 +36,15 @@ const User = (props) => {
 	const [allComments, setAllComments] = useState(null);
 	const [commentsCount, setCommentsCount] = useState(null);
 	const [loading, setLoading] = useState(false);
+
+	const { error, isloading, notificationMessage } = useSelector(state => state.app);
+	const { commentsList } = useSelector(state => state.user)
+	const { isCompleted } = useSelector(state => state.toast)
+
+
+
+
+
 
 	const prepareNotification = (params) => {
 		let message = {
@@ -50,26 +55,31 @@ const User = (props) => {
 			ios_badgeType: "Increase",
 			include_player_ids: [props.user.playerID],
 		};
-		props.onSendNotification(message);
+		dispatch(SendNotification(message))
 	};
 
 	useIonViewWillEnter(() => {
+
 		readComments();
 	});
 
 	const readComments = () => {
 		setLoading(true);
-		(async () => {
-			try {
-				const { comments, loading, count } = await props.onLoadComments({ user: props.user.email });
-				setAllComments(comments);
-				setLoading(loading);
-				setCommentsCount(count);
-				console.log('comments, loading, count', comments, loading, count)
-			} catch (e) {
-				console.log(e);
-			}
-		})();
+		const { data, loading, error } = GetUserComments()
+		if (data)
+			setAllComments(data);
+		setLoading(loading);
+		// (async () => {
+		// 	try {
+		// 		const { comments, loading, count } = await props.onLoadComments({ user: props.user.email });
+		// 		setAllComments(comments);
+		// 		setLoading(loading);
+		// 		setCommentsCount(count);
+		// 		console.log('comments, loading, count', comments, loading, count)
+		// 	} catch (e) {
+		// 		console.log(e);
+		// 	}
+		// })();
 	};
 
 	const refresh = (event) => {
@@ -82,14 +92,14 @@ const User = (props) => {
 	};
 
 	const getComments = () => {
-		if (isNil(commentsCount)) return <Placeholder cards={5}/>;
-		if (commentsCount === 0) return <Message color={"bg-green-600"} label={"OK"} content={"No comments so far"}/>
+		if (isNil(commentsCount)) return <Placeholder cards={5} />;
+		if (commentsCount === 0) return <Message color={"bg-green-600"} label={"OK"} content={"No comments so far"} />
 		return <CommentsList list={allComments} avatar={"images/default_avatar.jpg"} onReplySubmitted={commentReplyHandler} />;
 	};
 
 	const commentReplyHandler = (values) => {
 		console.log("commentReplyHandler", values);
-		props.onCommentSubmitted(values);
+		dispatch(SendCommentReply(values))
 	};
 
 	const handleSubmitNotification = (values) => {
@@ -101,19 +111,17 @@ const User = (props) => {
 			<IonPage id="user-card-detail" className="bg-grey-100">
 				<IonHeader collapse="condense" className="ion-no-border">
 					<IonToolbar>
-						<div className="bg-white relative shadow-xl w-11/12 mx-auto mt-20 shadow-xl">
-							<div className="flex justify-center">
-								<img src="../images/default_avatar.jpg" alt="" className="rounded-full mx-auto absolute -top-20 w-32 h-32 shadow-2xl border-4 border-white" />
-							</div>
-
-							<div className="mt-16">
-								<h1 className="font-bold text-center text-3xl text-gray-900">{props.user.username}</h1>
-								<p className="text-center text-base text-gray-400 font-medium">{props.user.email}</p>
-								<p>
-									<span>
-
-									</span>
-								</p>
+						<div class="flex bg-white mx-4 border-b-2">
+							<div class="flex items-start px-4 py-6">
+								<img class="w-12 h-12 rounded-full object-cover mr-4 shadow" src="images/default_avatar.jpg" alt="avatar" />
+								<div class="">
+									<div class="flex items-center justify-between">
+										<h2 class="text-lg font-semibold text-gray-900 -mt-1">{props.user.username}</h2>
+										{/* <small class="text-sm text-gray-700">22h ago</small> */}
+									</div>
+									<p class="text-gray-700">{props.user.email}</p>
+									{/* <p class="mt-3 text-gray-700 text-sm">Lorem ipsum, dolor sit amet conse. Saepe optio minus rem dolor sit amet!</p> */}
+								</div>
 							</div>
 						</div>
 						{/* 						
@@ -171,7 +179,7 @@ const User = (props) => {
 						{
 							text: "Ok",
 							handler: () => {
-								props.onDeleteUser({ id: props.user.id });
+								dispatch(UserDelete({ id: props.user.id }))
 								props.closeModal(false);
 							},
 						},
@@ -183,19 +191,19 @@ const User = (props) => {
 						<div className="flex w-full justify-center">
 							<div className="flex-grow w-16 h-16">
 								<button
-									className="px-8 py-2 bg-blue-600 text-blue-50 max-w-max shadow-sm rounded"
+									className="px-8 py-2 bg-blue-600 text-white text-base font-semibold rounded-md shadow-md "
 									onClick={() => toggleModal(true)}
 								>Notifica</button>
 							</div>
 							<div className="flex-grow w-16 h-16">
 								<button
-									className="px-8 py-2 bg-red-600 text-blue-50 max-w-max shadow-sm rounded"
+									className="px-8 py-2 bg-red-600 text-white text-base font-semibold rounded-md shadow-md "
 									onClick={() => setShowAlert(true)}
 								>Elimina</button>
 							</div>
 							<div className="flex-grow w-16 h-16">
 								<button
-									className="px-8 py-2 bg-gray-600 text-blue-50 max-w-max shadow-sm rounded"
+									className="px-8 py-2 bg-gray-600 text-white text-base font-semibold rounded-md shadow-md "
 									onClick={() => props.closeModal(false)}
 								>Chiudi</button>
 							</div>
@@ -213,24 +221,5 @@ const User = (props) => {
 	);
 };
 
-const mapStateToProps = (state) => {
-	console.log("[USERJS] state", state);
-	return {
-		isError: state.app.error,
-		isSending: state.app.loading,
-		notificationResponse: state.app.notificationMessage,
-		comments: state.user.commentsList,
-		isReplySent: state.toast?.isCompleted,
-	};
-};
 
-const mapDispatchToProps = (dispatch) => {
-	return {
-		onSendNotification: (params) => dispatch(sendNotification(params)),
-		onDeleteUser: (params) => dispatch(userDelete(params)),
-		onLoadComments: (params) => dispatch(loadUserComments(params)),
-		onCommentSubmitted: (params) => dispatch(sendCommentReply(params)),
-	};
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(User);
+export default User;

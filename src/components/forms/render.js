@@ -36,7 +36,7 @@ const renderTextArea = ({ input, label, placeholder, rows, type, required, rende
     const renderField = () => {
         return (
             <>
-                <textarea {...input} id={input.name} type={type} className="form-control" rows={rows} required={required} placeholder={placeholder} />
+                <textarea {...input} id={input.name} type={type} className="bg-gray-100 rounded border border-gray-400 leading-normal resize-none w-full h-20 py-2 px-3 font-medium placeholder-gray-700 focus:outline-none focus:bg-white" rows={rows} required={required} placeholder={placeholder} />
                 {touched && error && <div className="text-danger border-top border-danger w-100 mt-1">{error}</div>}
             </>
         )

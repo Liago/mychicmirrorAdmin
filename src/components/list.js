@@ -1,9 +1,23 @@
 import React from "react";
-import { IonList } from "@ionic/react";
-import { connect } from "react-redux";
-import { Card, Icon, Label, Segment } from "semantic-ui-react";
+import _ from "lodash"; 
+import { useSelector, useDispatch } from "react-redux";
 
-const list = (props) => {
+import { SecureStorage } from '@ionic-native/secure-storage';
+
+import { IonList } from "@ionic/react";
+import { Card, Icon, Label, Segment } from "semantic-ui-react";
+import { GetUserAvatar } from "../store/rest"
+
+const List = (props) => {
+	const loading = useSelector(state => state.loading)
+	const dispatch = useDispatch();
+	
+	const userAvatar = (username) => {
+		const { data, loading, error } = GetUserAvatar({ "username": username });
+		data && console.log('ussr', data.user[0].avatar)
+	}
+
+
 	return (
 		<IonList inset={true}>
 			<div className="list-component">
@@ -11,7 +25,9 @@ const list = (props) => {
 					return (
 						<div className="flex bg-white shadow-lg rounded-lg mx-4 mx-auto my-5 border" key={index} onClick={() => props.onSelectUser(user)}>
 							<div className="w-full flex items-start px-4 py-6">
-								<img className="w-12 h-12 rounded-full object-cover mr-4 shadow" src="../images/default_avatar.jpg" alt="avatar" />
+								{/* <img className="w-12 h-12 rounded-full object-cover mr-4 shadow" src="../images/default_avatar.jpg" alt="avatar" /> */}
+
+								<div className="w-12 h-12 rounded-full object-cover mr-4 shadow" dangerouslySetInnerHTML={userAvatar(user.username)} ></div>
 								<div className="w-full">
 									<div className="flex items-center justify-between">
 										<h2 className="text-lg font-semibold text-blue-500 mt-1">{user.username} </h2>
@@ -47,10 +63,4 @@ const list = (props) => {
 	);
 };
 
-const mapStateToProps = (state) => {
-	return {
-		loading: state.loading,
-	};
-};
-
-export default connect(mapStateToProps)(list);
+export default List;
