@@ -3,13 +3,13 @@ import { store } from "./store";
 
 const { useApi, useLazyApi } = wrappedApi({ store })
 
-export const GetUserList = () => useApi("GET","getAllUsers.php");
+export const GetUserList = () => useLazyApi("GET","getAllUsers.php");
 
 export const UserRegistration = (params) => useApi("POST","registration.php", params);
 
 export const UserDelete = (params) => useApi("POST","deleteUser.php", params);
 
-export const GetUserComments = (params) => useApi('POST',"getTotalCommentsByUser.php", params);
+export const GetUserComments = (params) => useLazyApi('POST',"getTotalCommentsByUser.php", params);
 
 export const SendNotification = (params) => useApi("POST","sendAppNotification.php", params);
 

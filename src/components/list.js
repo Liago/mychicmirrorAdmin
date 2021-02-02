@@ -13,8 +13,8 @@ const List = (props) => {
 	const dispatch = useDispatch();
 	
 	const userAvatar = (username) => {
-		const { data, loading, error } = GetUserAvatar({ "username": username });
-		data && console.log('ussr', data.user[0].avatar)
+		// const { data, loading, error } = GetUserAvatar({ "username": username });
+		// data && console.log('ussr', data.user[0].avatar)
 	}
 
 

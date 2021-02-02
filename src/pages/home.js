@@ -20,7 +20,7 @@ import {
 import CommentsList from "../components/allComments";
 import { GetAllCommentsHandler } from "../store/rest";
 
-import Placeholder from "../components/UI/skeleton";
+import Placeholder from "../components/UI/placeholder";
 import { refreshOutline } from "ionicons/icons";
 import { Icon } from "semantic-ui-react";
 
@@ -33,7 +33,7 @@ const HomePage = (props) => {
 	// const [allComments, setAllComments] = useState(null);
 	const [spam, setspam] = useState(null)
 	const [getAllComments, { data: allComments, loading: isLoading }] = GetAllCommentsHandler();
-	const {isloading, notificationMessage, isMessageDelete} = useSelector(state => state.app)
+	const { isloading, notificationMessage, isMessageDelete } = useSelector(state => state.app)
 
 
 	useEffect(() => {
@@ -72,16 +72,15 @@ const HomePage = (props) => {
 	};
 
 	const showComments = () => {
-		return isLoading || isNil(allComments) ? (
-			<Placeholder rows={10} />
-		) : (
-				<CommentsList
-					list={allComments}
-					view={view}
-					doRefresh={() => refresh()}
-					avatar={"images/default_avatar.jpg"}
-				/>
-			);
+		return isLoading
+			?  <Placeholder rows={10} />
+			: <CommentsList
+				list={allComments}
+				view={view}
+				doRefresh={() => refresh()}
+				avatar={"images/default_avatar.jpg"}
+			/>
+
 	};
 
 	return (

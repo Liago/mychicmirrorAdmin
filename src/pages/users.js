@@ -27,14 +27,12 @@ const Users = (props) => {
 	const [userSelected, selectUser] = useState(null);
 	const [isModalVisibile, setModalState] = useState(false);
 	const [userAlert, setUserAlert] = useState(false);
-	const [isRefreshing, doRefresh] = useState(false);
-	const { data, loading, error } = GetUserList();
+	const [isRefreshing, doRefresh] = useState(false);	
+	const [getUsers, { data: users, loading }] = GetUserList();
 
-	const {userlist, isloading, message} = useSelector(state => state.user);
-
-	// useEffect(() => {
-	// 	props.onLoadUserSubscribed();
-	// }, [isRefreshing, props.isUserCreated]);
+	useEffect(() => {
+		getUsers();
+	}, [isRefreshing])
 
 
 	const handleSelection = (user) => {
@@ -47,6 +45,7 @@ const Users = (props) => {
 
 	const refresh = (event) => {
 		doRefresh(true);
+		getUsers();
 		setTimeout(() => {
 			doRefresh(false);
 			event.detail.complete();
@@ -79,10 +78,9 @@ const Users = (props) => {
 							refreshingText="Refreshing..."
 						></IonRefresherContent>
 					</IonRefresher>
-					{/* {props.isLoading */}
-					{data
-						? <Placeholder cards={10} />
-						: <List users={props.users} onSelectUser={(user) => handleSelection(user)} />}
+					{loading
+						? <Placeholder cards={4} />
+						: <List users={users.data} onSelectUser={(user) => handleSelection(user)} />}
 				</IonContent>
 				<IonModal
 					isOpen={isModalVisibile}

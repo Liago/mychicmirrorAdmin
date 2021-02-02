@@ -2,6 +2,7 @@ import React from "react";
 import { Placeholder, Segment } from "semantic-ui-react";
 
 const listPlaceholder = (props) => {
+	console.log('sticazzi')
 	return (
 		<div className="ion-padding custom-skeleton">
 			{[...Array(props.rows)].map((o, i) => {

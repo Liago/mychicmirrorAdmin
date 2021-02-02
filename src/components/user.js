@@ -2,7 +2,7 @@ import { isNil } from "lodash";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-	IonAlert,
+	IonActionSheet,
 	IonContent,
 	IonFooter,
 	IonGrid,
@@ -15,7 +15,6 @@ import {
 	useIonViewWillEnter,
 } from "@ionic/react";
 import { refreshOutline } from "ionicons/icons";
-import { connect } from "react-redux";
 import { Card } from "semantic-ui-react";
 import { GetUserComments, SendCommentReply, SendNotification, UserDelete } from "../store/rest";
 
@@ -35,14 +34,13 @@ const User = (props) => {
 	const [view, setView] = useState("comments");
 	const [allComments, setAllComments] = useState(null);
 	const [commentsCount, setCommentsCount] = useState(null);
-	const [loading, setLoading] = useState(false);
+	// const [loading, setLoading] = useState(false);
 
-	const { error, isloading, notificationMessage } = useSelector(state => state.app);
+	const { aerror, isloading, notificationMessage } = useSelector(state => state.app);
 	const { commentsList } = useSelector(state => state.user)
-	const { isCompleted } = useSelector(state => state.toast)
+	// const { isCompleted } = useSelector(state => state.toast)
 
-
-
+	const [getUserComments, { data: comments, loading }] = GetUserComments();
 
 
 
@@ -59,32 +57,32 @@ const User = (props) => {
 	};
 
 	useIonViewWillEnter(() => {
-
-		readComments();
+		getUserComments({ user: props.user.email });
 	});
 
-	const readComments = () => {
-		setLoading(true);
-		const { data, loading, error } = GetUserComments()
-		if (data)
-			setAllComments(data);
-		setLoading(loading);
-		// (async () => {
-		// 	try {
-		// 		const { comments, loading, count } = await props.onLoadComments({ user: props.user.email });
-		// 		setAllComments(comments);
-		// 		setLoading(loading);
-		// 		setCommentsCount(count);
-		// 		console.log('comments, loading, count', comments, loading, count)
-		// 	} catch (e) {
-		// 		console.log(e);
-		// 	}
-		// })();
-	};
+
+	// const readComments = () => {
+	// 	setLoading(true);
+
+	// 	if (data)
+	// 		setAllComments(data);
+	// 	setLoading(loading);
+	// 	// (async () => {
+	// 	// 	try {
+	// 	// 		const { comments, loading, count } = await props.onLoadComments({ user: props.user.email });
+	// 	// 		setAllComments(comments);
+	// 	// 		setLoading(loading);
+	// 	// 		setCommentsCount(count);
+	// 	// 		console.log('comments, loading, count', comments, loading, count)
+	// 	// 	} catch (e) {
+	// 	// 		console.log(e);
+	// 	// 	}
+	// 	// })();
+	// };
 
 	const refresh = (event) => {
 		doRefresh(true);
-		readComments();
+		// readComments();
 		setTimeout(() => {
 			doRefresh(false);
 			event.detail.complete();
@@ -92,9 +90,11 @@ const User = (props) => {
 	};
 
 	const getComments = () => {
-		if (isNil(commentsCount)) return <Placeholder cards={5} />;
-		if (commentsCount === 0) return <Message color={"bg-green-600"} label={"OK"} content={"No comments so far"} />
-		return <CommentsList list={allComments} avatar={"images/default_avatar.jpg"} onReplySubmitted={commentReplyHandler} />;
+		if (loading)
+			return <Placeholder cards={3} />
+
+		if (comments.count === 0 || isNil(comments.count)) return <Message color={"bg-green-600"} label={"OK"} content={"No comments so far"} />
+		return <CommentsList list={comments.comments} avatar={"images/default_avatar.jpg"} onReplySubmitted={commentReplyHandler} />;
 	};
 
 	const commentReplyHandler = (values) => {
@@ -111,16 +111,16 @@ const User = (props) => {
 			<IonPage id="user-card-detail" className="bg-grey-100">
 				<IonHeader collapse="condense" className="ion-no-border">
 					<IonToolbar>
-						<div class="flex bg-white mx-4 border-b-2">
-							<div class="flex items-start px-4 py-6">
-								<img class="w-12 h-12 rounded-full object-cover mr-4 shadow" src="images/default_avatar.jpg" alt="avatar" />
-								<div class="">
-									<div class="flex items-center justify-between">
-										<h2 class="text-lg font-semibold text-gray-900 -mt-1">{props.user.username}</h2>
-										{/* <small class="text-sm text-gray-700">22h ago</small> */}
+						<div className="flex bg-white mx-4 border-b-2">
+							<div className="flex items-start px-4 py-6">
+								<img className="w-12 h-12 rounded-full object-cover mr-4 shadow" src="images/default_avatar.jpg" alt="avatar" />
+								<div className="">
+									<div className="flex items-center justify-between">
+										<h2 className="text-lg font-semibold text-gray-900 -mt-1">{props.user.username}</h2>
+										{/* <small className="text-sm text-gray-700">22h ago</small> */}
 									</div>
-									<p class="text-gray-700">{props.user.email}</p>
-									{/* <p class="mt-3 text-gray-700 text-sm">Lorem ipsum, dolor sit amet conse. Saepe optio minus rem dolor sit amet!</p> */}
+									<p className="text-gray-700">{props.user.email}</p>
+									{/* <p className="mt-3 text-gray-700 text-sm">Lorem ipsum, dolor sit amet conse. Saepe optio minus rem dolor sit amet!</p> */}
 								</div>
 							</div>
 						</div>
@@ -145,7 +145,7 @@ const User = (props) => {
 				<IonContent>
 					<IonGrid>
 						<IonRow>
-							<div className="user-component">
+							<div className="user-component w-screen">
 								{props.user.username && (
 									<Card className="fluid raised">
 										<Card.Content extra className={`${view === "comments" ? "hidden" : ""}`}>
@@ -169,39 +169,44 @@ const User = (props) => {
 						</IonRow>
 					</IonGrid>
 				</IonContent>
-				<IonAlert
+
+				<IonActionSheet
 					isOpen={showAlert}
-					header="Delete User"
-					subHeader={props.user.email}
-					message={`Do you really want to delete this user?\n ${props.user.username} id: ${props.user.id} `}
-					buttons={[
-						"Cancel",
-						{
-							text: "Ok",
-							handler: () => {
-								dispatch(UserDelete({ id: props.user.id }))
-								props.closeModal(false);
-							},
-						},
-					]}
+					header="Do you really want to delete this user?"
+					subHeader={`${props.user.username} id: ${props.user.id} `}
 					onDidDismiss={() => setShowAlert(false)}
-				/>
+					cssClass='my-custom-class'
+					buttons={[{
+						text: 'Delete',
+						role: 'destructive',
+						handler: () => {
+							dispatch(UserDelete({ id: props.user.id }));
+							props.closeModal(false);
+						}
+					},
+					{
+						text: 'Cancel',
+						role: 'cancel',
+						handler: () => {}
+					}]}
+				>
+				</IonActionSheet>
 				<IonFooter>
 					<IonToolbar className="action-toolbar">
-						<div className="flex w-full justify-center">
-							<div className="flex-grow w-16 h-16">
+						<div className="flex justify-center">
+							<div className="flex-auto">
 								<button
 									className="px-8 py-2 bg-blue-600 text-white text-base font-semibold rounded-md shadow-md "
 									onClick={() => toggleModal(true)}
 								>Notifica</button>
 							</div>
-							<div className="flex-grow w-16 h-16">
+							<div className="flex-auto">
 								<button
 									className="px-8 py-2 bg-red-600 text-white text-base font-semibold rounded-md shadow-md "
 									onClick={() => setShowAlert(true)}
 								>Elimina</button>
 							</div>
-							<div className="flex-grow w-16 h-16">
+							<div className="flex-auto">
 								<button
 									className="px-8 py-2 bg-gray-600 text-white text-base font-semibold rounded-md shadow-md "
 									onClick={() => props.closeModal(false)}
