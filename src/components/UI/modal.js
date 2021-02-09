@@ -1,8 +1,8 @@
 import { IonModal } from "@ionic/react";
 import React, { useState, useEffect } from "react";
-import { Card, Dimmer, Loader, Modal } from "semantic-ui-react";
+import { Card, Dimmer, Loader } from "semantic-ui-react";
 
-import NotificationForm from "../forms/notification";
+import UniversalForm from "../forms/universalForm";
 
 const ModalNotification = (props) => {
 	const [dimmerState, setDimmer] = useState(false);
@@ -11,7 +11,8 @@ const ModalNotification = (props) => {
 	}, []);
 	const handleSubmit = (values) => {
 		setDimmer(true);
-		props.submitNotification({ titolo: values.titolo, contenuto: values.commento });
+		console.log('Submitted values', values)
+		// props.submitNotification({ titolo: values.titolo, contenuto: values.commento });
 	};
 
 	return (
@@ -22,7 +23,7 @@ const ModalNotification = (props) => {
 			swipeToClose={true}
 			presentingElement={undefined}
 			onDidDismiss={() => props.modalToggler(false)}>
-			<Card fluid classname="animate__fadeInUp animate__delay-2s">
+			<Card fluid className="animate__fadeInUp animate__delay-2s">
 				<Card.Content>
 					<Dimmer className={dimmerState ? "active" : ""}>
 						<Loader inverted>Sending...</Loader>
@@ -31,8 +32,8 @@ const ModalNotification = (props) => {
 						{props.type.title_content}
 					</Card.Header>
 				</Card.Content>
-				<Card.Content>
-					<NotificationForm onSubmit={handleSubmit} type={props.type} />
+				<Card.Content className="px-3">
+					<UniversalForm onSubmit={handleSubmit} type={props.type}/>
 				</Card.Content>
 			</Card>
 		</IonModal>
