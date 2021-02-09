@@ -2,25 +2,14 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
-import { createStore, applyMiddleware, combineReducers } from "redux";
-import logger from "redux-logger";
-import thunk from "redux-thunk";
 
-import appReducer from "./store/reducers/reducers";
-import { reducer as formReducer } from "redux-form";
+import { store } from "./store/store";
 import * as serviceWorker from "./serviceWorker";
 
 import App from "./App";
 
-const rootReducer = combineReducers({
-	form: formReducer,
-	...appReducer,
-});
-
-const globalStore = createStore(rootReducer, applyMiddleware(thunk, logger));
-
 const app = (
-	<Provider store={globalStore}>
+	<Provider store={store}>
 		<BrowserRouter>
 			<App />
 		</BrowserRouter>

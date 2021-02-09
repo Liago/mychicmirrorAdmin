@@ -1,6 +1,7 @@
 import React from "react";
-import { connect } from "react-redux";
-import { setDarkMode, setDevMode } from "../store/actions/";
+import { useDispatch, useSelector } from "react-redux";
+import { push } from "connected-react-router";
+import { setDarkMode, setDevMode } from "../store/actions";
 import { IonContent, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu, IonMenuToggle, IonNote, IonToggle } from "@ionic/react";
 
 import { useLocation } from "react-router-dom";
@@ -22,30 +23,6 @@ const appPages = [
 		url: "/notifications",
 		iosIcon: notifications,
 	},
-	// {
-	// 	title: "Favorites",
-	// 	url: "/page/Favorites",
-	// 	iosIcon: heartOutline,
-	// 	mdIcon: heartSharp,
-	// },
-	// {
-	// 	title: "Archived",
-	// 	url: "/page/Archived",
-	// 	iosIcon: archiveOutline,
-	// 	mdIcon: archiveSharp,
-	// },
-	// {
-	// 	title: "Trash",
-	// 	url: "/page/Trash",
-	// 	iosIcon: trashOutline,
-	// 	mdIcon: trashSharp,
-	// },
-	// {
-	// 	title: "Spam",
-	// 	url: "/page/Spam",
-	// 	iosIcon: warningOutline,
-	// 	mdIcon: warningSharp,
-	// },
 ];
 
 // const labels = ["Family", "Friends", "Notes", "Work", "Travel", "Reminders"];
@@ -53,6 +30,9 @@ const labels = [];
 
 const Menu = (props) => {
 	const location = useLocation();
+	const dispatch = useDispatch();
+	const { darkMode, devMode } = useSelector(state => state.app);
+
 
 	return (
 		<IonMenu contentId="main" type="overlay">
@@ -83,12 +63,12 @@ const Menu = (props) => {
 					<IonItem>
 						<IonIcon slot="start" icon={moonOutline}></IonIcon>
 						<IonLabel>Dark Mode</IonLabel>
-						<IonToggle checked={props.darkMode} onClick={() => props.setDarkMode(!props.darkMode)} />
+						<IonToggle checked={props.darkMode} onClick={() => dispatch(setDarkMode(!darkMode))} />
 					</IonItem>
 					<IonItem>
 						<IonIcon slot="start" icon={cogOutline}></IonIcon>
 						<IonLabel>Dev Mode</IonLabel>
-						<IonToggle checked={props.devMode} onClick={() => props.setDevMode(!props.devMode)} />
+						<IonToggle checked={props.devMode} onClick={() =>  dispatch(setDevMode(!devMode))} />
 					</IonItem>
 					{labels.map((label, index) => (
 						<IonItem lines="none" key={index}>
@@ -101,18 +81,4 @@ const Menu = (props) => {
 		</IonMenu>
 	);
 };
-
-const mapStateToProps = (state) => {
-	return {
-		darkMode: state.app.darkMode,
-		devMode: state.app.devMode,
-	};
-};
-const mapDispatchToProps = (dispatch) => {
-	return {
-		setDarkMode: (dark) => dispatch(setDarkMode(dark)),
-		setDevMode: (mode) => dispatch(setDevMode(mode)),
-	};
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Menu);
+export default Menu;

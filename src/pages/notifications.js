@@ -14,12 +14,8 @@ const notifications = (props) => {
 				</IonToolbar>
 			</IonHeader>
 			<IonContent fullscreen="true">
-				<Segment raised>
-					Notifications
-				</Segment>
-				<IonSegment>
-					
-				</IonSegment>
+				
+				
 			</IonContent>
 		</IonPage>
 	);

@@ -1,16 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
-import { Button, Card, Icon, Image, Label, Segment } from "semantic-ui-react";
+import { useDispatch, useSelector } from "react-redux";
+import { Button, Card, Image, Label, Segment } from "semantic-ui-react";
 import Modal from "../components/UI/modal";
 import moment from "moment";
-import { updateComment, sendCommentReply } from "../store/actions";
+import { SendCommentReply } from "../store/rest";
 import { ONESIGNAL_APP_ID } from "../helpers/config";
-// import { IonActionSheet } from "@ionic/react";
 import { caretForwardCircle, close, heart, share, trash } from "ionicons/icons";
 
 import ActionSheet from "./UI/actionSheet";
 
 const Comments = (props) => {
+	console.log('props', props)
+	const dispatch = useDispatch();
+
+	const { loading, notificationSegment, error } = useSelector(state => state.app)
+	const { success } = useSelector(state => state.user.replied)
+	// const { isCompleted } = useSelector(state => state.toast)
+
 	const { list, avatar, view } = props;
 	const [isModalOpen, toggleModal] = useState(false);
 	const [replyparams, setreplyparams] = useState({
@@ -40,12 +46,12 @@ const Comments = (props) => {
 			replyparams.comment_content !== ""
 		) {
 			let notificationparams = prepareNotification();
-			props.onSendCommentReply(replyparams, notificationparams);
+			dispatch(SendCommentReply(replyparams, notificationparams));
 		}
 	}, [replyparams]);
 
 	useEffect(() => {
-		if (props.isSent) 
+		if (props.isSent)
 			toggleModal(false)
 	}, [props.isSent])
 
@@ -75,42 +81,51 @@ const Comments = (props) => {
 	return (
 		<>
 			<Segment className="allcomments-component">
-				{list.map((comment, index) => {
+				{list.comments.map((comment, index) => {
 					const markAsSpam = () => {
-						return comment.status === "spam" ? (
-							<Label as="a" color="orange" ribbon="left">
-								Spam
-							</Label>
-						) : null;
+						return comment.status === "spam"
+							? (<div className="absolute right-5 focus:outline-none w-32 py-2 rounded-md font-semibold text-white bg-yellow-500 ring-1 ring-yellow-900 ring-opacity-50 text-center">Spam</div>)
+							: null;
 					};
 					return (
-						<Segment
-							raised
-							className={`p-0 
-								${comment.status === "spam" && view !== "spam" ? "hidden" : ""} 
-								${comment.status !== "spam" && view !== "all" ? "hidden" : ""}`}
-							key={index}
-						>
-							<Card className="w-100" key={index}>
-								<Card.Content>
-									{markAsSpam()}
-									<Image floated="right" size="mini" src={avatar} />
-									<Card.Header>{comment.author}</Card.Header>
-									<Card.Meta>{comment.post_title}</Card.Meta>
-									<Card.Meta>{moment(comment.date).fromNow()}</Card.Meta>
-									<Card.Description>{comment.content}</Card.Description>
-								</Card.Content>
-								<Card.Content extra>
-									<Button size="medium" color="blue" content="Azioni" onClick={() => { setShowActionSheet(true); setcommentSelected(comment) }} />
-									{comment.status !== "1" || comment.author === "mychicmirror" ? null : (
-										<div className="right floated">
-											<Button
-												className={`${props.isLoading ? "loading" : ""}`}
-												size="medium"
-												color="green"
-												content="Rispondi"
-												labelPosition="right"
-												icon="circular-icon reply"
+						<div key={index} className={`px-3 ${comment.status === "spam" && view !== "spam" ? "hidden" : ""} ${comment.status !== "spam" && view !== "all" ? "hidden" : ""}`}>
+							<div className="bg-white w-full border rounded-md shadow-md h-auto py-3 px-3 my-5">
+								{markAsSpam()}
+								<div className="w-full h-16 flex items-center justify-between ">
+									<div className="flex">
+										<img className=" rounded-full w-10 h-10 mr-3" src={avatar} alt="" />
+										<div>
+											<h3 className="text-md font-semibold ">{comment.author}</h3>
+											<p className="text-xs text-gray-500">{moment(comment.date).fromNow()}</p>
+										</div>
+									</div>
+								</div>
+								<p>{comment.content}</p>
+								<div className="w-full h-8 flex items-center px-3 my-3">
+									{/* <div className="bg-blue-500 z-10 w-5 h-5 rounded-full flex items-center justify-center ">
+										<svg className="w-3 h-3 fill-current text-white" xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="#b0b0b0" stroke-width="2" stroke-linecap="square" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
+									</div>
+									<div className="bg-red-500 w-5 h-5 rounded-full flex items-center justify-center -ml-1">
+										<svg className="w-3 h-3 fill-current stroke-current text-white" xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="#b0b0b0" stroke-width="2" stroke-linecap="square" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+									</div> */}
+
+									{/* <div className="w-full flex justify-between">
+										<p className="ml-3 text-gray-500">8</p>
+										<p className="ml-3 text-gray-500">29 comment</p>
+									</div> */}
+								</div>
+								<hr />
+								<div className="grid grid-cols-2 w-full px-5 my-3">
+									<button
+										className="flex flex-row justify-center items-center w-full space-x-3 p-2 focus:outline-none"
+										onClick={() => { setShowActionSheet(true); setcommentSelected(comment) }}>
+										<span className="font-semibold text-lg text-blue-600">Azioni</span>
+									</button>
+									{comment.status !== "1" || comment.author === "mychicmirror"
+										? null
+										: (
+											<button
+												className="flex flex-row justify-center items-center w-full space-x-3 p-2 focus:outline-none"
 												onClick={() => {
 													setreplyparams({
 														...replyparams,
@@ -121,14 +136,13 @@ const Comments = (props) => {
 													});
 													toggleModal(true);
 												}}
-											/>
-										</div>
-									)}
-									<div className={`${comment.status === "0" ? "ui bottom right attached red label" : "hidden"}`}>Pending</div>
-									
-								</Card.Content>
-							</Card>
-						</Segment>
+											>
+												<span className="font-semibold text-lg text-green-600">Rispondi</span>
+											</button>
+										)}
+								</div>
+							</div>
+						</div>
 					);
 				})}
 			</Segment>
@@ -138,29 +152,13 @@ const Comments = (props) => {
 				modalToggler={toggleModal}
 				type={{ title: false, title_content: "Nuova Risposta", content: "comment" }}
 			/>
-			<ActionSheet 
-				showActionSheet={showActionSheet} 
-				comment={commentSelected} 
-				onCommentUpdate={props.onCommentUpdate}
-				doRefresh={props.doRefresh} 
+			<ActionSheet
+				showActionSheet={showActionSheet}
+				comment={commentSelected}
+				doRefresh={props.doRefresh}
 				setShowActionSheet={setShowActionSheet}
 			/>
 		</>
 	);
 };
-const mapStateToProps = (state) => {
-	return {
-		isLoading: state.app.loading,
-		error: state.app.error,
-		isReplySent: state.user.replied.success,
-		isSent: state?.toast?.isCompleted || null,
-		notificationSegment: state.app.notificationSegment
-	};
-};
-const mapDispatchToProps = (dispatch) => {
-	return {
-		onCommentUpdate: (params) => dispatch(updateComment(params)),
-		onSendCommentReply: (replyparams, notificationparams) => dispatch(sendCommentReply(replyparams, notificationparams)),
-	};
-};
-export default connect(mapStateToProps, mapDispatchToProps)(Comments);
+export default Comments;

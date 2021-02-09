@@ -1,27 +1,29 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { IonActionSheet } from "@ionic/react";
 import { close } from "ionicons/icons";
+import { UpdateComment } from "../../store/rest"
 
 const ActionSheet = ({ showActionSheet, comment, onCommentUpdate, doRefresh, setShowActionSheet }) => {
+	const [update, { data: updateResponse }] = UpdateComment();
 	const mybuttons = [
 		{
 			text: "Approva",
 			handler: () => {
-				onCommentUpdate({ id: comment.comment_ID, status: "1", operation: "update" });
+				update({ id: comment.comment_ID, status: "1", operation: "update" });
 				doRefresh();
 			},
 		},
 		{
 			text: "Disapprova",
 			handler: () => {
-				onCommentUpdate({ id: comment.comment_ID, status: "0", operation: "update" });
+				update({ id: comment.comment_ID, status: "0", operation: "update" });
 				doRefresh();
 			},
 		},
 		{
 			text: "Sposta in spam",
 			handler: () => {
-				onCommentUpdate({ id: comment.comment_ID, status: "1", operation: "update" });
+				update({ id: comment.comment_ID, status: "1", operation: "update" });
 				doRefresh();
 			},
 		},
@@ -29,7 +31,7 @@ const ActionSheet = ({ showActionSheet, comment, onCommentUpdate, doRefresh, set
 			text: "Elimina",
 			role: "destructive",
 			handler: () => {
-				onCommentUpdate({ id: comment.comment_ID, status: "", operation: "delete" });
+				update({ id: comment.comment_ID, status: "", operation: "delete" })
 				doRefresh();
 			},
 		},

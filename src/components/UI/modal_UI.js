@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Card, Dimmer, Loader, Modal } from "semantic-ui-react";
 
-import NotificationForm from "../forms/notification";
+import UniversalForm from "../forms/universalForm";
 
 const ModalNotification = (props) => {
 	const [dimmerState, setDimmer] = useState(false);
@@ -14,10 +14,10 @@ const ModalNotification = (props) => {
 	};
 
 	return (
-		<Modal 
-			size="small" 
+		<Modal
+			size="small"
 			dimmer="inverted"
-			open={props.open} 
+			open={props.open}
 			onClose={() => props.modalToggler(false)}>
 			<Dimmer className={dimmerState ? "active" : ""}>
 				<Loader inverted>Sending...</Loader>
@@ -30,7 +30,7 @@ const ModalNotification = (props) => {
 						</Card.Header>
 					</Card.Content>
 					<Card.Content>
-						<NotificationForm onSubmit={handleSubmit} type={props.type} />
+						<UniversalForm onSubmit={handleSubmit} type={props.type} />
 					</Card.Content>
 				</Card>
 			</Modal.Content>

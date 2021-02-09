@@ -1,13 +1,16 @@
-import * as actionTypes from "../actions/actionTypes";
+import { combineReducers } from "redux";
+import { connectRouter } from "connected-react-router";
+
+import * as actionTypes from "./actionTypes";
 
 const initialState = {
 	app: {
 		darkMode: false,
-		devMode:false,
+		devMode: false,
 		notificationSegment: "Subscribed Users",
 		loading: false,
 		error: null,
-		isMessageDelete:false,
+		isMessageDelete: false,
 		notificationMessage: null,
 	},
 	user: {
@@ -33,7 +36,7 @@ const toast = (state = initialState.toast, action) => {
 }
 const app = (state = initialState.app, action) => {
 	switch (action.type) {
-		
+
 		case actionTypes.DEV_MODE_SET:
 			return {
 				...state,
@@ -96,21 +99,21 @@ const app = (state = initialState.app, action) => {
 			return {
 				...state,
 				loading: true,
-				error:false
-			}		
+				error: false
+			}
 		case actionTypes.COMMENT_UPDATE_FAIL:
 			return {
 				...state,
 				loading: false,
 				error: action.payload
-			}		
+			}
 		case actionTypes.COMMENT_UPDATE_SUCCESS:
 			return {
 				...state,
 				loading: false,
-				isMessageDelete:action.isMessageDelete,
+				isMessageDelete: action.isMessageDelete,
 				notificationMessage: action.payload
-			}		
+			}
 		default:
 			return state;
 	}
@@ -221,4 +224,9 @@ const user = (state = initialState.user, action) => {
 	}
 };
 
-export default { app, user, toast };
+
+const createRootReducer = (history) => combineReducers({
+	app, user, toast, router: connectRouter(history),
+});
+
+export default createRootReducer;

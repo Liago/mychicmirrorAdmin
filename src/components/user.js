@@ -1,43 +1,48 @@
 import { isNil } from "lodash";
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
-	IonAlert,
-	IonButton,
-	IonCol,
+	IonActionSheet,
 	IonContent,
 	IonFooter,
 	IonGrid,
 	IonHeader,
-	IonIcon,
-	IonLabel,
 	IonPage,
 	IonRefresher,
 	IonRefresherContent,
 	IonRow,
-	IonSegment,
-	IonSegmentButton,
 	IonToolbar,
 	useIonViewWillEnter,
 } from "@ionic/react";
-import { closeCircleOutline, notificationsCircle, refreshOutline, trashOutline } from "ionicons/icons";
-import { connect } from "react-redux";
-import { Card, Icon, Image } from "semantic-ui-react";
-import { sendNotification, userDelete, loadUserComments, sendCommentReply } from "../store/actions/";
+import { refreshOutline } from "ionicons/icons";
+import { Card } from "semantic-ui-react";
+import { GetUserComments, SendCommentReply, SendNotification, UserDelete } from "../store/rest";
 
-import Placeholder from "../components/UI/skeleton_list";
+import Placeholder from "../components/UI/placeholder";
 import CommentsList from "../components/comments";
 import Modal from "../components/UI/modal";
 import UserUtilities from "../components/user_utilities";
 import { ONESIGNAL_APP_ID } from "../helpers/config";
 
+import Message from "../components/UI/messages";
+
 const User = (props) => {
+	const dispatch = useDispatch();
 	const [showAlert, setShowAlert] = useState(false);
 	const [isRefreshing, doRefresh] = useState(false);
 	const [isModalOpen, toggleModal] = useState(false);
 	const [view, setView] = useState("comments");
 	const [allComments, setAllComments] = useState(null);
 	const [commentsCount, setCommentsCount] = useState(null);
-	const [loading, setLoading] = useState(false);
+	// const [loading, setLoading] = useState(false);
+
+	const { aerror, isloading, notificationMessage } = useSelector(state => state.app);
+	const { commentsList } = useSelector(state => state.user)
+	// const { isCompleted } = useSelector(state => state.toast)
+
+	const [getUserComments, { data: comments, loading }] = GetUserComments();
+
+
 
 	const prepareNotification = (params) => {
 		let message = {
@@ -48,31 +53,36 @@ const User = (props) => {
 			ios_badgeType: "Increase",
 			include_player_ids: [props.user.playerID],
 		};
-		props.onSendNotification(message);
+		dispatch(SendNotification(message))
 	};
 
 	useIonViewWillEnter(() => {
-		readComments();
+		getUserComments({ user: props.user.email });
 	});
 
-	const readComments = () => {
-		setLoading(true);
-		(async () => {
-			try {
-				const { comments, loading, count } = await props.onLoadComments({ user: props.user.email });
-				setAllComments(comments);
-				setLoading(loading);
-				setCommentsCount(count);
-				console.log('comments, loading, count', comments, loading, count)
-			} catch (e) {
-				console.log(e);
-			}
-		})();
-	};
+
+	// const readComments = () => {
+	// 	setLoading(true);
+
+	// 	if (data)
+	// 		setAllComments(data);
+	// 	setLoading(loading);
+	// 	// (async () => {
+	// 	// 	try {
+	// 	// 		const { comments, loading, count } = await props.onLoadComments({ user: props.user.email });
+	// 	// 		setAllComments(comments);
+	// 	// 		setLoading(loading);
+	// 	// 		setCommentsCount(count);
+	// 	// 		console.log('comments, loading, count', comments, loading, count)
+	// 	// 	} catch (e) {
+	// 	// 		console.log(e);
+	// 	// 	}
+	// 	// })();
+	// };
 
 	const refresh = (event) => {
 		doRefresh(true);
-		readComments();
+		// readComments();
 		setTimeout(() => {
 			doRefresh(false);
 			event.detail.complete();
@@ -80,15 +90,16 @@ const User = (props) => {
 	};
 
 	const getComments = () => {
-		if (isNil(commentsCount)) return <Placeholder rows={5} lines={2} image />;
-		if (commentsCount === 0) return <IonLabel color="dark">No comments so far</IonLabel>
-		return <CommentsList list={allComments} avatar={"images/default_avatar.jpg"} onReplySubmitted={commentReplyHandler} />;
+		if (loading)
+			return <Placeholder cards={3} />
 
+		if (comments.count === 0 || isNil(comments.count)) return <Message color={"bg-green-600"} label={"OK"} content={"No comments so far"} />
+		return <CommentsList list={comments.comments} avatar={"images/default_avatar.jpg"} onReplySubmitted={commentReplyHandler} />;
 	};
 
 	const commentReplyHandler = (values) => {
 		console.log("commentReplyHandler", values);
-		props.onCommentSubmitted(values);
+		dispatch(SendCommentReply(values))
 	};
 
 	const handleSubmitNotification = (values) => {
@@ -97,9 +108,23 @@ const User = (props) => {
 
 	return (
 		<>
-			<IonPage id="user-card-detail">
+			<IonPage id="user-card-detail" className="bg-grey-100">
 				<IonHeader collapse="condense" className="ion-no-border">
 					<IonToolbar>
+						<div className="flex bg-white mx-4 border-b-2">
+							<div className="flex items-start px-4 py-6">
+								<img className="w-12 h-12 rounded-full object-cover mr-4 shadow" src="images/default_avatar.jpg" alt="avatar" />
+								<div className="">
+									<div className="flex items-center justify-between">
+										<h2 className="text-lg font-semibold text-gray-900 -mt-1">{props.user.username}</h2>
+										{/* <small className="text-sm text-gray-700">22h ago</small> */}
+									</div>
+									<p className="text-gray-700">{props.user.email}</p>
+									{/* <p className="mt-3 text-gray-700 text-sm">Lorem ipsum, dolor sit amet conse. Saepe optio minus rem dolor sit amet!</p> */}
+								</div>
+							</div>
+						</div>
+						{/* 						
 						<Card className="fluid raised toolbar-card">
 							<Card.Content>
 								<Image className="right floated circular mini" src="images/default_avatar.jpg" />
@@ -114,13 +139,13 @@ const User = (props) => {
 									</IonSegment>
 								)}
 							</Card.Content>
-						</Card>
+						</Card> */}
 					</IonToolbar>
 				</IonHeader>
 				<IonContent>
 					<IonGrid>
 						<IonRow>
-							<div className="user-component">
+							<div className="user-component w-screen">
 								{props.user.username && (
 									<Card className="fluid raised">
 										<Card.Content extra className={`${view === "comments" ? "hidden" : ""}`}>
@@ -144,50 +169,50 @@ const User = (props) => {
 						</IonRow>
 					</IonGrid>
 				</IonContent>
-				<IonAlert
+
+				<IonActionSheet
 					isOpen={showAlert}
-					header="Delete User"
-					subHeader={props.user.email}
-					message={`Do you really want to delete this user?\n ${props.user.username} id: ${props.user.id} `}
-					buttons={[
-						"Cancel",
-						{
-							text: "Ok",
-							handler: () => {
-								props.onDeleteUser({ id: props.user.id });
-								props.closeModal(false);
-							},
-						},
-					]}
+					header="Do you really want to delete this user?"
+					subHeader={`${props.user.username} id: ${props.user.id} `}
 					onDidDismiss={() => setShowAlert(false)}
-				/>
+					cssClass='my-custom-class'
+					buttons={[{
+						text: 'Delete',
+						role: 'destructive',
+						handler: () => {
+							dispatch(UserDelete({ id: props.user.id }));
+							props.closeModal(false);
+						}
+					},
+					{
+						text: 'Cancel',
+						role: 'cancel',
+						handler: () => {}
+					}]}
+				>
+				</IonActionSheet>
 				<IonFooter>
 					<IonToolbar className="action-toolbar">
-						<IonGrid className="py-0">
-							<IonRow>
-								<IonCol className="py-0">
-									<IonButton
-										size="large"
-										fill="clear"
-										onClick={() => toggleModal(true)}
-										className={`ui basic ${props.isSending ? "ui basic loading disabled" : ""} ${!props.user.playerID ? "ui basic disabled" : ""
-											}`}
-									>
-										<IonIcon slot="icon-only" icon={notificationsCircle} />
-									</IonButton>
-								</IonCol>
-								<IonCol className="py-0">
-									<IonButton className="py-0" color="danger" onClick={() => setShowAlert(true)} fill="clear">
-										<IonIcon slot="icon-only" icon={trashOutline} />
-									</IonButton>
-								</IonCol>
-								<IonCol className="py-0">
-									<IonButton className="py-0" onClick={() => props.closeModal(false)} color="dark" fill="clear">
-										<IonIcon slot="icon-only" icon={closeCircleOutline} />
-									</IonButton>
-								</IonCol>
-							</IonRow>
-						</IonGrid>
+						<div className="flex justify-center">
+							<div className="flex-auto">
+								<button
+									className="px-8 py-2 bg-blue-600 text-white text-base font-semibold rounded-md shadow-md "
+									onClick={() => toggleModal(true)}
+								>Notifica</button>
+							</div>
+							<div className="flex-auto">
+								<button
+									className="px-8 py-2 bg-red-600 text-white text-base font-semibold rounded-md shadow-md "
+									onClick={() => setShowAlert(true)}
+								>Elimina</button>
+							</div>
+							<div className="flex-auto">
+								<button
+									className="px-8 py-2 bg-gray-600 text-white text-base font-semibold rounded-md shadow-md "
+									onClick={() => props.closeModal(false)}
+								>Chiudi</button>
+							</div>
+						</div>
 					</IonToolbar>
 				</IonFooter>
 				<Modal
@@ -201,24 +226,5 @@ const User = (props) => {
 	);
 };
 
-const mapStateToProps = (state) => {
-	console.log("[USERJS] state", state);
-	return {
-		isError: state.app.error,
-		isSending: state.app.loading,
-		notificationResponse: state.app.notificationMessage,
-		comments: state.user.commentsList,
-		isReplySent: state.toast?.isCompleted,
-	};
-};
 
-const mapDispatchToProps = (dispatch) => {
-	return {
-		onSendNotification: (params) => dispatch(sendNotification(params)),
-		onDeleteUser: (params) => dispatch(userDelete(params)),
-		onLoadComments: (params) => dispatch(loadUserComments(params)),
-		onCommentSubmitted: (params) => dispatch(sendCommentReply(params)),
-	};
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(User);
+export default User;

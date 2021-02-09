@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { connect } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {
 	IonAlert,
-	IonBackButton,
 	IonButton,
 	IonButtons,
 	IonContent,
@@ -14,37 +13,39 @@ import {
 	IonRefresher,
 	IonRefresherContent,
 	IonTitle,
-	IonToast,
 	IonToolbar,
 } from "@ionic/react";
-import { loadUsers, userRegistration } from "../store/actions";
+import { GetUserList, UserRegistration } from "../store/rest";
 import List from "../components/list";
 import User from "../components/user";
-import Placeholder from "../components/UI/skeleton";
+import Placeholder from "../components/UI/placeholder";
 
-import { personAddOutline, refreshOutline, star } from "ionicons/icons";
+import { personAddOutline, refreshOutline } from "ionicons/icons";
 
 const Users = (props) => {
+	const dispatch = useDispatch();
 	const [userSelected, selectUser] = useState(null);
 	const [isModalVisibile, setModalState] = useState(false);
 	const [userAlert, setUserAlert] = useState(false);
-	const [showToast, setShowToast] = useState(false);
-	const [isRefreshing, doRefresh] = useState(false);
+	const [isRefreshing, doRefresh] = useState(false);	
+	const [getUsers, { data: users, loading }] = GetUserList();
 
 	useEffect(() => {
-		props.onLoadUserSubscribed();
-	}, [isRefreshing, props.isUserCreated]);
+		getUsers();
+	}, [isRefreshing])
+
 
 	const handleSelection = (user) => {
 		selectUser(user);
 		setModalState(true);
 	};
 	const addUser = (params) => {
-		props.onUserRegistration(params);
+		dispatch(UserRegistration(params))
 	};
 
 	const refresh = (event) => {
 		doRefresh(true);
+		getUsers();
 		setTimeout(() => {
 			doRefresh(false);
 			event.detail.complete();
@@ -52,7 +53,7 @@ const Users = (props) => {
 	};
 
 	return (
-		<IonPage id="page-users">
+		<IonPage id="page-users" className="bg-gray-900">
 			<IonContent>
 				<IonHeader>
 					<IonToolbar>
@@ -67,7 +68,7 @@ const Users = (props) => {
 						</IonButtons>
 					</IonToolbar>
 				</IonHeader>
-				<IonContent fullscreen="true">
+				<IonContent fullscreen="true" className="container mx-auto bg-gray-100">
 					<IonRefresher slot="fixed" onIonRefresh={refresh}>
 						<IonRefresherContent
 							pullingIcon={refreshOutline}
@@ -77,7 +78,9 @@ const Users = (props) => {
 							refreshingText="Refreshing..."
 						></IonRefresherContent>
 					</IonRefresher>
-					{props.isLoading ? <Placeholder rows={10} /> : <List users={props.users} onSelectUser={(user) => handleSelection(user)} />}
+					{loading
+						? <Placeholder cards={4} />
+						: <List users={users.data} onSelectUser={(user) => handleSelection(user)} />}
 				</IonContent>
 				<IonModal
 					isOpen={isModalVisibile}
@@ -134,18 +137,4 @@ const Users = (props) => {
 	);
 };
 
-const mapStateToProps = (state) => {
-	return {
-		users: state.user.userList,
-		userRegistered: state.user.message,
-		isLoading: state.app.loading,
-	};
-};
-const mapDispatchToProps = (dispatch) => {
-	return {
-		onLoadUserSubscribed: () => dispatch(loadUsers()),
-		onUserRegistration: (params) => dispatch(userRegistration(params)),
-	};
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Users);
+export default Users;
