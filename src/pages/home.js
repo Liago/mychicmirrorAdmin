@@ -41,11 +41,6 @@ const HomePage = (props) => {
 	}, []);
 
 
-
-	useIonViewWillEnter(() => {
-		// readComments();
-	});
-
 	// const readComments = () => {
 	// 	setLoading(true);
 	// 	(async () => {
@@ -90,19 +85,19 @@ const HomePage = (props) => {
 					<IonButtons slot="start">
 						<IonMenuButton />
 					</IonButtons>
-					<IonTitle>Last {size(allComments)} comments</IonTitle>
+					<IonTitle>{!isLoading && <>Last {size(allComments.comments)} comments</>}</IonTitle>
 				</IonToolbar>
 				<IonToolbar>
 					<IonSegment value={view} onIonChange={(e) => setView(e.detail.value)}>
 						<IonSegmentButton value="all">
-							{isNil(allComments) || loading
+							{isLoading
 								? <Icon className="icons asterisk loading inverted grey" />
-								: `Comments ${size(allComments) - parseInt(spam)}`}
+								: `Comments ${size(allComments.comments) - parseInt(allComments.total_spam)}`}
 						</IonSegmentButton>
 						<IonSegmentButton value="spam" color="red">
-							{isNil(spam) || loading
+							{isLoading
 								? <Icon className="icons asterisk loading inverted grey" />
-								: `Spam ${spam}`}
+								: `Spam ${allComments.total_spam}`}
 						</IonSegmentButton>
 					</IonSegment>
 				</IonToolbar>
