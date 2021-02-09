@@ -17,7 +17,7 @@ export const SendCommentReply = (params) => useApi("POST","newCommentReply.php"
 
 // export const GetAllComments = () => useApi("GET","/getAllAdminComments.php");
 
-export const UpdateComment = (params) => useApi("POST","/commentManager.php", params);
+export const UpdateComment = () => useLazyApi("POST","/commentManager.php");
 
 export const GetUserAvatar = (params) => useApi('POST', 'getAvatarFromUsername.php', params);
 
