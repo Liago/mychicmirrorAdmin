@@ -20,10 +20,10 @@ const List = (props) => {
 
 	return (
 		<IonList inset={true}>
-			<div className="list-component">
+			<div className="list-component dark:bg-black">
 				{props.users.map((user, index) => {
 					return (
-						<div className="flex bg-white shadow-lg rounded-lg mx-4 mx-auto my-5 border" key={index} onClick={() => props.onSelectUser(user)}>
+						<div className="flex bg-white dark:bg-black shadow-lg rounded-lg mx-4 mx-auto my-5 border" key={index} onClick={() => props.onSelectUser(user)}>
 							<div className="w-full flex items-start px-4 py-6">
 								{/* <img className="w-12 h-12 rounded-full object-cover mr-4 shadow" src="../images/default_avatar.jpg" alt="avatar" /> */}
 

@@ -23,9 +23,10 @@
 
 
 .comment-modal-class {
-	--background:rgba(0,0,0,.50);
+	--background:rgba(0,0,0,1);
 }
-.comment-modal-class .ui.fluid.card {
-	position: absolute;
-	bottom:0;
+
+
+.sc-ion-modal-ios-h .modal-wrapper.sc-ion-modal-ios {
+	background: rgba(0,0,0,.7);
 }

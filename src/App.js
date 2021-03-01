@@ -30,6 +30,8 @@ import Notifications from "./pages/notifications";
 import Users from "./pages/users";
 import Toast from "./components/UI/toast";
 
+import "bootstrap/dist/css/bootstrap.min.css";
+import "shards-ui/dist/css/shards.min.css";
 // import "./sass/main.css";
 import "./sass/index.css";
 
@@ -37,7 +39,7 @@ import "./sass/index.css";
 class App extends Component {
 	render() {
 		return (
-			<IonApp className={`${this.props.darkMode ? "dark-theme" : ""}`}>
+			<IonApp className={`${this.props.darkMode ? "dark" : ""}`}>
 				<IonReactRouter>
 					<IonSplitPane contentId="main">
 						<Menu />
