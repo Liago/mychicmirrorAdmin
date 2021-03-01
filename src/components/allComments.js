@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Card, Image, Label, Segment } from "semantic-ui-react";
+import { Segment } from "semantic-ui-react";
 import Modal from "../components/UI/modal";
 import moment from "moment";
 import { SendCommentReply } from "../store/rest";
 import { ONESIGNAL_APP_ID } from "../helpers/config";
-import { caretForwardCircle, close, heart, share, trash } from "ionicons/icons";
+import { Card, CardHeader, CardBody } from "shards-react";
 
 import ActionSheet from "./UI/actionSheet";
 
@@ -88,6 +88,16 @@ const Comments = (props) => {
 							: null;
 					};
 					return (
+						
+
+
+
+
+
+
+
+
+
 						<div key={index} className={`px-3 ${comment.status === "spam" && view !== "spam" ? "hidden" : ""} ${comment.status !== "spam" && view !== "all" ? "hidden" : ""}`}>
 							<div className="bg-white w-full border rounded-md shadow-md h-auto py-3 px-3 my-5">
 								{markAsSpam()}

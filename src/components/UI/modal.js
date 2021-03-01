@@ -1,6 +1,6 @@
 import { IonModal } from "@ionic/react";
 import React, { useState, useEffect } from "react";
-import { Card, Dimmer, Loader } from "semantic-ui-react";
+import { Card, CardHeader, CardBody } from "shards-react";
 
 import UniversalForm from "../forms/universalForm";
 
@@ -23,18 +23,12 @@ const ModalNotification = (props) => {
 			swipeToClose={true}
 			presentingElement={undefined}
 			onDidDismiss={() => props.modalToggler(false)}>
-			<Card fluid className="animate__fadeInUp animate__delay-2s">
-				<Card.Content>
-					<Dimmer className={dimmerState ? "active" : ""}>
-						<Loader inverted>Sending...</Loader>
-					</Dimmer>
-					<Card.Header>
-						{props.type.title_content}
-					</Card.Header>
-				</Card.Content>
-				<Card.Content className="px-3">
-					<UniversalForm onSubmit={handleSubmit} type={props.type}/>
-				</Card.Content>
+
+			<Card className="mx-2 mt-5">
+				<CardHeader>{props.type.title_content}</CardHeader>
+				<CardBody>
+					<UniversalForm onSubmit={handleSubmit} type={props.type} />
+				</CardBody>
 			</Card>
 		</IonModal>
 	);
