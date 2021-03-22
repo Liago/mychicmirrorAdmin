@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Segment } from "semantic-ui-react";
 import Modal from "../components/UI/modal";
+import PostModal from "../components/UI/modal_UI";
 import moment from "moment";
 import { SendCommentReply } from "../store/rest";
 import { ONESIGNAL_APP_ID } from "../helpers/config";
@@ -18,7 +19,9 @@ const Comments = (props) => {
 	// const { isCompleted } = useSelector(state => state.toast)
 
 	const { list, avatar, view } = props;
+	const [postId, setPostId] = useState(null);
 	const [isModalOpen, toggleModal] = useState(false);
+	const [isPostModalOpen, togglePostModal] = useState(false);
 	const [replyparams, setreplyparams] = useState({
 		post_ID: "",
 		comment_post: "",
@@ -89,13 +92,13 @@ const Comments = (props) => {
 						<div key={index} className={`p-3 ${comment.status === "spam" && view !== "spam" ? "hidden" : ""} ${comment.status !== "spam" && view !== "all" ? "hidden" : ""}`}>
 							<Card>
 								<CardHeader>
-									<div className="w-full h-7 flex">
+									<div className="w-full h-7 flex" onClick={() => { setPostId(comment.comment_post); togglePostModal(true) }}>
 										<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
 										</svg>
-										<h2 
-										className="text-xl font-semibold pl-2"
-										dangerouslySetInnerHTML={{ __html: comment.post_title.split(" / ")[0] }}></h2>
+										<h2
+											className="text-xl font-semibold pl-2"
+											dangerouslySetInnerHTML={{ __html: comment.post_title.split(" / ")[0] }}></h2>
 									</div>
 									{markAsSpam()}
 								</CardHeader>
@@ -205,6 +208,7 @@ const Comments = (props) => {
 						// 		</div>
 						// 	</div>
 						// </div>
+
 					);
 				})}
 			</Segment>
@@ -219,6 +223,11 @@ const Comments = (props) => {
 				comment={commentSelected}
 				doRefresh={props.doRefresh}
 				setShowActionSheet={setShowActionSheet}
+			/>
+			<PostModal
+				open={isPostModalOpen}
+				postId={postId}
+				togglePostModal={togglePostModal}
 			/>
 		</>
 	);

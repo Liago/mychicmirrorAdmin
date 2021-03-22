@@ -1,7 +1,7 @@
 import { wrappedApi } from "../common/api";
 import { store } from "./store";
 
-const { useApi, useLazyApi } = wrappedApi({ store })
+const { useApi, useLazyApi, useLazyRestApi } = wrappedApi({ store })
 
 export const GetUserList = () => useLazyApi("GET","getAllUsers.php");
 
@@ -23,6 +23,10 @@ export const GetUserAvatar = (params) => useApi('POST', 'getAvatarFromUsername.p
 
 
 export const GetAllCommentsHandler = () => useLazyApi('GET', "getAllAdminComments.php");
+
+export const GetPost = (postId) => useLazyRestApi('GET', `/wp/v2/posts/${postId}`);
+
+
 // export const getOtherProductsHandler = (sku) => useLazyApi('GET', `/api/v1/showroom/catalog/product/${sku}/others`);
 
 
