@@ -15,7 +15,7 @@ import {
 	useIonViewWillEnter,
 } from "@ionic/react";
 import { refreshOutline } from "ionicons/icons";
-import { Card, CardBody, CardHeader, CardTitle, CardFooter, Button } from "shards-react";
+import { Card, CardBody, Button } from "shards-react";
 import { GetUserComments, SendCommentReply, SendNotification, UserDelete } from "../store/rest";
 
 import Placeholder from "../components/UI/placeholder";
@@ -35,6 +35,7 @@ const User = (props) => {
 	
 	const [getUserComments, { data: comments, loading }] = GetUserComments();
 	const [sendNotification, { loading: isSent }] = SendNotification();
+	const [sendReply, { loading: isReplySent }] = SendCommentReply();
 
 
 	const prepareNotification = (params) => {
@@ -76,7 +77,7 @@ const User = (props) => {
 
 	const commentReplyHandler = (values) => {
 		console.log("commentReplyHandler", values);
-		dispatch(SendCommentReply(values))
+		sendReply(values);
 	};
 
 	const handleSubmitNotification = (values) => {

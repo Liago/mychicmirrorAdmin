@@ -1,21 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { IonModal, IonSpinner } from "@ionic/react";
 import { Card, CardHeader, CardBody } from "shards-react";
 import { GetPost } from "../../store/rest";
 
-// import UniversalForm from "../forms/universalForm";
-
 const ModalNotification = (props) => {
-	const [dimmerState, setDimmer] = useState(false);
-	useEffect(() => {
-		setDimmer(false);
-	}, []);
 	const [getPost, { data, loading }] = GetPost(props.postId);
-	// const handleSubmit = (values) => {
-	// 	setDimmer(true);
-	// 	props.submitNotification({ titolo: values.titolo, contenuto: values.commento });
-	// };
-
 
 	useEffect(() => {
 		props.open && getPost()
@@ -52,29 +41,6 @@ const ModalNotification = (props) => {
 				}
 			</Card>
 		</IonModal>
-
-		// <Modal
-		// 	size="small"
-		// 	dimmer="inverted"
-		// 	open={props.open}
-		// 	onClose={() => props.modalToggler(false)}>
-		// 	<Dimmer className={dimmerState ? "active" : ""}>
-		// 		<Loader inverted>Sending...</Loader>
-		// 	</Dimmer>
-		// 	<Modal.Content>
-		// 		<Card>
-		// 			<Card.Content>
-		// 				<Card.Header>
-		// 					{props.title_content}
-		// 				</Card.Header>
-		// 			</Card.Content>
-		// 			<Card.Content>
-		// 				{/* <UniversalForm onSubmit={handleSubmit} type={props.type} /> */}
-		// 				{props.content}
-		// 			</Card.Content>
-		// 		</Card>
-		// 	</Modal.Content>
-		// </Modal>
 	);
 };
 

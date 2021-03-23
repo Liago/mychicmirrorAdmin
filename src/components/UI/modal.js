@@ -1,17 +1,14 @@
 import { IonModal } from "@ionic/react";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Card, CardHeader, CardBody } from "shards-react";
+import { IonSpinner } from "@ionic/react";
 
 import UniversalForm from "../forms/universalForm";
 
 const ModalNotification = (props) => {
-	const [dimmerState, setDimmer] = useState(false);
-	useEffect(() => {
-		setDimmer(false);
-	}, []);
+	const [isSending, setSending] = useState(false);
 	const handleSubmit = (values) => {
-		setDimmer(true);
-		console.log('Submitted values', values)
+		setSending(true);
 		props.submitNotification({ titolo: values.titolo, contenuto: values.commento });
 	};
 
@@ -27,7 +24,10 @@ const ModalNotification = (props) => {
 			<Card className="mx-2 mt-5">
 				<CardHeader>{props.type.title_content}</CardHeader>
 				<CardBody>
-					<UniversalForm onSubmit={handleSubmit} type={props.type} />
+					{isSending
+						? <div className="grid place-content-center h-100"><IonSpinner name="lines" /></div>
+						: <UniversalForm onSubmit={handleSubmit} type={props.type} />
+					}
 				</CardBody>
 			</Card>
 		</IonModal>

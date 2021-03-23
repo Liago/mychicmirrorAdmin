@@ -11,8 +11,7 @@ export const UserDelete = (params) => useApi("POST","deleteUser.php", params);
 
 export const GetUserComments = (params) => useLazyApi('POST',"getTotalCommentsByUser.php", params);
 export const SendNotification = () => useLazyApi("POST","sendAppNotification.php");
-
-export const SendCommentReply = (params) => useApi("POST","newCommentReply.php", params);
+export const SendCommentReply = () => useLazyApi("POST","newCommentReply.php");
 
 // export const GetAllComments = () => useApi("GET","/getAllAdminComments.php");
 

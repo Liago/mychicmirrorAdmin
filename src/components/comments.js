@@ -1,23 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import PostModal from "../components/UI/modal_UI";
 import { Card, CardBody, CardHeader, CardTitle, CardFooter, Button } from "shards-react";
+import {IonSpinner } from "@ionic/react";
+
+import PostModal from "../components/UI/modal_UI";
 import Modal from "../components/UI/modal";
-import { SendCommentReply } from "../store/rest";
+
+import { SendCommentReply, SendNotification } from "../store/rest";
 import { ONESIGNAL_APP_ID } from "../helpers/config";
 import moment from "moment";
 
 const Comments = (props) => {
-	const dispatch = useDispatch();
-	const { loading, error } = useSelector(state => state.app)
-	const { success } = useSelector(state => state.user.replied)
-
-	const { onReplySubmitted, avatar, list } = props;
+	const { list } = props;
 	const [isModalOpen, toggleModal] = useState(false);
 	const [postId, setPostId] = useState(null);
 	const [isPostModalOpen, togglePostModal] = useState(false);
 	const [replyparams, setreplyparams] = useState({ post_ID: "", comment_post: "", comment_post_title: "", comment_parent: "", comment_content: "" });
+	const [sendReply, { loading: isReplySent }] = SendCommentReply();
+	const [sendNotification, { loading: isSent }] = SendNotification();
 
 	useEffect(() => {
 		if (
@@ -28,7 +29,9 @@ const Comments = (props) => {
 			replyparams.comment_content !== ""
 		) {
 			let notificationparams = prepareNotification();
-			dispatch(SendCommentReply(replyparams, notificationparams));
+			sendReply(replyparams);
+			sendNotification(notificationparams);
+			
 		}
 	}, [replyparams]);
 
@@ -53,6 +56,10 @@ const Comments = (props) => {
 		setreplyparams({ ...replyparams, comment_content: values.contenuto });
 		prepareNotification();
 	};
+
+	useEffect(() => {
+		!isReplySent && toggleModal(false)
+	}, [isReplySent])
 
 	return (
 		<>
