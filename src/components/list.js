@@ -19,7 +19,7 @@ const List = (props) => {
 
 
 	return (
-		<div className="list-component dark:bg-black pb-5">
+		<div className="list-component pb-5">
 			{props.users.map((user, index) => {
 				return (
 					<Card
