@@ -4,19 +4,16 @@ import { Segment } from "semantic-ui-react";
 import Modal from "../components/UI/modal";
 import PostModal from "../components/UI/modal_UI";
 import moment from "moment";
-import { SendCommentReply } from "../store/rest";
+import { SendCommentReply, SendNotification } from "../store/rest";
 import { ONESIGNAL_APP_ID } from "../helpers/config";
 import { Card, CardHeader, CardBody, CardTitle, Button, CardFooter } from "shards-react";
 
 import ActionSheet from "./UI/actionSheet";
 
 const Comments = (props) => {
-	// console.log('props', props)
 	const dispatch = useDispatch();
-
-	const { loading, notificationSegment, error } = useSelector(state => state.app)
-	const { success } = useSelector(state => state.user.replied)
-	// const { isCompleted } = useSelector(state => state.toast)
+	const { notificationSegment } = useSelector(state => state.app)
+		// const { isCompleted } = useSelector(state => state.toast)
 
 	const { list, avatar, view } = props;
 	const [postId, setPostId] = useState(null);
@@ -32,6 +29,8 @@ const Comments = (props) => {
 	const [buttons, setButton] = useState({ isApproving: false, isDeleting: false, isSpamming: false });
 	const [showActionSheet, setShowActionSheet] = useState(false);
 	const [commentSelected, setcommentSelected] = useState(null);
+	const [sendNotification, { loading: isSent }] = SendNotification();
+	const [sendReply, { loading: isReplySent }] = SendCommentReply();
 
 	const updateButtons = (button) => {
 		setButton({
@@ -49,14 +48,14 @@ const Comments = (props) => {
 			replyparams.comment_content !== ""
 		) {
 			let notificationparams = prepareNotification();
-			dispatch(SendCommentReply(replyparams, notificationparams));
+			sendReply(replyparams);
+			sendNotification(notificationparams);
 		}
 	}, [replyparams]);
 
 	useEffect(() => {
-		if (props.isSent)
-			toggleModal(false)
-	}, [props.isSent])
+		!isReplySent && toggleModal(false)
+	}, [isReplySent])
 
 	const handleSubmit = (values) => {
 		setreplyparams({ ...replyparams, comment_content: values.contenuto });
@@ -74,8 +73,7 @@ const Comments = (props) => {
 			ios_sound: "nil",
 			android_sound: "nil",
 			data: { post: replyparams.comment_post },
-			included_segments: [props.notificationSegment],
-			// included_segments: ["Subscribed Users"],
+			included_segments: [notificationSegment],
 			// included_segments: ["TEST USERS"],
 		};
 		return message;
