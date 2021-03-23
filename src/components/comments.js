@@ -1,21 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { connect } from "react-redux";
-import { IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonList } from "@ionic/react";
-import { Comment } from "semantic-ui-react";
+
+import { Card, CardBody, CardHeader, CardTitle, CardFooter, Button } from "shards-react";
+import {IonSpinner } from "@ionic/react";
+
+import PostModal from "../components/UI/modal_UI";
 import Modal from "../components/UI/modal";
-import { SendCommentReply } from "../store/rest";
+
+import { SendCommentReply, SendNotification } from "../store/rest";
 import { ONESIGNAL_APP_ID } from "../helpers/config";
 import moment from "moment";
 
 const Comments = (props) => {
-	const dispatch = useDispatch();
-	const { loading, error } = useSelector(state => state.app)
-	const { success } = useSelector(state => state.user.replied)
-
-	const { onReplySubmitted, avatar, list } = props;
+	const { list } = props;
 	const [isModalOpen, toggleModal] = useState(false);
+	const [postId, setPostId] = useState(null);
+	const [isPostModalOpen, togglePostModal] = useState(false);
 	const [replyparams, setreplyparams] = useState({ post_ID: "", comment_post: "", comment_post_title: "", comment_parent: "", comment_content: "" });
+	const [sendReply, { loading: isReplySent }] = SendCommentReply();
+	const [sendNotification, { loading: isSent }] = SendNotification();
 
 	useEffect(() => {
 		if (
@@ -26,7 +29,9 @@ const Comments = (props) => {
 			replyparams.comment_content !== ""
 		) {
 			let notificationparams = prepareNotification();
-			dispatch(SendCommentReply(replyparams, notificationparams));
+			sendReply(replyparams);
+			sendNotification(notificationparams);
+			
 		}
 	}, [replyparams]);
 
@@ -52,51 +57,31 @@ const Comments = (props) => {
 		prepareNotification();
 	};
 
+	useEffect(() => {
+		!isReplySent && toggleModal(false)
+	}, [isReplySent])
+
 	return (
-		<IonList>
+		<>
 			{list.map((comment, index) => {
 				return (
-					<IonItemSliding className="comments-component" key={index}>
-						<IonItem>
-
-							<div className="w-full bg-white rounded-lg shadow-md border p-1 my-5">
-								<div className="flex justify-between items-center">
-									<span className="font-light text-gray-600 text-sm px-2">{moment(comment.date).fromNow()}</span>
-									{/* <a href="#" className="px-2 py-1 bg-gray-600 text-gray-100 font-bold rounded hover:bg-gray-500">Laravel</a> */}
-								</div>
-								<div className="mt-2">
-									{/* <div className="text-xl text-red-700 font-bold px-2">{comment.post_title}></div> */}
-									<div className="text-xl text-red-700 font-bold px-2" dangerouslySetInnerHTML={{ __html: comment.post_title }}></div>
-									<p className="mt-2 text-gray-600 text-sm px-2 text-justify pt-3 border-t border-gray-100" dangerouslySetInnerHTML={{ __html: comment.content }}></p>
-								</div>
-								{/* <div className="flex justify-between items-center mt-4">
-									<a href="#" className="text-blue-500 hover:underline">Read more</a>
-									<div>
-										<a href="#" className="flex items-center">
-											<img src={avatar} alt="avatar" className="mx-4 w-10 h-10 object-cover rounded-full hidden sm:block" />
-											<h1 className="text-gray-700 font-bold hover:underline">Alex John</h1>
-										</a>
-									</div>
-								</div> */}
+					<Card className="m-3" key={index}>
+						<CardHeader>
+							<div className="w-full h-7 flex" onClick={() => { setPostId(comment.comment_post); togglePostModal(true) }}>
+								<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+								</svg>
+								<h2
+									className="text-xl font-semibold pl-2"
+									dangerouslySetInnerHTML={{ __html: comment.post_title.split(" / ")[0] }}></h2>
 							</div>
-
-
-							{/* 							
-							<Comment.Group>
-								<Comment>
-									<Comment.Avatar className="circular" as="a" src={avatar} />
-									<Comment.Content>
-										<Comment.Author as="a">{comment.post_title}</Comment.Author>
-										<Comment.Metadata>
-											<div>{moment(comment.date).fromNow()}</div>
-										</Comment.Metadata>
-										<Comment.Text>{comment.content}</Comment.Text>
-									</Comment.Content>
-								</Comment>
-							</Comment.Group> */}
-						</IonItem>
-						<IonItemOptions side="end">
-							<IonItemOption
+						</CardHeader>
+						<CardTitle className="text-right"><span className="font-light text-gray-600 text-xs px-2">{moment(comment.date).fromNow()}</span></CardTitle>
+						<CardBody dangerouslySetInnerHTML={{ __html: comment.content }}></CardBody>
+						<CardFooter className="text-right">
+							<Button
+								outline
+								theme="success"
 								onClick={() => {
 									setreplyparams({
 										...replyparams,
@@ -106,12 +91,11 @@ const Comments = (props) => {
 										comment_parent: comment.comment_ID,
 									});
 									toggleModal(true);
-								}}
-							>
-								Reply
-							</IonItemOption>
-						</IonItemOptions>
-					</IonItemSliding>
+								}}>
+								Rispondi
+									</Button>
+						</CardFooter>
+					</Card>
 				);
 			})}
 
@@ -121,7 +105,12 @@ const Comments = (props) => {
 				modalToggler={toggleModal}
 				type={{ title: false, title_content: "Nuova Risposta", content: "comment" }}
 			/>
-		</IonList >
+			<PostModal
+				open={isPostModalOpen}
+				postId={postId}
+				togglePostModal={togglePostModal}
+			/>
+		</>
 	);
 };
 

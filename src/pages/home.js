@@ -1,6 +1,6 @@
 import { size, isNil } from "lodash";
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import {
 	IonButtons,
@@ -14,7 +14,6 @@ import {
 	IonSegmentButton,
 	IonTitle,
 	IonToolbar,
-	useIonViewWillEnter,
 } from "@ionic/react";
 
 import CommentsList from "../components/allComments";
@@ -25,44 +24,21 @@ import { refreshOutline } from "ionicons/icons";
 import { Icon } from "semantic-ui-react";
 
 const HomePage = (props) => {
-	// console.log("HOMEPAGE props", props);
-	const dispatch = useDispatch();
 	const [isRefreshing, doRefresh] = useState(false);
 	const [view, setView] = useState("all");
-	const [loading, setLoading] = useState(false);
-	// const [allComments, setAllComments] = useState(null);
-	const [spam, setspam] = useState(null)
 	const [getAllComments, { data: allComments, loading: isLoading }] = GetAllCommentsHandler();
-	const { isloading, notificationMessage, isMessageDelete } = useSelector(state => state.app)
 
 
 	useEffect(() => {
 		getAllComments();
 	}, []);
 
-
-	// const readComments = () => {
-	// 	setLoading(true);
-	// 	(async () => {
-	// 		try {
-	// 			const response = await props.onLoadAllComments();
-	// 			console.log("response.allComments.comments", response);
-	// 			setAllComments(response.allComments.comments);
-	// 			setspam(response.allComments.total_spam);
-	// 			setLoading(response.loading);
-	// 		} catch (e) {
-	// 			console.log(e);
-	// 		}
-	// 	})();
-	// };
-
 	const refresh = (event) => {
 		doRefresh(true);
-		// readComments();
+		getAllComments();
 		setTimeout(() => {
 			doRefresh(false);
-			getAllComments();
-			// event.detail.complete();
+			event.detail.complete();
 		}, 2000);
 	};
 

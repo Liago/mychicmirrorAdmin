@@ -33,12 +33,11 @@ const Menu = (props) => {
 	const dispatch = useDispatch();
 	const { darkMode, devMode } = useSelector(state => state.app);
 
-
 	return (
 		<IonMenu contentId="main" type="overlay">
 			<IonContent>
 				<IonList id="inbox-list" className="flex flex-col sm:flex-row sm:justify-around">
-					<div className="w-64 h-screen bg-white">
+					<div className="w-100 h-screen bg-white">
 						<IonListHeader className="flex items-center text-center mt-10 pb-4">MyChicMirror Admin</IonListHeader>
 						{appPages.map((appPage, index) => {
 							return (
@@ -61,12 +60,12 @@ const Menu = (props) => {
 							<IonItem>
 								<IonIcon slot="start" icon={moonOutline}></IonIcon>
 								<IonLabel>Dark Mode</IonLabel>
-								<IonToggle checked={props.darkMode} onClick={() => dispatch(setDarkMode(!darkMode))} />
+								<IonToggle checked={darkMode} onIonChange={() => dispatch(setDarkMode(!darkMode))} />
 							</IonItem>
 							<IonItem>
 								<IonIcon slot="start" icon={cogOutline}></IonIcon>
 								<IonLabel>Dev Mode</IonLabel>
-								<IonToggle checked={props.devMode} onClick={() => dispatch(setDevMode(!devMode))} />
+								<IonToggle checked={devMode} onIonChange={() => dispatch(setDevMode(!devMode))} />
 							</IonItem>
 							{labels.map((label, index) => (
 								<IonItem lines="none" key={index}>

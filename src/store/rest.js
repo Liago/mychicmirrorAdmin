@@ -1,7 +1,7 @@
 import { wrappedApi } from "../common/api";
 import { store } from "./store";
 
-const { useApi, useLazyApi } = wrappedApi({ store })
+const { useApi, useLazyApi, useLazyRestApi } = wrappedApi({ store })
 
 export const GetUserList = () => useLazyApi("GET","getAllUsers.php");
 
@@ -10,10 +10,8 @@ export const UserRegistration = (params) => useApi("POST","registration.php", pa
 export const UserDelete = (params) => useApi("POST","deleteUser.php", params);
 
 export const GetUserComments = (params) => useLazyApi('POST',"getTotalCommentsByUser.php", params);
-
-export const SendNotification = (params) => useApi("POST","sendAppNotification.php", params);
-
-export const SendCommentReply = (params) => useApi("POST","newCommentReply.php", params);
+export const SendNotification = () => useLazyApi("POST","sendAppNotification.php");
+export const SendCommentReply = () => useLazyApi("POST","newCommentReply.php");
 
 // export const GetAllComments = () => useApi("GET","/getAllAdminComments.php");
 
@@ -23,6 +21,10 @@ export const GetUserAvatar = (params) => useApi('POST', 'getAvatarFromUsername.p
 
 
 export const GetAllCommentsHandler = () => useLazyApi('GET', "getAllAdminComments.php");
+
+export const GetPost = (postId) => useLazyRestApi('GET', `/wp/v2/posts/${postId}`);
+
+
 // export const getOtherProductsHandler = (sku) => useLazyApi('GET', `/api/v1/showroom/catalog/product/${sku}/others`);
 
 

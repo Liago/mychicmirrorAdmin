@@ -1,5 +1,5 @@
 import { isNil } from "lodash";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
 	IonActionSheet,
@@ -15,7 +15,7 @@ import {
 	useIonViewWillEnter,
 } from "@ionic/react";
 import { refreshOutline } from "ionicons/icons";
-import { Card } from "semantic-ui-react";
+import { Card, CardBody, Button } from "shards-react";
 import { GetUserComments, SendCommentReply, SendNotification, UserDelete } from "../store/rest";
 
 import Placeholder from "../components/UI/placeholder";
@@ -32,16 +32,10 @@ const User = (props) => {
 	const [isRefreshing, doRefresh] = useState(false);
 	const [isModalOpen, toggleModal] = useState(false);
 	const [view, setView] = useState("comments");
-	const [allComments, setAllComments] = useState(null);
-	const [commentsCount, setCommentsCount] = useState(null);
-	// const [loading, setLoading] = useState(false);
-
-	const { aerror, isloading, notificationMessage } = useSelector(state => state.app);
-	const { commentsList } = useSelector(state => state.user)
-	// const { isCompleted } = useSelector(state => state.toast)
-
+	
 	const [getUserComments, { data: comments, loading }] = GetUserComments();
-
+	const [sendNotification, { loading: isSent }] = SendNotification();
+	const [sendReply, { loading: isReplySent }] = SendCommentReply();
 
 
 	const prepareNotification = (params) => {
@@ -53,36 +47,20 @@ const User = (props) => {
 			ios_badgeType: "Increase",
 			include_player_ids: [props.user.playerID],
 		};
-		dispatch(SendNotification(message))
+		sendNotification(message);
 	};
 
 	useIonViewWillEnter(() => {
 		getUserComments({ user: props.user.email });
 	});
 
-
-	// const readComments = () => {
-	// 	setLoading(true);
-
-	// 	if (data)
-	// 		setAllComments(data);
-	// 	setLoading(loading);
-	// 	// (async () => {
-	// 	// 	try {
-	// 	// 		const { comments, loading, count } = await props.onLoadComments({ user: props.user.email });
-	// 	// 		setAllComments(comments);
-	// 	// 		setLoading(loading);
-	// 	// 		setCommentsCount(count);
-	// 	// 		console.log('comments, loading, count', comments, loading, count)
-	// 	// 	} catch (e) {
-	// 	// 		console.log(e);
-	// 	// 	}
-	// 	// })();
-	// };
+	useEffect(() => {
+		!isSent && toggleModal(false);
+	}, [isSent])
 
 	const refresh = (event) => {
 		doRefresh(true);
-		// readComments();
+		getUserComments({ user: props.user.email });
 		setTimeout(() => {
 			doRefresh(false);
 			event.detail.complete();
@@ -99,7 +77,7 @@ const User = (props) => {
 
 	const commentReplyHandler = (values) => {
 		console.log("commentReplyHandler", values);
-		dispatch(SendCommentReply(values))
+		sendReply(values);
 	};
 
 	const handleSubmitNotification = (values) => {
@@ -111,47 +89,34 @@ const User = (props) => {
 			<IonPage id="user-card-detail" className="bg-grey-100">
 				<IonHeader collapse="condense" className="ion-no-border">
 					<IonToolbar>
-						<div className="flex bg-white mx-4 border-b-2">
-							<div className="flex items-start px-4 py-6">
-								<img className="w-12 h-12 rounded-full object-cover mr-4 shadow" src="images/default_avatar.jpg" alt="avatar" />
-								<div className="">
-									<div className="flex items-center justify-between">
-										<h2 className="text-lg font-semibold text-gray-900 -mt-1">{props.user.username}</h2>
-										{/* <small className="text-sm text-gray-700">22h ago</small> */}
+						<Card className="mt-5">
+							<CardBody className="px-1 py-4">
+								<div className="flex bg-white">
+									<div className="flex items-start px-4 ">
+										<img className="w-12 h-12 rounded-full object-cover mr-4 shadow" src="images/default_avatar.jpg" alt="avatar" />
+										<div className="">
+											<div className="flex items-center justify-between">
+												<h2 className="text-lg font-semibold text-gray-900 -mt-1">{props.user.username}</h2>
+											</div>
+											<p className="text-gray-700">{props.user.email}</p>
+										</div>
 									</div>
-									<p className="text-gray-700">{props.user.email}</p>
-									{/* <p className="mt-3 text-gray-700 text-sm">Lorem ipsum, dolor sit amet conse. Saepe optio minus rem dolor sit amet!</p> */}
 								</div>
-							</div>
-						</div>
-						{/* 						
-						<Card className="fluid raised toolbar-card">
-							<Card.Content>
-								<Image className="right floated circular mini" src="images/default_avatar.jpg" />
-								<Card.Header>{props.user.username}</Card.Header>
-								<Card.Meta>{props.user.email}</Card.Meta>
-							</Card.Content>
-							<Card.Content>
-								{isNil(commentsCount) ? <Placeholder row={1} lines={1} /> : (
-									<IonSegment value={view} onIonChange={(e) => setView(e.detail.value)}>
-										<IonSegmentButton value="comments">{isNil(commentsCount) || loading ? <Icon className="icons asterisk loading inverted grey" /> : "Comments: " + commentsCount}</IonSegmentButton>
-										<IonSegmentButton value="utility">Utility</IonSegmentButton>
-									</IonSegment>
-								)}
-							</Card.Content>
-						</Card> */}
+
+							</CardBody>
+						</Card>
 					</IonToolbar>
 				</IonHeader>
 				<IonContent>
 					<IonGrid>
 						<IonRow>
-							<div className="user-component w-screen">
+							<div className="user-component px-2">
 								{props.user.username && (
-									<Card className="fluid raised">
-										<Card.Content extra className={`${view === "comments" ? "hidden" : ""}`}>
+									<>
+										<div className={`${view === "comments" ? "hidden" : ""}`}>
 											<UserUtilities {...props} />
-										</Card.Content>
-										<Card.Content extra className={`${view !== "comments" ? "hidden" : ""}`}>
+										</div>
+										<div className={`${view !== "comments" ? "hidden" : ""}`}>
 											<IonRefresher slot="fixed" onIonRefresh={refresh}>
 												<IonRefresherContent
 													pullingIcon={refreshOutline}
@@ -162,8 +127,8 @@ const User = (props) => {
 												></IonRefresherContent>
 											</IonRefresher>
 											{getComments()}
-										</Card.Content>
-									</Card>
+										</div>
+									</>
 								)}
 							</div>
 						</IonRow>
@@ -187,32 +152,36 @@ const User = (props) => {
 					{
 						text: 'Cancel',
 						role: 'cancel',
-						handler: () => {}
+						handler: () => { }
 					}]}
 				>
 				</IonActionSheet>
-				<IonFooter>
+				<IonFooter className="shadow-md">
 					<IonToolbar className="action-toolbar">
-						<div className="flex justify-center">
-							<div className="flex-auto">
-								<button
-									className="px-8 py-2 bg-blue-600 text-white text-base font-semibold rounded-md shadow-md "
-									onClick={() => toggleModal(true)}
-								>Notifica</button>
-							</div>
-							<div className="flex-auto">
-								<button
-									className="px-8 py-2 bg-red-600 text-white text-base font-semibold rounded-md shadow-md "
-									onClick={() => setShowAlert(true)}
-								>Elimina</button>
-							</div>
-							<div className="flex-auto">
-								<button
-									className="px-8 py-2 bg-gray-600 text-white text-base font-semibold rounded-md shadow-md "
-									onClick={() => props.closeModal(false)}
-								>Chiudi</button>
-							</div>
-						</div>
+						<Card>
+							<CardBody>
+								<div className="flex justify-center">
+									<div className="flex-auto">
+										<Button
+											theme="warning"
+											onClick={() => toggleModal(true)}
+										>Notifica</Button>
+									</div>
+									<div className="flex-auto">
+										<Button
+											theme="danger"
+											onClick={() => setShowAlert(true)}
+										>Elimina</Button>
+									</div>
+									<div className="flex-auto">
+										<Button
+											theme="light"
+											onClick={() => props.closeModal(false)}
+										>Chiudi</Button>
+									</div>
+								</div>
+							</CardBody>
+						</Card>
 					</IonToolbar>
 				</IonFooter>
 				<Modal
