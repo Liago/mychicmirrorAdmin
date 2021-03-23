@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
+import PostModal from "../components/UI/modal_UI";
 import { Card, CardBody, CardHeader, CardTitle, CardFooter, Button } from "shards-react";
 import Modal from "../components/UI/modal";
 import { SendCommentReply } from "../store/rest";
@@ -14,6 +15,8 @@ const Comments = (props) => {
 
 	const { onReplySubmitted, avatar, list } = props;
 	const [isModalOpen, toggleModal] = useState(false);
+	const [postId, setPostId] = useState(null);
+	const [isPostModalOpen, togglePostModal] = useState(false);
 	const [replyparams, setreplyparams] = useState({ post_ID: "", comment_post: "", comment_post_title: "", comment_parent: "", comment_content: "" });
 
 	useEffect(() => {
@@ -56,14 +59,21 @@ const Comments = (props) => {
 			{list.map((comment, index) => {
 				return (
 					<Card className="m-3" key={index}>
-						<CardHeader
-							className="text-grey-800 font-medium"
-							dangerouslySetInnerHTML={{ __html: comment.post_title }}></CardHeader>
+						<CardHeader>
+							<div className="w-full h-7 flex" onClick={() => { setPostId(comment.comment_post); togglePostModal(true) }}>
+								<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+								</svg>
+								<h2
+									className="text-xl font-semibold pl-2"
+									dangerouslySetInnerHTML={{ __html: comment.post_title.split(" / ")[0] }}></h2>
+							</div>
+						</CardHeader>
 						<CardTitle className="text-right"><span className="font-light text-gray-600 text-xs px-2">{moment(comment.date).fromNow()}</span></CardTitle>
 						<CardBody dangerouslySetInnerHTML={{ __html: comment.content }}></CardBody>
 						<CardFooter className="text-right">
 							<Button
-								size="sm"
+								outline
 								theme="success"
 								onClick={() => {
 									setreplyparams({
@@ -76,7 +86,7 @@ const Comments = (props) => {
 									toggleModal(true);
 								}}>
 								Rispondi
-								</Button>
+									</Button>
 						</CardFooter>
 					</Card>
 				);
@@ -87,6 +97,11 @@ const Comments = (props) => {
 				submitNotification={handleSubmit}
 				modalToggler={toggleModal}
 				type={{ title: false, title_content: "Nuova Risposta", content: "comment" }}
+			/>
+			<PostModal
+				open={isPostModalOpen}
+				postId={postId}
+				togglePostModal={togglePostModal}
 			/>
 		</>
 	);

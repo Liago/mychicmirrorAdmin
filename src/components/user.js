@@ -1,5 +1,5 @@
 import { isNil } from "lodash";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
 	IonActionSheet,
@@ -32,16 +32,9 @@ const User = (props) => {
 	const [isRefreshing, doRefresh] = useState(false);
 	const [isModalOpen, toggleModal] = useState(false);
 	const [view, setView] = useState("comments");
-	const [allComments, setAllComments] = useState(null);
-	const [commentsCount, setCommentsCount] = useState(null);
-	// const [loading, setLoading] = useState(false);
-
-	const { aerror, isloading, notificationMessage } = useSelector(state => state.app);
-	const { commentsList } = useSelector(state => state.user)
-	// const { isCompleted } = useSelector(state => state.toast)
-
+	
 	const [getUserComments, { data: comments, loading }] = GetUserComments();
-
+	const [sendNotification, { loading: isSent }] = SendNotification();
 
 
 	const prepareNotification = (params) => {
@@ -53,36 +46,20 @@ const User = (props) => {
 			ios_badgeType: "Increase",
 			include_player_ids: [props.user.playerID],
 		};
-		dispatch(SendNotification(message))
+		sendNotification(message);
 	};
 
 	useIonViewWillEnter(() => {
 		getUserComments({ user: props.user.email });
 	});
 
-
-	// const readComments = () => {
-	// 	setLoading(true);
-
-	// 	if (data)
-	// 		setAllComments(data);
-	// 	setLoading(loading);
-	// 	// (async () => {
-	// 	// 	try {
-	// 	// 		const { comments, loading, count } = await props.onLoadComments({ user: props.user.email });
-	// 	// 		setAllComments(comments);
-	// 	// 		setLoading(loading);
-	// 	// 		setCommentsCount(count);
-	// 	// 		console.log('comments, loading, count', comments, loading, count)
-	// 	// 	} catch (e) {
-	// 	// 		console.log(e);
-	// 	// 	}
-	// 	// })();
-	// };
+	useEffect(() => {
+		!isSent && toggleModal(false);
+	}, [isSent])
 
 	const refresh = (event) => {
 		doRefresh(true);
-		// readComments();
+		getUserComments({ user: props.user.email });
 		setTimeout(() => {
 			doRefresh(false);
 			event.detail.complete();
@@ -111,7 +88,7 @@ const User = (props) => {
 			<IonPage id="user-card-detail" className="bg-grey-100">
 				<IonHeader collapse="condense" className="ion-no-border">
 					<IonToolbar>
-						<Card>
+						<Card className="mt-5">
 							<CardBody className="px-1 py-4">
 								<div className="flex bg-white">
 									<div className="flex items-start px-4 ">
@@ -127,9 +104,6 @@ const User = (props) => {
 
 							</CardBody>
 						</Card>
-
-
-
 					</IonToolbar>
 				</IonHeader>
 				<IonContent>

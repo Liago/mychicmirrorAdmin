@@ -12,7 +12,7 @@ const ModalNotification = (props) => {
 	const handleSubmit = (values) => {
 		setDimmer(true);
 		console.log('Submitted values', values)
-		// props.submitNotification({ titolo: values.titolo, contenuto: values.commento });
+		props.submitNotification({ titolo: values.titolo, contenuto: values.commento });
 	};
 
 	return (

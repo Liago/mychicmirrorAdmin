@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { IonModal, IonSpinner, IonButton } from "@ionic/react";
+import { IonModal, IonSpinner } from "@ionic/react";
 import { Card, CardHeader, CardBody } from "shards-react";
 import { GetPost } from "../../store/rest";
 
@@ -28,13 +28,14 @@ const ModalNotification = (props) => {
 			cssClass='comment-modal-class'
 			swipeToClose={true}
 			presentingElement={undefined}
-			onDidDismiss={() => props.togglePostModal(false)}>
-			<Card className="mb-5 h-100 card">
+			onDidDismiss={() => props.togglePostModal(false)}
+			>
+			<Card className="my-5 h-100 card">
 				{loading && <div className="grid place-content-center h-100"><IonSpinner name="lines" /></div>}
 				{!loading &&
 					<>
 						<CardHeader>
-						<div className="absolute top-0 right-0 h-8 w-8 rounded-full " onClick={() => props.togglePostModal(false)}>
+						<div className="absolute top-4 right-5 h-8 w-8 rounded-full " onClick={() => props.togglePostModal(false)}>
 							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
 							</svg>

@@ -10,8 +10,7 @@ export const UserRegistration = (params) => useApi("POST","registration.php", pa
 export const UserDelete = (params) => useApi("POST","deleteUser.php", params);
 
 export const GetUserComments = (params) => useLazyApi('POST',"getTotalCommentsByUser.php", params);
-
-export const SendNotification = (params) => useApi("POST","sendAppNotification.php", params);
+export const SendNotification = () => useLazyApi("POST","sendAppNotification.php");
 
 export const SendCommentReply = (params) => useApi("POST","newCommentReply.php", params);
 
