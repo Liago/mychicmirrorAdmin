@@ -1,7 +1,7 @@
 import { wrappedApi } from "../common/api";
 import { store } from "./store";
 
-const { useApi, useLazyApi, useLazyRestApi } = wrappedApi({ store })
+const { useApi, useLazyApi, useLazyRestApi, useLazyApi_Avatar } = wrappedApi({ store })
 
 export const GetUserList = () => useLazyApi("GET","getAllUsers.php");
 
@@ -12,12 +12,14 @@ export const UserDelete = (params) => useApi("POST","deleteUser.php", params);
 export const GetUserComments = (params) => useLazyApi('POST',"getTotalCommentsByUser.php", params);
 export const SendNotification = () => useLazyApi("POST","sendAppNotification.php");
 export const SendCommentReply = () => useLazyApi("POST","newCommentReply.php");
+export const GetUserAvatar = () => useLazyApi('POST', 'getAvatarFromUsername.php');
+
+export const GetAvatarFromSite = (id) => useLazyApi_Avatar('GET', `v1/${id}`);
 
 // export const GetAllComments = () => useApi("GET","/getAllAdminComments.php");
 
 export const UpdateComment = () => useLazyApi("POST","/commentManager.php");
 
-export const GetUserAvatar = (params) => useApi('POST', 'getAvatarFromUsername.php', params);
 
 
 export const GetAllCommentsHandler = () => useLazyApi('GET', "getAllAdminComments.php");

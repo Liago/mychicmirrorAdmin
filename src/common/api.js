@@ -3,6 +3,7 @@ import axios from 'axios';
 
 const endpoint = 'https://www.mychicmirror.com/API/';
 const rest_ep = 'https://www.mychicmirror.com/wp-json/';
+const avatar_ep = 'https://api.multiavatar.com/';
 
 const wrappedApi = ({ store }) => {
     const useRawCall = async (method, url, payload = {}, opts = {}) => {
@@ -133,12 +134,56 @@ const wrappedApi = ({ store }) => {
             }
         ];
     }
+	const useLazyApi_Avatar = (method, url, opts = {}) => {
+        const [error, setError] = useState(null);
+        const [event, setEvent] = useState({
+            loading: true,
+            data: null
+        });
 
+		const token = store.getState()?.app?.token || null;
+		
+        const func = async (payload = {}) => {
+            try {
+                setEvent({
+                    loading: true,
+                    data: null
+                });
+
+                const response = await axios({
+                    baseURL: avatar_ep,
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    },
+                    method,
+                    url,
+                    data: {...payload, ...opts}
+                });
+
+                setEvent({
+                    loading: false,
+                    data: response.data
+                });
+            } catch (e) {
+                setError(e);
+            }
+        }
+
+        return [
+            func,
+            {
+                error,
+                loading: event.loading,
+                data: event.data
+            }
+        ];
+    }
     return {
         useRawCall,
         useApi,
         useLazyApi,
-		useLazyRestApi
+		useLazyRestApi,
+		useLazyApi_Avatar
     }
 }
 
