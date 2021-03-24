@@ -1,25 +1,11 @@
 import React from "react";
 import _ from "lodash";
-import { useSelector, useDispatch } from "react-redux";
-
-import { SecureStorage } from '@ionic-native/secure-storage';
-
-import { GetUserAvatar } from "../store/rest"
-import { Card,  CardBody, CardTitle } from "shards-react";
+import { Card, CardBody, CardTitle } from "shards-react";
 
 
 const List = (props) => {
-	const loading = useSelector(state => state.loading)
-	const dispatch = useDispatch();
-
-	const userAvatar = (username) => {
-		// const { data, loading, error } = GetUserAvatar({ "username": username });
-		// data && console.log('ussr', data.user[0].avatar)
-	}
-
-
 	return (
-		<div className="list-component dark:bg-black pb-5">
+		<div className="list-component pb-5">
 			{props.users.map((user, index) => {
 				return (
 					<Card
@@ -30,9 +16,7 @@ const List = (props) => {
 							<CardTitle className="pt-3.5">
 								<div className="w-full h-16 flex items-center justify-between ">
 									<div className="flex">
-										{/* <img className=" rounded-full w-10 h-10 mr-3" src={avatar} alt="" /> */}
-										<div className="w-12 h-12 rounded-full object-cover mr-4 shadow" dangerouslySetInnerHTML={userAvatar(user.username)} ></div>
-										<div>
+										<div className="ml-5">
 											<h3 className="text-md font-semibold ">{user.username}</h3>
 											<p className="text-xs text-gray-500">{user.email}</p>
 										</div>

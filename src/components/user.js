@@ -16,7 +16,7 @@ import {
 } from "@ionic/react";
 import { refreshOutline } from "ionicons/icons";
 import { Card, CardBody, Button } from "shards-react";
-import { GetUserComments, SendCommentReply, SendNotification, UserDelete } from "../store/rest";
+import { GetUserComments, SendCommentReply, SendNotification, UserDelete, GetUserAvatar, GetAvatarFromSite } from "../store/rest";
 
 import Placeholder from "../components/UI/placeholder";
 import CommentsList from "../components/comments";
@@ -32,10 +32,31 @@ const User = (props) => {
 	const [isRefreshing, doRefresh] = useState(false);
 	const [isModalOpen, toggleModal] = useState(false);
 	const [view, setView] = useState("comments");
-	
+	const [avatarSVG, setAvatar] = useState();
+
 	const [getUserComments, { data: comments, loading }] = GetUserComments();
 	const [sendNotification, { loading: isSent }] = SendNotification();
 	const [sendReply, { loading: isReplySent }] = SendCommentReply();
+	const [getAvatar, { data: avatarObj }] = GetUserAvatar();
+	// const [getAvatartSVG, { data: avatarSVG }] = GetAvatarFromSite(1);
+
+	useEffect(() => {
+		getAvatar({ username: props.user.username })
+	}, [])
+
+
+	useEffect(() => {
+		if (avatarObj) {
+			let { user } = avatarObj;
+			if (user[0].avatar != "") {
+				fetch(`https://api.multiavatar.com/v1/${user[0].avatar}`)
+					.then((res) => res.text())
+					.then((svg) => {
+						setAvatar(svg)
+					});
+			}
+		}
+	}, [avatarObj])
 
 
 	const prepareNotification = (params) => {
@@ -55,8 +76,8 @@ const User = (props) => {
 	});
 
 	useEffect(() => {
-		!isSent && toggleModal(false);
-	}, [isSent])
+		!isReplySent && toggleModal(false);
+	}, [isReplySent])
 
 	const refresh = (event) => {
 		doRefresh(true);
@@ -93,7 +114,9 @@ const User = (props) => {
 							<CardBody className="px-1 py-4">
 								<div className="flex bg-white">
 									<div className="flex items-start px-4 ">
-										<img className="w-12 h-12 rounded-full object-cover mr-4 shadow" src="images/default_avatar.jpg" alt="avatar" />
+										<div className="w-12 h-12 rounded-full object-cover mr-4 shadow"
+											dangerouslySetInnerHTML={{ __html: avatarSVG }}>
+										</div>
 										<div className="">
 											<div className="flex items-center justify-between">
 												<h2 className="text-lg font-semibold text-gray-900 -mt-1">{props.user.username}</h2>

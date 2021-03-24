@@ -53,7 +53,7 @@ const Users = (props) => {
 	};
 
 	return (
-		<IonPage id="page-users" className="bg-gray-900 dark:bg-black">
+		<IonPage id="page-users" className="bg-gray-200">
 			<IonContent>
 				<IonHeader>
 					<IonToolbar>
@@ -68,7 +68,7 @@ const Users = (props) => {
 						</IonButtons>
 					</IonToolbar>
 				</IonHeader>
-				<IonContent fullscreen="true" className="container mx-auto bg-gray-100 dark:bg-black">
+				<IonContent fullscreen="true" className="container mx-auto bg-gray-100">
 					<IonRefresher slot="fixed" onIonRefresh={refresh}>
 						<IonRefresherContent
 							pullingIcon={refreshOutline}
