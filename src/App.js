@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import { Route, Redirect, withRouter } from "react-router-dom";
+import { Route, Redirect} from "react-router-dom";
 import { IonApp, IonRouterOutlet, IonSplitPane } from "@ionic/react";
-import { IonReactRouter } from "@ionic/react-router";
-import { connect } from "react-redux";
+import { Provider, useSelector } from "react-redux";
+import { ConnectedRouter } from "connected-react-router";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -35,12 +35,16 @@ import "shards-ui/dist/css/shards.min.css";
 // import "./sass/main.css";
 import "./sass/index.css";
 
+import { history, store } from "./store/store";
 
-class App extends Component {
-	render() {
-		return (
-			<IonApp className={`${this.props.darkMode ? "dark" : ""}`}>
-				<IonReactRouter>
+
+const App = () => {
+	const {darkMode} = useSelector(state => state.app);
+	
+	return (
+		<IonApp className={`${darkMode ? "dark" : ""}`}>
+			<Provider store={store}>
+				<ConnectedRouter history={history}>
 					<IonSplitPane contentId="main">
 						<Menu />
 						<Toast />
@@ -51,16 +55,10 @@ class App extends Component {
 							<Route path="/" exact render={() => <Redirect to="/home" />} />
 						</IonRouterOutlet>
 					</IonSplitPane>
-				</IonReactRouter>
-			</IonApp>
-		);
-	}
+				</ConnectedRouter>
+			</Provider>
+		</IonApp>
+	);
 }
 
-const mapStateToProps = (state) => {
-	return {
-		darkMode: state.app.darkMode,
-	};
-};
-
-export default withRouter(connect(mapStateToProps)(App));
+export default App;
