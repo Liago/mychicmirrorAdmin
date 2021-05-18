@@ -15,7 +15,7 @@ const ModalNotification = (props) => {
 		<IonModal
 			isOpen={props.open}
 			cssClass='comment-modal-class'
-			swipeToClose={true}
+			swipeToClose={false}
 			presentingElement={undefined}
 			onDidDismiss={() => props.togglePostModal(false)}
 			>

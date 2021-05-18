@@ -38,10 +38,10 @@ const User = (props) => {
 	const [sendNotification, { loading: isSent }] = SendNotification();
 	const [sendReply, { loading: isReplySent }] = SendCommentReply();
 	const [getAvatar, { data: avatarObj }] = GetUserAvatar();
-	// const [getAvatartSVG, { data: avatarSVG }] = GetAvatarFromSite(1);
 
 	useEffect(() => {
-		getAvatar({ username: props.user.username })
+		getAvatar({ username: props.user.username });
+		getUserComments({ user: props.user.email });
 	}, [])
 
 
@@ -71,9 +71,9 @@ const User = (props) => {
 		sendNotification(message);
 	};
 
-	useIonViewWillEnter(() => {
-		getUserComments({ user: props.user.email });
-	});
+	// useIonViewWillEnter(() => {
+	// 	getUserComments({ user: props.user.email });
+	// });
 
 	useEffect(() => {
 		!isReplySent && toggleModal(false);
