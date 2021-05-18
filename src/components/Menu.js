@@ -2,9 +2,8 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router";
 import { setDarkMode, setDevMode } from "../store/actions";
-import { IonContent, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu, IonMenuToggle, IonNote, IonToggle } from "@ionic/react";
+import { IonContent, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu, IonMenuToggle, IonToggle } from "@ionic/react";
 
-import { useLocation } from "react-router-dom";
 import { bookmarkOutline, moonOutline, peopleSharp, notifications, chatbubblesOutline, cogOutline } from "ionicons/icons";
 
 const appPages = [
@@ -29,7 +28,6 @@ const appPages = [
 const labels = [];
 
 const Menu = (props) => {
-	const location = useLocation();
 	const dispatch = useDispatch();
 	const { darkMode, devMode } = useSelector(state => state.app);
 
@@ -44,10 +42,9 @@ const Menu = (props) => {
 								<IonMenuToggle key={index} autoHide={false}>
 									<IonItem
 										className="flex items-center py-2 px-8 text-gray-600 border-r-4 border-white hover:bg-gray-200 hover:text-gray-700 hover:border-gray-700"
-										routerLink={appPage.url}
-										routerDirection="none"
 										lines="none"
 										detail={false}
+										onClick={() => dispatch(push(appPage.url))}
 									>
 										<IonIcon slot="start" ios={appPage.iosIcon} md={appPage.mdIcon} />
 										<IonLabel>{appPage.title}</IonLabel>
