@@ -71,10 +71,6 @@ const User = (props) => {
 		sendNotification(message);
 	};
 
-	// useIonViewWillEnter(() => {
-	// 	getUserComments({ user: props.user.email });
-	// });
-
 	useEffect(() => {
 		!isReplySent && toggleModal(false);
 	}, [isReplySent])

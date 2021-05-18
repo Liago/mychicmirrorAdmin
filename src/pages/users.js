@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {useDispatch, useSelector} from "react-redux";
+import { useDispatch } from "react-redux";
 import {
 	IonAlert,
 	IonButton,
@@ -27,7 +27,7 @@ const Users = (props) => {
 	const [userSelected, selectUser] = useState(null);
 	const [isModalVisibile, setModalState] = useState(false);
 	const [userAlert, setUserAlert] = useState(false);
-	const [isRefreshing, doRefresh] = useState(false);	
+	const [isRefreshing, doRefresh] = useState(false);
 	const [getUsers, { data: users, loading }] = GetUserList();
 
 	useEffect(() => {

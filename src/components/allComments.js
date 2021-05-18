@@ -13,8 +13,8 @@ import ActionSheet from "./UI/actionSheet";
 const Comments = (props) => {
 	const dispatch = useDispatch();
 	const { notificationSegment } = useSelector(state => state.app)
-		// const { isCompleted } = useSelector(state => state.toast)
-
+	// const { isCompleted } = useSelector(state => state.toast)
+	const [isSendingMessage, setIsSendingMessage] = useState(false);
 	const { list, avatar, view } = props;
 	const [postId, setPostId] = useState(null);
 	const [isModalOpen, toggleModal] = useState(false);
@@ -50,11 +50,19 @@ const Comments = (props) => {
 			let notificationparams = prepareNotification();
 			sendReply(replyparams);
 			sendNotification(notificationparams);
+			resetReplyParams();
 		}
 	}, [replyparams]);
 
+	const resetReplyParams = () => {
+		setreplyparams({ post_ID: "", comment_post: "", comment_post_title: "", comment_parent: "", comment_content: "" })
+	}
+
 	useEffect(() => {
-		!isReplySent && toggleModal(false)
+		if (!isReplySent) {
+			toggleModal(false);
+			setIsSendingMessage(false);
+		}
 	}, [isReplySent])
 
 	const handleSubmit = (values) => {
@@ -74,7 +82,6 @@ const Comments = (props) => {
 			android_sound: "nil",
 			data: { post: replyparams.comment_post },
 			included_segments: [notificationSegment],
-			// included_segments: ["TEST USERS"],
 		};
 		return message;
 	};
@@ -152,6 +159,8 @@ const Comments = (props) => {
 				open={isModalOpen}
 				submitNotification={handleSubmit}
 				modalToggler={toggleModal}
+				isSendingMessage={isSendingMessage}
+				setIsSendingMessage={setIsSendingMessage}
 				type={{ title: false, title_content: "Nuova Risposta", content: "comment" }}
 			/>
 			<ActionSheet

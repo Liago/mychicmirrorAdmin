@@ -19,7 +19,8 @@ const Comments = (props) => {
 	const [isPostModalOpen, togglePostModal] = useState(false);
 	const [replyparams, setreplyparams] = useState({ post_ID: "", comment_post: "", comment_post_title: "", comment_parent: "", comment_content: "" });
 	const [sendReply, { loading: isReplySent }] = SendCommentReply();
-	const [sendNotification, { loading: isSent }] = SendNotification();
+	const [isSendingMessage, setIsSendingMessage] = useState(false);
+	const [sendNotification] = SendNotification();
 
 	useEffect(() => {
 		if (
@@ -32,9 +33,13 @@ const Comments = (props) => {
 			let notificationparams = prepareNotification();
 			sendReply(replyparams);
 			sendNotification(notificationparams);
-			
+			resetReplyParams();			
 		}
 	}, [replyparams]);
+
+	const resetReplyParams = () => {
+		setreplyparams({ post_ID: "", comment_post: "", comment_post_title: "", comment_parent: "", comment_content: "" })
+	}
 
 	const prepareNotification = () => {
 		let title_it = replyparams.comment_post_title.split("/")[0];
@@ -48,8 +53,7 @@ const Comments = (props) => {
 			ios_sound: "nil",
 			android_sound: "nil",
 			data: { post: replyparams.comment_post },
-			included_segments: [notificationSegment],
-			// included_segments: ["TEST USERS"],
+			included_segments: [notificationSegment]
 		};
 		return message;
 	};
@@ -60,7 +64,10 @@ const Comments = (props) => {
 	};
 
 	useEffect(() => {
-		!isReplySent && toggleModal(false)
+		if (!isReplySent) {
+			toggleModal(false);
+			setIsSendingMessage(false);
+		}
 	}, [isReplySent])
 
 	return (
@@ -105,6 +112,8 @@ const Comments = (props) => {
 				open={isModalOpen}
 				submitNotification={handleSubmit}
 				modalToggler={toggleModal}
+				isSendingMessage={isSendingMessage}
+				setIsSendingMessage={setIsSendingMessage}
 				type={{ title: false, title_content: "Nuova Risposta", content: "comment" }}
 			/>
 			<PostModal

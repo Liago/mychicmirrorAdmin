@@ -38,7 +38,7 @@ const HomePage = (props) => {
 		getAllComments();
 		setTimeout(() => {
 			doRefresh(false);
-			event.detail.complete();
+			event?.detail?.complete();
 		}, 2000);
 	};
 
