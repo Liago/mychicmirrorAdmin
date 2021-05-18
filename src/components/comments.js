@@ -13,6 +13,7 @@ import moment from "moment";
 
 const Comments = (props) => {
 	const { list } = props;
+	const { notificationSegment } = useSelector(state => state.app)
 	const [isModalOpen, toggleModal] = useState(false);
 	const [postId, setPostId] = useState(null);
 	const [isPostModalOpen, togglePostModal] = useState(false);
@@ -47,7 +48,8 @@ const Comments = (props) => {
 			ios_sound: "nil",
 			android_sound: "nil",
 			data: { post: replyparams.comment_post },
-			included_segments: ["TEST USERS"],
+			included_segments: [notificationSegment],
+			// included_segments: ["TEST USERS"],
 		};
 		return message;
 	};
